@@ -1,104 +1,84 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { FaShieldAlt, FaBolt, FaCrosshairs, FaDumbbell, FaUserFriends, FaBrain, FaHeartbeat, FaFistRaised, FaQuoteLeft } from 'react-icons/fa';
 
-// --- DATA SOURCE ---
-const disciplinesData = {
-  bjj: {
-    name: "Brazilian Jiu-Jitsu",
-    tagline: "The Art of Control and Submission",
-    imageUrl: "https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?w=1600&h=900&fit=crop",
-    description: "Brazilian Jiu-Jitsu is a martial art and combat sport based on ground fighting and submission holds. It focuses on the skill of controlling a resisting opponent in ways that force them to submit. It's a chess match where the human body is the set of pieces, emphasizing technique and leverage over size and strength.",
-    keyTechniques: [
-      { icon: <FaShieldAlt />, name: "Guard Retention", description: "Mastering the art of defending from your back." },
-      { icon: <FaBolt />, name: "Submissions", description: "Learning chokes and joint locks to finish the fight." },
-      { icon: <FaCrosshairs />, name: "Positional Dominance", description: "Controlling the opponent from superior positions." },
-      { icon: <FaDumbbell />, name: "Sweeps & Reversals", description: "Using leverage to reverse a bad situation." },
-    ],
-    schedule: [
-      { day: "Monday", time: "7:00 PM - 8:30 PM", class: "Gi Fundamentals" },
-      { day: "Wednesday", time: "7:00 PM - 8:30 PM", class: "No-Gi Advanced" },
-      { day: "Friday", time: "6:00 PM - 7:30 PM", class: "All Levels Sparring" },
-    ],
-    gear: ["Gi (Kimono)", "Belt", "Rashguard (optional for Gi)", "Spats (optional for Gi)"],
-    testimonial: {
-      quote: "BJJ at Cowarrior taught me that technique and determination can overcome any obstacle. It's the most challenging and rewarding thing I've ever done.",
-      author: "- Alex R., Blue Belt",
-    },
-  },
-  'muay-thai': {
-    name: "Muay Thai",
-    tagline: "The Science of Eight Limbs",
-    imageUrl: "https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?w=1600&h=900&fit=crop",
-    description: "Known for its tremendous power, efficiency, and raw simplicity, Muay Thai is a combat sport of Thailand that uses stand-up striking along with various clinching techniques. This physical and mental discipline is known as 'the art of eight limbs' because it is characterized by the combined use of fists, elbows, knees, and shins.",
-    keyTechniques: [
-        { icon: <FaBolt />, name: "Devastating Kicks", description: "Mastering the powerful roundhouse and teep kicks." },
-        { icon: <FaFistRaised />, name: "Clinch Work", description: "Controlling the opponent in close quarters with knees and elbows." },
-        { icon: <FaShieldAlt />, name: "Defensive Shell", description: "Building a strong guard to block and counter strikes." },
-        { icon: <FaHeartbeat />, name: "Elite Conditioning", description: "Forging the endurance to fight round after round." },
-    ],
-    schedule: [
-        { day: "Tuesday", time: "6:00 PM - 7:30 PM", class: "All Levels Striking" },
-        { day: "Thursday", time: "6:00 PM - 7:30 PM", class: "Clinching & Sparring" },
-        { day: "Saturday", time: "10:00 AM - 11:30 AM", class: "Pad Work Intensive" },
-    ],
-    gear: ["16oz Boxing Gloves", "Shin Guards", "Mouthguard", "Hand Wraps"],
-    testimonial: {
-        quote: "The energy in the Muay Thai class is insane. The coaches push you to your limit, and you leave feeling like a true fighter every single time.",
-        author: "- Jessica P., 1 Year Member",
-    },
-  },
-  mma: {
-    name: "Mixed Martial Arts",
-    tagline: "The Ultimate Synthesis of Combat",
-    imageUrl: "https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?w=1600&h=900&fit=crop",
-    description: "Mixed Martial Arts is the fastest growing sport in the world, and for good reason. It combines the most effective techniques from every martial art into a single, unified system. Our program teaches you to seamlessly blend striking, wrestling, and grappling, making you a well-rounded and formidable opponent in any situation.",
-    keyTechniques: [
-        { icon: <FaCrosshairs />, name: "Wrestling Takedowns", description: "Taking the fight to the ground on your terms." },
-        { icon: <FaFistRaised />, name: "Cage Control", description: "Using the environment to your advantage." },
-        { icon: <FaBrain />, name: "Strategic Transitions", description: "Flowing between striking and grappling seamlessly." },
-        { icon: <FaDumbbell />, name: "Explosive Ground & Pound", description: "Finishing the fight with powerful strikes on the ground." },
-    ],
-    schedule: [
-        { day: "Monday", time: "8:30 PM - 10:00 PM", class: "MMA Sparring" },
-        { day: "Wednesday", time: "8:30 PM - 10:00 PM", class: "Wrestling for MMA" },
-        { day: "Friday", time: "7:30 PM - 9:00 PM", class: "Live Drills & Scenarios" },
-    ],
-    gear: ["4oz MMA Gloves", "16oz Boxing Gloves", "Shin Guards", "Mouthguard", "Wrestling Shoes (optional)"],
-    testimonial: {
-        quote: "MMA training here is the real deal. It's not just about fighting; it's about strategy, discipline, and pushing your own boundaries.",
-        author: "- Mike T., Amateur Fighter",
-    },
-  },
-  fitness: {
-    name: "Warrior Fitness",
-    tagline: "Forge Your Inner Athlete",
-    imageUrl: "https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?w=1600&h=900&fit=crop",
-    description: "Our Warrior Fitness program is the engine of our gym. It's a high-intensity functional training system designed to build the strength, endurance, and agility of a modern-day warrior. We combine compound lifts, explosive plyometrics, and grueling conditioning circuits to create a physique that is as capable as it looks.",
-    keyTechniques: [
-        { icon: <FaDumbbell />, name: "Compound Strength", description: "Building a powerful foundation with squats, deadlifts, and presses." },
-        { icon: <FaHeartbeat />, name: "Metabolic Conditioning", description: "Shredding fat and building endurance with high-intensity circuits." },
-        { icon: <FaBolt />, name: "Explosive Power", description: "Developing athletic power with plyometrics and olympic lifts." },
-        { icon: <FaUserFriends />, name: "Team-Based Workouts", description: "Pushing your limits with the support of the tribe." },
-    ],
-    schedule: [
-        { day: "Monday", time: "6:00 AM - 7:00 AM", class: "Strength & Power" },
-        { day: "Wednesday", time: "6:00 AM - 7:00 AM", class: "Metabolic Conditioning" },
-        { day: "Friday", time: "6:00 AM - 7:00 AM", class: "Warrior Challenge" },
-    ],
-    gear: ["Athletic Shoes", "Comfortable Workout Clothes", "Water Bottle"],
-    testimonial: {
-        quote: "I've never been in better shape in my life. The Warrior Fitness program is tough, but the results are undeniable. I feel strong, confident, and ready for anything.",
-        author: "- Sarah K., 2 Year Member",
-    },
-  },
+interface KeyTechnique {
+  icon: string;
+  name: string;
+  description: string;
+}
+
+interface ScheduleItem {
+  day: string;
+  time: string;
+  class: string;
+}
+
+interface Testimonial {
+  quote: string;
+  author: string;
+}
+
+interface Program {
+  id: string;
+  name: string;
+  tagline: string;
+  imageUrl: string;
+  description: string;
+  detailedDescription: string;
+  keyTechniques: KeyTechnique[];
+  schedule: ScheduleItem[];
+  gear: string[];
+  testimonial: Testimonial;
+}
+
+const IconMap: { [key: string]: JSX.Element } = {
+  FaShieldAlt: <FaShieldAlt />,
+  FaBolt: <FaBolt />,
+  FaCrosshairs: <FaCrosshairs />,
+  FaDumbbell: <FaDumbbell />,
+  FaUserFriends: <FaUserFriends />,
+  FaBrain: <FaBrain />,
+  FaHeartbeat: <FaHeartbeat />,
+  FaFistRaised: <FaFistRaised />,
 };
 
 export default function DisciplinePage() {
   const params = useParams();
-  const disciplineId = params.discipline as keyof typeof disciplinesData;
-  const discipline = disciplinesData[disciplineId];
+  const disciplineId = params.discipline as string;
+  const [discipline, setDiscipline] = useState<Program | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchDiscipline = async () => {
+      try {
+        const response = await fetch(`/api/programs/${disciplineId}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data: Program = await response.json();
+        setDiscipline(data);
+      } catch (e: any) {
+        setError(e.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (disciplineId) {
+      fetchDiscipline();
+    }
+  }, [disciplineId]);
+
+  if (loading) {
+    return <div className="flex items-center justify-center min-h-screen bg-black text-white">Loading program details...</div>;
+  }
+
+  if (error) {
+    return <div className="flex items-center justify-center min-h-screen bg-black text-white">Error: {error}</div>;
+  }
 
   if (!discipline) {
     return (
@@ -142,13 +122,13 @@ export default function DisciplinePage() {
             {/* Left Column: Description & Testimonial */}
             <div className="lg:col-span-2">
               <h2 className="text-4xl font-bold uppercase mb-6"><span className="gradient-text">Program</span> Overview</h2>
-              <p className="text-lg text-neutral-300 leading-relaxed mb-12">{discipline.description}</p>
+              <p className="text-lg text-neutral-300 leading-relaxed mb-12">{discipline.detailedDescription}</p>
 
               <h3 className="text-3xl font-bold uppercase mb-8"><span className="gradient-text">Key</span> Techniques</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
                 {discipline.keyTechniques.map(tech => (
                   <div key={tech.name} className="flex items-start gap-4">
-                    <div className="text-red-500 text-3xl mt-1">{tech.icon}</div>
+                    <div className="text-red-500 text-3xl mt-1">{IconMap[tech.icon]}</div>
                     <div>
                       <h4 className="font-bold text-xl">{tech.name}</h4>
                       <p className="text-neutral-400">{tech.description}</p>

@@ -13,42 +13,56 @@ interface Program {
   suitability: string;
 }
 
+interface HeroSectionData {
+  backgroundImageUrl: string;
+  mainHeadline: string;
+  subHeadline: string;
+}
+
 export default function ProgramsPage() {
   const [isVisible, setIsVisible] = useState(false);
+  const [programs, setPrograms] = useState<Program[]>([]);
+  const [heroData, setHeroData] = useState<HeroSectionData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     setIsVisible(true);
+    const fetchData = async () => {
+      try {
+        const [programsResponse, heroResponse] = await Promise.all([
+          fetch('/api/programs'),
+          fetch('/api/disciplines-hero-section'),
+        ]);
+
+        if (!programsResponse.ok) {
+          throw new Error(`HTTP error! status: ${programsResponse.status} for programs`);
+        }
+        if (!heroResponse.ok) {
+          throw new Error(`HTTP error! status: ${heroResponse.status} for hero section`);
+        }
+
+        const programsData: Program[] = await programsResponse.json();
+        const heroSectionData: HeroSectionData = await heroResponse.json();
+
+        setPrograms(programsData);
+        setHeroData(heroSectionData);
+      } catch (e: any) {
+        setError(e.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
   }, []);
 
-  const programs: Program[] = [
-    {
-      id: "fitness",
-      name: "Strength Training",
-      subtitle: "Forge Raw Power",
-      imageUrl: "https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?w=1200&h=800&fit=crop",
-      description: "Our core strength program is designed to build a powerful foundation. Focusing on compound lifts like the squat, deadlift, and bench press, we guide you to systematically increase your strength, build lean muscle, and develop unshakable stability. This is where true power is made.",
-      keyFocus: ["Maximal Strength", "Hypertrophy (Muscle Growth)", "Powerlifting Technique", "Core Stability"],
-      suitability: "Beginner to Advanced Lifters"
-    },
-    {
-      id: "mma",
-      name: "Mixed Martial Arts",
-      subtitle: "Unleash the Complete Fighter",
-      imageUrl: "https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?w=1200&h=800&fit=crop",
-      description: "Our MMA program integrates the most effective techniques from various combat disciplines. Learn striking, grappling, and wrestling in a dynamic environment that builds physical prowess and strategic thinking. Step into the cage and become a versatile and formidable martial artist.",
-      keyFocus: ["Striking (Boxing, Muay Thai)", "Grappling (Submissions)", "Takedowns & Defense", "Cage Control & Strategy"],
-      suitability: "All Levels Welcome"
-    },
-    {
-      id: "bjj",
-      name: "Jiu-Jitsu",
-      subtitle: "The Art of Dominance",
-      imageUrl: "https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?w=1200&h=800&fit=crop",
-      description: "Master the art of ground-based combat with our Jiu-Jitsu program. Often called 'the gentle art,' it teaches you how to use leverage and technique to control and submit larger opponents. Develop discipline, problem-solving skills, and unparalleled grappling ability on the mats.",
-      keyFocus: ["Positional Control", "Submissions & Escapes", "Takedowns & Sweeps", "Leverage & Technique"],
-      suitability: "Beginner to Competitive Grapplers"
-    }
-  ];
+  if (loading) {
+    return <div className="flex items-center justify-center min-h-screen bg-black text-white">Loading content...</div>;
+  }
+
+  if (error) {
+    return <div className="flex items-center justify-center min-h-screen bg-black text-white">Error: {error}</div>;
+  }
 
   return (
     <main className="relative flex min-h-screen flex-col bg-neutral-950 text-white overflow-hidden">
@@ -88,16 +102,16 @@ export default function ProgramsPage() {
       >
         <div 
             className="absolute inset-0 bg-cover bg-center bg-fixed" 
-            style={{ backgroundImage: `url(https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=1200&h=600&fit=crop)` }}
+            style={{ backgroundImage: `url(${heroData?.backgroundImageUrl})` }}
         >
           <div className="absolute inset-0 bg-black/75"></div>
         </div>
         <div className={`relative z-10 container mx-auto px-8 ${isVisible ? 'animate-fade-in-up' : ''}`}>
           <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tight">
-            Choose Your <span className="gradient-text">Discipline</span>
+            {heroData?.mainHeadline}
           </h1>
           <p className="mt-6 text-xl text-neutral-300 max-w-3xl mx-auto">
-            Discover the elite training programs designed to forge your inner warrior.
+            {heroData?.subHeadline}
           </p>
         </div>
       </section>

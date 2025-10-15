@@ -2,16 +2,7 @@
 import React, { useEffect, useState } from "react";
 import ConsultationModal from "../../components/ConsultationModal";
 
-// Define the structure for a Membership Tier
-interface MembershipTier {
-  id: string;
-  name: string;
-  price: string;
-  period: string;
-  description: string;
-  features: string[];
-  isFeatured?: boolean;
-}
+import { PricingSection, PricingTier, PricingHeroSection, MembershipPage } from "../../lib/types";
 
 export default function MembershipPage() {
   const [isVisible, setIsVisible] = useState(false);
@@ -30,110 +21,54 @@ export default function MembershipPage() {
     honeypot: "",
   });
   const [formStatus, setFormStatus] = useState('');
+  const [pricingHeroSection, setPricingHeroSection] = useState<PricingHeroSection | null>(null);
+  const [pricingSections, setPricingSections] = useState<PricingSection[]>([]);
+  const [membershipPage, setMembershipPage] = useState<MembershipPage | null>(null);
+
 
   useEffect(() => {
     setIsVisible(true);
+    
+    const fetchData = async () => {
+      try {
+        const [pricingResponse, heroResponse, membershipPageResponse] = await Promise.all([
+          fetch('/api/pricing'),
+          fetch('/api/pricing-hero-section'),
+          fetch('/api/membership-page')
+        ]);
+
+        if (!pricingResponse.ok) {
+          const errorText = await pricingResponse.text();
+          throw new Error(`Failed to fetch pricing data: ${pricingResponse.status} - ${errorText}`);
+        }
+        if (!heroResponse.ok) {
+          const errorText = await heroResponse.text();
+          throw new Error(`Failed to fetch pricing hero section: ${heroResponse.status} - ${errorText}`);
+        }
+        if (!membershipPageResponse.ok) {
+          const errorText = await membershipPageResponse.text();
+          throw new Error(`Failed to fetch membership page data: ${membershipPageResponse.status} - ${errorText}`);
+        }
+
+        const pricingData: PricingSection[] = await pricingResponse.json();
+        const heroData: PricingHeroSection = await heroResponse.json();
+        const membershipPageData: MembershipPage = await membershipPageResponse.json();
+
+        setPricingSections(pricingData);
+        setPricingHeroSection(heroData);
+        setMembershipPage(membershipPageData);
+
+      } catch (error) {
+        console.error('Error in membership page fetchData:', error);
+      }
+    };
+
+    fetchData();
   }, []);
 
-  const adultTiers: MembershipTier[] = [
-    {
-      id: "muay-thai-adult",
-      name: "Muay Thai Only",
-      price: "$119.99",
-      period: "/ month for 6 months",
-      description: "Focused. Essential. Specialized.",
-      features: [
-        "Access Fitness Equipment",
-        "Access to Open Gym",
-        "Access 6 Days / Week",
-        "Style Specific Group Classes",
-      ],
-    },
-    {
-      id: "jiu-jitsu-adult",
-      name: "Jiu Jitsu Only",
-      price: "$119.99",
-      period: "/ month for 6 months",
-      description: "Focused. Essential. Specialized.",
-      features: [
-        "Access Fitness Equipment",
-        "Access to Open Gym",
-        "Access 6 Days / Week",
-        "Style Specific Group Classes",
-      ],
-    },
-    {
-      id: "all-inclusive-adult",
-      name: "All Inclusive",
-      price: "$139.99",
-      period: "/ month for 6 months",
-      description: "Dynamic. Versatile. Empowering.",
-      features: [
-        "Access Fitness Equipment",
-        "Access to Open Gym",
-        "Access 6 Days / Week",
-        "All Group Classes",
-        "Access All Available Classes",
-      ],
-      isFeatured: true,
-    },
-    {
-      id: "premier-adult",
-      name: "Premier",
-      price: "$199.99",
-      period: "/ month for 6 months",
-      description: "Unlimited. Exclusive. Mastery.",
-      features: [
-        "Access Fitness Equipment",
-        "Access to Open Gym",
-        "Access 6 Days / Week",
-        "All Group Classes",
-        "Access All Available Classes",
-        "Recovery Room",
-        "One Private Lesson / Month",
-      ],
-    },
-  ];
-
-  const kidsTiers: MembershipTier[] = [
-    {
-      id: "muay-thai-kids",
-      name: "Muay Thai Only",
-      price: "$99.99",
-      period: "/ month for 6 months",
-      description: "Focused. Essential. Specialized.",
-      features: [
-        "Access Kids Muay Thai Classes",
-        "Build Discipline & Focus",
-        "Develop Coordination",
-      ],
-    },
-    {
-      id: "jiu-jitsu-kids",
-      name: "Jiu Jitsu Only",
-      price: "$99.99",
-      period: "/ month for 6 months",
-      description: "Focused. Essential. Specialized.",
-      features: [
-        "Access Kids Jiu Jitsu Classes",
-        "Learn Self-Defense",
-        "Improve Problem Solving",
-      ],
-    },
-    {
-      id: "all-inclusive-kids",
-      name: "All Inclusive",
-      price: "$119.99",
-      period: "/ month for 6 months",
-      description: "Dynamic. Versatile. Empowering.",
-      features: [
-        "Access All Kids Classes",
-        "Comprehensive Martial Arts Training",
-        "Character Development",
-      ],
-      isFeatured: true,
-    },
-  ];
+  if (pricingSections.length === 0 || !membershipPage) {
+    return <div>Loading pricing data...</div>;
+  }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -150,7 +85,6 @@ export default function MembershipPage() {
       console.log("Bot submission detected.");
       return;
     }
-    // Simulated submission
     setTimeout(() => {
       setFormStatus(`Inquiry sent! We'll contact you shortly, ${formData.firstName}.`);
       setFormData({
@@ -208,162 +142,109 @@ export default function MembershipPage() {
         }
       `}</style>
 
-      {/* Hero Section */}
-      <section className="relative h-[60vh] flex items-center justify-center text-center overflow-hidden">
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-fixed" 
-          style={{ backgroundImage: `url(https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=1200&h=600&fit=crop)` }}
-        >
-          <div className="absolute inset-0 bg-black/75"></div>
-        </div>
-        <div className={`relative z-10 container mx-auto px-8 ${isVisible ? 'animate-fade-in-up' : ''}`}>
-          <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tight">
-            Become a <span className="gradient-text">Warrior</span>
-          </h1>
-          <p className="mt-6 text-xl text-neutral-300 max-w-3xl mx-auto">
-            Choose your path to greatness. Transparent pricing, unmatched value.
-          </p>
-        </div>
-      </section>
+      {pricingHeroSection ? (
+        <section className="relative h-[60vh] flex items-center justify-center text-center overflow-hidden">
+          <div 
+            className="absolute inset-0 bg-cover bg-center bg-fixed" 
+            style={{ backgroundImage: `url(${pricingHeroSection.backgroundImageUrl})` }}
+          >
+            <div className="absolute inset-0 bg-black/75"></div>
+          </div>
+          <div className={`relative z-10 container mx-auto px-8 ${isVisible ? 'animate-fade-in-up' : ''}`}>
+            <h1 className="text-5xl md:text-7xl font-black tracking-tight" style={{ whiteSpace: 'pre-wrap' }}>
+              {pricingHeroSection.mainHeadline}
+            </h1>
+            <p className="mt-6 text-xl text-neutral-300 max-w-3xl mx-auto">
+              {pricingHeroSection.subHeadline}
+            </p>
+          </div>
+        </section>
+      ) : (
+        <div className="text-center py-8">Loading Hero Section...</div>
+      )}
 
-      {/* Free Trial Section */}
       <section className="py-20 bg-black">
         <div className="container mx-auto px-8 text-center">
-            <h2 className="text-4xl font-black uppercase mb-4">Start Your Journey for Free</h2>
+            <h2 className="text-4xl font-black uppercase mb-4">{membershipPage.freeTrial.title}</h2>
             <p className="text-lg text-neutral-400 max-w-2xl mx-auto mb-8">
-                Experience the Cowarrior difference with a no-strings-attached 3-day trial. Access our facilities, join our classes, and feel the community firsthand.
+                {membershipPage.freeTrial.description}
             </p>
             <button 
-                onClick={() => setIsModalOpen(true)} // Open modal
+                onClick={() => setIsModalOpen(true)} 
                 className={`bg-gradient-to-r from-red-600 to-red-700 text-white px-12 py-5 rounded-full text-lg font-bold uppercase 
                                hover:shadow-lg hover:shadow-red-600/50 transition-all hover:scale-105`}>
-                Claim Your Free Trial
+                {membershipPage.freeTrial.buttonText}
             </button>
         </div>
       </section>
       
-      {/* Adult Pricing Tiers Section */}
-      <section className="py-24 bg-neutral-950">
-        <div className="container mx-auto px-8">
-          <h2 className="text-5xl font-black uppercase mb-12 text-center"><span className="gradient-text">Adult</span> Programs</h2>
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-stretch">
-            {adultTiers.map((tier, index) => (
-              <div 
-                key={tier.id}
-                className={`pricing-card rounded-2xl p-8 flex flex-col ${tier.isFeatured ? 'featured-card' : ''} ${isVisible ? 'animate-fade-in-up' : ''}`}
-                style={{ animationDelay: `${index * 0.15}s` }}
-              >
-                {tier.isFeatured && (
-                    <div className="absolute top-0 -translate-y-1/2 left-1/2 -translate-x-1/2">
-                        <span className="bg-red-600 text-white text-sm font-bold px-4 py-1 rounded-full uppercase">Most Popular</span>
+      {pricingSections.map((section, sectionIndex) => (
+        <section key={section.id} className={sectionIndex % 2 === 0 ? 'py-24 bg-neutral-950' : 'py-24 bg-black'}>
+          <div className="container mx-auto px-8">
+            <h2 className="text-5xl font-black uppercase mb-12 text-center"><span className="gradient-text">{section.title}</span></h2>
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-stretch">
+              {section.tiers.map((tier, index) => (
+                <div 
+                  key={tier.id}
+                  className={`pricing-card rounded-2xl p-8 flex flex-col ${tier.isFeatured ? 'featured-card' : ''} ${isVisible ? 'animate-fade-in-up' : ''}`}
+                  style={{ animationDelay: `${index * 0.15}s` }}
+                >
+                  {tier.isFeatured && (
+                      <div className="absolute top-0 -translate-y-1/2 left-1/2 -translate-x-1/2">
+                          <span className="bg-red-600 text-white text-sm font-bold px-4 py-1 rounded-full uppercase">Most Popular</span>
+                      </div>
+                  )}
+                  <div className="flex-grow">
+                    <h3 className="text-3xl font-black uppercase mb-2">{tier.name}</h3>
+                    <p className="text-neutral-400 mb-6">{tier.description}</p>
+                    <div className="mb-8">
+                      <span className="text-5xl font-black gradient-text">{tier.price}</span>
+                      <span className="text-lg text-neutral-400">{tier.period?.split('for ')[1] || tier.period}</span>
                     </div>
-                )}
-                <div className="flex-grow">
-                  <h3 className="text-3xl font-black uppercase mb-2">{tier.name}</h3>
-                  <p className="text-neutral-400 mb-6">{tier.description}</p>
-                  <div className="mb-8">
-                    <span className="text-5xl font-black gradient-text">{tier.price}</span>
-                    <span className="text-lg text-neutral-400">{tier.period}</span>
+                    <ul className="space-y-4">
+                      {tier.features.map(feature => (
+                        <li key={feature} className="flex items-center gap-3">
+                          <svg className="w-6 h-6 text-red-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <span>{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                  <ul className="space-y-4">
-                    {tier.features.map(feature => (
-                      <li key={feature} className="flex items-center gap-3">
-                        <svg className="w-6 h-6 text-red-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <div className="mt-10">
-                  <button 
-                    onClick={() => setIsModalOpen(true)} // Open modal
-                    className={`w-full text-lg font-bold uppercase py-4 rounded-full transition-all ${tier.isFeatured ? 'bg-gradient-to-r from-red-600 to-red-700 hover:shadow-lg hover:shadow-red-600/50' : 'bg-neutral-800 hover:bg-red-600'}`}>
-                    Sign Up Now
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Kids Pricing Tiers Section */}
-      <section className="py-24 bg-black">
-        <div className="container mx-auto px-8">
-          <h2 className="text-5xl font-black uppercase mb-12 text-center"><span className="gradient-text">Kids</span> Programs</h2>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
-            {kidsTiers.map((tier, index) => (
-              <div 
-                key={tier.id}
-                className={`pricing-card rounded-2xl p-8 flex flex-col ${tier.isFeatured ? 'featured-card' : ''} ${isVisible ? 'animate-fade-in-up' : ''}`}
-                style={{ animationDelay: `${index * 0.15}s` }}
-              >
-                {tier.isFeatured && (
-                    <div className="absolute top-0 -translate-y-1/2 left-1/2 -translate-x-1/2">
-                        <span className="bg-red-600 text-white text-sm font-bold px-4 py-1 rounded-full uppercase">Most Popular</span>
-                    </div>
-                )}
-                <div className="flex-grow">
-                  <h3 className="text-3xl font-black uppercase mb-2">{tier.name}</h3>
-                  <p className="text-neutral-400 mb-6">{tier.description}</p>
-                  <div className="mb-8">
-                    <span className="text-5xl font-black gradient-text">{tier.price}</span>
-                    <span className="text-lg text-neutral-400">{tier.period}</span>
+                  <div className="mt-10">
+                    <button 
+                      onClick={() => setIsModalOpen(true)} 
+                      className={`w-full text-lg font-bold uppercase py-4 rounded-full transition-all ${tier.isFeatured ? 'bg-gradient-to-r from-red-600 to-red-700 hover:shadow-lg hover:shadow-red-600/50' : 'bg-neutral-800 hover:bg-red-600'}`}>
+                      Sign Up Now
+                    </button>
                   </div>
-                  <ul className="space-y-4">
-                    {tier.features.map(feature => (
-                      <li key={feature} className="flex items-center gap-3">
-                        <svg className="w-6 h-6 text-red-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
                 </div>
-                <div className="mt-10">
-                  <button 
-                    onClick={() => setIsModalOpen(true)} // Open modal
-                    className={`w-full text-lg font-bold uppercase py-4 rounded-full transition-all ${tier.isFeatured ? 'bg-gradient-to-r from-red-600 to-red-700 hover:shadow-lg hover:shadow-red-600/50' : 'bg-neutral-800 hover:bg-red-600'}`}>
-                    Sign Up Now
-                  </button>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      ))}
 
-      {/* Additional Pricing Info Section */}
       <section className="py-24 bg-neutral-950">
         <div className="container mx-auto px-8 text-center">
-          <h2 className="text-5xl font-black uppercase mb-12"><span className="gradient-text">Important</span> Notes</h2>
+          <h2 className="text-5xl font-black uppercase mb-12"><span className="gradient-text">{membershipPage.importantNotes.title}</span></h2>
           <div className="max-w-3xl mx-auto space-y-6 text-neutral-400 text-lg">
-            <p>
-              <strong>Active Military / LEO / First Responder discounts</strong> are applied to the month-to-month price.
-            </p>
-            <p>
-              <strong>Family rates</strong> are capped at $350 monthly for all immediate family members.
-            </p>
-            <p>
-              Must be active military, LEO, first responder or on a six-month commitment plan for discount to apply.
-            </p>
-            <p className="mt-4 text-red-400 font-bold">
-              **Premier Membership cannot be combined with membership discount / family rates.
-            </p>
+            {membershipPage.importantNotes.notes.map((note, index) => (
+              <p key={index}>
+                {note}
+              </p>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Inquiry Form Section */}
       <section className="py-24 bg-black">
         <div className="container mx-auto px-8">
           <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-5xl font-black uppercase mb-4 gradient-text">Have Questions?</h2>
+            <h2 className="text-5xl font-black uppercase mb-4 gradient-text">{membershipPage.inquiryForm.title}</h2>
             <p className="text-xl mb-10 text-neutral-400">
-              Fill out the form below and one of our commanders will get back to you to discuss your path to becoming a warrior.
+              {membershipPage.inquiryForm.description}
             </p>
           </div>
           <form 
@@ -453,7 +334,6 @@ export default function MembershipPage() {
                 <p className="text-xs text-neutral-500 mt-1">Get updates on events and our latest offers.</p>
               </fieldset>
             </div>
-            {/* Honeypot field for spam prevention */}
             <div className="absolute w-0 h-0 overflow-hidden">
               <label htmlFor="honeypot">Do not fill in this field</label>
               <input

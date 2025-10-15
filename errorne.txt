@@ -1,0 +1,15 @@
+Runtime TypeError
+
+
+Cannot read properties of undefined (reading 'toUpperCase')
+
+src\app\schedule\page.tsx (176:72) @ eval
+
+
+  174 |                     <label className="block text-sm font-bold text-neutral-400 mb-2">FILTER BY COACH</label>
+  175 |                     <select value={coachFilter} onChange={(e) => setCoachFilter(e.target.value)} className="w-full px-5 py-3 rounded-lg bg-neutral-800 border border-neutral-700 focus:border-red-600 outline-none">
+> 176 |                         {coaches.map(c => <option key={c} value={c}>{c.toUpperCase()}</option>)}
+      |                                                                        ^
+  177 |                     </select>
+  178 |                 </div>
+  179 |                 <div className="w-full md:w-auto md:pt-7">

@@ -1,13 +1,49 @@
 'use client';
 import React, { useEffect, useState } from "react";
 import Link from 'next/link';
-import { coaches, Coach } from '../../lib/coachesData'; // Import coaches data
+
+import { Coach, CoachesHeroSection } from "../../lib/types";
 
 export default function CoachesPage() {
+  const [coaches, setCoaches] = useState<Coach[]>([]);
+  const [coachesHeroSection, setCoachesHeroSection] = useState<CoachesHeroSection | null>(null);
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     setIsVisible(true);
+    
+    const fetchData = async () => {
+      try {
+        const [coachesResponse, heroResponse] = await Promise.all([
+          fetch('/api/coaches'),
+          fetch('/api/coaches-hero-section')
+        ]);
+
+        if (!coachesResponse.ok) {
+          const errorText = await coachesResponse.text();
+          throw new Error(`Failed to fetch coaches: ${coachesResponse.status} - ${errorText}`);
+        }
+        if (!heroResponse.ok) {
+          const errorText = await heroResponse.text();
+          throw new Error(`Failed to fetch coaches hero section: ${heroResponse.status} - ${errorText}`);
+        }
+
+        const coachesData: Coach[] = await coachesResponse.json();
+        const heroData: CoachesHeroSection = await heroResponse.json();
+
+        console.log('Fetched Coaches Data:', coachesData);
+        console.log('Fetched Coaches Hero Section Data:', heroData);
+
+        setCoaches(coachesData);
+        setCoachesHeroSection(heroData);
+
+      } catch (error) {
+        console.error('Error in coaches page fetchData:', error);
+        // Optionally, set an error state to display a message to the user
+      }
+    };
+
+    fetchData();
   }, []);
 
   return (
@@ -46,24 +82,33 @@ export default function CoachesPage() {
       `}</style>
 
       {/* Hero Section */}
-      <section 
-        className="relative h-[60vh] flex items-center justify-center text-center overflow-hidden"
-      >
-        <div 
-            className="absolute inset-0 bg-cover bg-center bg-fixed" 
-            style={{ backgroundImage: `url(https://images.unsplash.com/photo-1605296867304-46d5465a13f1?w=1200&h=600&fit=crop)` }}
+      {coachesHeroSection ? (
+        <section 
+          className="relative h-[60vh] flex items-center justify-center text-center overflow-hidden"
         >
-          <div className="absolute inset-0 bg-black/75"></div>
-        </div>
-        <div className={`relative z-10 container mx-auto px-8 ${isVisible ? 'animate-fade-in-up' : ''}`}>
-          <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tight">
-            Meet The <span className="gradient-text">Commanders</span>
-          </h1>
-          <p className="mt-6 text-xl text-neutral-300 max-w-3xl mx-auto">
-            The elite coaches dedicated to forging you into a warrior.
-          </p>
-        </div>
-      </section>
+          <div 
+              className="absolute inset-0 bg-cover bg-center bg-fixed" 
+              style={{ backgroundImage: `url(${coachesHeroSection.backgroundImageUrl})` }}
+          >
+            <div className="absolute inset-0 bg-black/75"></div>
+          </div>
+          <div className={`relative z-10 container mx-auto px-8 ${isVisible ? 'animate-fade-in-up' : ''}`}>
+            <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tight">
+              {coachesHeroSection.mainHeadline.split(' ').map((word, index) => (
+                <React.Fragment key={index}>
+                  {word.toLowerCase() === 'commanders' ? <span className="gradient-text">{word}</span> : <span>{word}</span>}
+                  {index < coachesHeroSection.mainHeadline.split(' ').length - 1 && ' '}
+                </React.Fragment>
+              ))}
+            </h1>
+            <p className="mt-6 text-xl text-neutral-300 max-w-3xl mx-auto">
+              {coachesHeroSection.subHeadline}
+            </p>
+          </div>
+        </section>
+      ) : (
+        <div className="text-center py-8">Loading Hero Section...</div>
+      )}
 
       {/* Coaches Grid Section */}
       <section className="py-24 bg-black">
@@ -111,7 +156,7 @@ export default function CoachesPage() {
                   </div>
 
                   <div className="mt-8">
-                    <Link href={`/coaches/${coach.name.toLowerCase().replace(/[^a-z0-9\s-]/g, ' ').trim().replace(/\s+/g, '-')}`} className="inline-block bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 uppercase tracking-wider transition-all rounded-md">
+                    <Link href={`/coaches/${coach.id}`} className="inline-block bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 uppercase tracking-wider transition-all rounded-md">
                         View Profile
                     </Link>
                   </div>

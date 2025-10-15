@@ -1,0 +1,865 @@
+{
+  "programs": [
+    {
+      "id": "fitness",
+      "name": "Strength Training",
+      "subtitle": "Forge Raw Power",
+      "imageUrl": "https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?w=1200&h=800&fit=crop",
+      "description": "Our core strength program is designed to build a powerful foundation. Focusing on compound lifts like the squat, deadlift, and bench press, we guide you to systematically increase your strength, build lean muscle, and develop unshakable stability. This is where true power is made.",
+      "keyFocus": [
+        "Maximal Strength",
+        "Hypertrophy (Muscle Growth)",
+        "Powerlifting Technique",
+        "Core Stability"
+      ],
+      "suitability": "Beginner to Advanced Lifters",
+      "tagline": "Forge Your Inner Athlete",
+      "detailedDescription": "Our Warrior Fitness program is the engine of our gym. It's a high-intensity functional training system designed to build the strength, endurance, and agility of a modern-day warrior. We combine compound lifts, explosive plyometrics, and grueling conditioning circuits to create a physique that is as capable as it looks.",
+      "keyTechniques": [
+        {
+          "icon": "FaDumbbell",
+          "description": "Building a powerful foundation with squats, deadlifts, and presses."
+        },
+        {
+          "icon": "FaHeartbeat",
+          "description": "Shredding fat and building endurance with high-intensity circuits."
+        },
+        {
+          "icon": "FaBolt",
+          "description": "Developing athletic power with plyometrics and olympic lifts."
+        },
+        {
+          "icon": "FaUserFriends",
+          "description": "Pushing your limits with the support of the tribe."
+        }
+      ],
+      "schedule": [
+        {
+          "day": "Monday",
+          "time": "6:00 AM - 7:00 AM",
+          "class": "Strength & Power"
+        },
+        {
+          "day": "Wednesday",
+          "time": "6:00 AM - 7:00 AM",
+          "class": "Metabolic Conditioning"
+        },
+        {
+          "day": "Friday",
+          "time": "6:00 AM - 7:00 AM",
+          "class": "Warrior Challenge"
+        }
+      ],
+      "gear": [
+        "Athletic Shoes",
+        "Comfortable Workout Clothes",
+        "Water Bottle"
+      ],
+      "testimonial": {
+        "quote": "I've never been in better shape in my life. The Warrior Fitness program is tough, but the results are undeniable. I feel strong, confident, and ready for anything.",
+        "author": "- Sarah K., 2 Year Member"
+      }
+    },
+    {
+      "id": "mma",
+      "name": "Mixed Martial Arts",
+      "subtitle": "Unleash the Complete Fighter",
+      "imageUrl": "https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?w=1200&h=800&fit=crop",
+      "description": "Our MMA program integrates the most effective techniques from various combat disciplines. Learn striking, grappling, and wrestling in a dynamic environment that builds physical prowess and strategic thinking. Step into the cage and become a versatile and formidable martial artist.",
+      "keyFocus": [
+        "Striking (Boxing, Muay Thai)",
+        "Grappling (Submissions)",
+        "Takedowns & Defense",
+        "Cage Control & Strategy"
+      ],
+      "suitability": "All Levels Welcome",
+      "tagline": "The Ultimate Synthesis of Combat",
+      "detailedDescription": "Mixed Martial Arts is the fastest growing sport in the world, and for good reason. It combines the most effective techniques from every martial art into a single, unified system. Our program teaches you to seamlessly blend striking, wrestling, and grappling, making you a well-rounded and formidable opponent in any situation.",
+      "keyTechniques": [
+        {
+          "icon": "FaCrosshairs",
+          "name": "Wrestling Takedowns",
+          "description": "Taking the fight to the ground on your terms."
+        },
+        {
+          "icon": "FaFistRaised",
+          "name": "Cage Control",
+          "description": "Using the environment to your advantage."
+        },
+        {
+          "icon": "FaBrain",
+          "name": "Strategic Transitions",
+          "description": "Flowing between striking and grappling seamlessly."
+        },
+        {
+          "icon": "FaDumbbell",
+          "name": "Explosive Ground & Pound",
+          "description": "Finishing the fight with powerful strikes on the ground."
+        }
+      ],
+      "schedule": [
+        {
+          "day": "Monday",
+          "time": "8:30 PM - 10:00 PM",
+          "class": "MMA Sparring"
+        },
+        {
+          "day": "Wednesday",
+          "time": "8:30 PM - 10:00 PM",
+          "class": "Wrestling for MMA"
+        },
+        {
+          "day": "Friday",
+          "time": "7:30 PM - 9:00 PM",
+          "class": "Live Drills & Scenarios"
+        }
+      ],
+      "gear": [
+        "4oz MMA Gloves",
+        "16oz Boxing Gloves",
+        "Shin Guards",
+        "Mouthguard",
+        "Wrestling Shoes (optional)"
+      ],
+      "testimonial": {
+        "quote": "MMA training here is the real deal. It's not just about fighting; it's about strategy, discipline, and pushing your own boundaries.",
+        "author": "- Mike T., Amateur Fighter"
+      }
+    },
+    {
+      "id": "bjj",
+      "name": "Jiu-Jitsu",
+      "subtitle": "The Art of Dominance",
+      "imageUrl": "https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?w=1200&h=800&fit=crop",
+      "description": "Master the art of ground-based combat with our Jiu-Jitsu program. Often called 'the gentle art,' it teaches you how to use leverage and technique to control and submit larger opponents. Develop discipline, problem-solving skills, and unparalleled grappling ability on the mats.",
+      "keyFocus": [
+        "Positional Control",
+        "Submissions & Escapes",
+        "Takedowns & Sweeps",
+        "Leverage & Technique"
+      ],
+      "suitability": "Beginner to Competitive Grapplers",
+      "tagline": "The Art of Control and Submission",
+      "detailedDescription": "Brazilian Jiu-Jitsu is a martial art and combat sport based on ground fighting and submission holds. It focuses on the skill of controlling a resisting opponent in ways that force them to submit. It's a chess match where the human body is the set of pieces, emphasizing technique and leverage over size and strength.",
+      "keyTechniques": [
+        {
+          "icon": "FaShieldAlt",
+          "name": "Guard Retention",
+          "description": "Mastering the art of defending from your back."
+        },
+        {
+          "icon": "FaBolt",
+          "name": "Submissions",
+          "description": "Learning chokes and joint locks to finish the fight."
+        },
+        {
+          "icon": "FaCrosshairs",
+          "name": "Positional Dominance",
+          "description": "Controlling the opponent from superior positions."
+        },
+        {
+          "icon": "FaDumbbell",
+          "name": "Sweeps & Reversals",
+          "description": "Using leverage and technique to reverse a bad situation."
+        }
+      ],
+      "schedule": [
+        {
+          "day": "Monday",
+          "time": "7:00 PM - 8:30 PM",
+          "class": "Gi Fundamentals"
+        },
+        {
+          "day": "Wednesday",
+          "time": "7:00 PM - 8:30 PM",
+          "class": "No-Gi Advanced"
+        },
+        {
+          "day": "Friday",
+          "time": "6:00 PM - 7:30 PM",
+          "class": "All Levels Sparring"
+        }
+      ],
+      "gear": [
+        "Gi (Kimono)",
+        "Belt",
+        "Rashguard (optional for Gi)",
+        "Spats (optional for Gi)"
+      ],
+      "testimonial": {
+        "quote": "BJJ at Cowarrior taught me that technique and determination can overcome any obstacle. It's the most challenging and rewarding thing I've ever done.",
+        "author": "- Alex R., Blue Belt"
+      }
+    },
+    {
+      "id": "muay-thai",
+      "name": "Muay Thai",
+      "subtitle": "Unleash the Eight Limbs",
+      "imageUrl": "https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?w=1200&h=800&fit=crop",
+      "description": "Master the art of eight limbs with our Muay Thai program. Learn powerful strikes using fists, elbows, knees, and shins, combined with effective clinching techniques. Develop explosive power, unwavering discipline, and a warrior's spirit.",
+      "keyFocus": [
+        "Striking (Fists, Elbows, Knees, Shins)",
+        "Clinching & Grappling",
+        "Defensive Tactics",
+        "Conditioning & Endurance"
+      ],
+      "suitability": "All Levels Welcome",
+      "tagline": "The Science of Eight Limbs",
+      "detailedDescription": "Known for its tremendous power, efficiency, and raw simplicity, Muay Thai is a combat sport of Thailand that uses stand-up striking along with various clinching techniques. This physical and mental discipline is known as 'the art of eight limbs' because it is characterized by the combined use of fists, elbows, knees, and shins.",
+      "keyTechniques": [
+        {
+          "icon": "FaBolt",
+          "name": "Devastating Kicks",
+          "description": "Mastering the powerful roundhouse and teep kicks."
+        },
+        {
+          "icon": "FaFistRaised",
+          "name": "Clinch Work",
+          "description": "Controlling the opponent in close quarters with knees and elbows."
+        },
+        {
+          "icon": "FaShieldAlt",
+          "name": "Defensive Shell",
+          "description": "Building a strong guard to block and counter strikes."
+        },
+        {
+          "icon": "FaHeartbeat",
+          "name": "Elite Conditioning",
+          "description": "Forging the endurance to fight round after round."
+        }
+      ],
+      "schedule": [
+        {
+          "day": "Tuesday",
+          "time": "6:00 PM - 7:30 PM",
+          "class": "All Levels Striking"
+        },
+        {
+          "day": "Thursday",
+          "time": "6:00 PM - 7:30 PM",
+          "class": "Clinching & Sparring"
+        },
+        {
+          "day": "Saturday",
+          "time": "10:00 AM - 11:30 AM",
+          "class": "Pad Work Intensive"
+        }
+      ],
+      "gear": [
+        "16oz Boxing Gloves",
+        "Shin Guards",
+        "Mouthguard",
+        "Hand Wraps"
+      ],
+      "testimonial": {
+        "quote": "The energy in the Muay Thai class is insane. The coaches push you to your limit, and you leave feeling like a true fighter every single time.",
+        "author": "- Jessica P., 1 Year Member"
+      }
+    }
+  ],
+  "coaches": [
+    {
+      "id": "marcus-the-titan-thorne",
+      "name": "Marcus 'The Titan' Thorne",
+      "title": "Head Coach & Founder",
+      "disciplines": [
+        "Powerlifting",
+        "Strongman"
+      ],
+      "specializations": [
+        "Powerlifting",
+        "Strongman"
+      ],
+      "certifications": [
+        "Fake Certified Master Trainer",
+        "Fake 15+ Years Coaching Experience"
+      ],
+      "imageUrl": "https://cowarrior.com/images/BenStaffPhoto.jpg",
+      "videoUrl": "https://www.youtube.com/watch?v=UNNqYmbFEOU",
+      "bio": "Marcus isn't just the founder of Cowarrior; he is its very foundation. A titan of the strength world, he has dedicated his life to the pursuit of raw power. His journey began in the gritty, no-nonsense powerlifting gyms of his youth, where he learned that true strength is forged in the crucible of struggle. With a coaching style that is both demanding and deeply supportive, Marcus pushes his athletes to shatter their preconceived limits and build a foundation of unshakeable physical and mental fortitude.",
+      "philosophy": "We don't lift weights; we build pillars. Every squat, every deadlift, every press is a brick in the temple of your own strength. My goal is to give you the tools to build a monument.",
+      "achievements": [
+        {
+          "icon": "FaTrophy",
+          "text": "3x National Powerlifting Champion"
+        },
+        {
+          "icon": "FaFistRaised",
+          "text": "Arnold Strongman Classic Competitor"
+        },
+        {
+          "icon": "FaStar",
+          "text": "Certified Master Trainer"
+        },
+        {
+          "icon": "FaShieldAlt",
+          "text": "15+ Years Coaching Experience"
+        }
+      ],
+      "gallery": [
+        "https://www.youtube.com/watch?v=UNNqYmbFEOU",
+        "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4"
+      ]
+    },
+    {
+      "id": "elena-viper-ramirez",
+      "name": "Elena 'Viper' Ramirez",
+      "title": "Head of CrossFit & Conditioning",
+      "disciplines": [
+        "CrossFit",
+        "Conditioning"
+      ],
+      "specializations": [
+        "CrossFit",
+        "Conditioning"
+      ],
+      "certifications": [
+        "Fake CrossFit Level 3 Trainer",
+        "Fake Certified Nutrition Specialist"
+      ],
+      "imageUrl": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=1000&fit=crop",
+      "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4",
+      "bio": "Elena is the engine of Cowarrior Gym. A whirlwind of energy and intensity, she is a former CrossFit Games athlete who lives and breathes high-performance fitness. Her 'Viper' moniker comes from her lightning-fast workouts and her ability to strike at the heart of her athletes' weaknesses, turning them into strengths. Elena believes that conditioning is the cornerstone of any warrior's arsenal, and her classes are designed to push you to the absolute edge of your capacity.",
+      "philosophy": "Your body is a machine. My job is to teach you how to redline it safely. We work hard, we sweat, we suffer, and we come back stronger every single day. There are no shortcuts on the path to elite fitness.",
+      "achievements": [
+        {
+          "icon": "FaTrophy",
+          "text": "2x CrossFit Games Athlete"
+        },
+        {
+          "icon": "FaFistRaised",
+          "text": "National Weightlifting Medalist"
+        },
+        {
+          "icon": "FaStar",
+          "text": "CrossFit Level 3 Trainer"
+        },
+        {
+          "icon": "FaShieldAlt",
+          "text": "Certified Nutrition Specialist"
+        }
+      ],
+      "gallery": [
+        "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1590487988256-5ed24a37982e?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1519505907962-0a6cb006a87b?w=800&h=600&fit=crop"
+      ]
+    },
+    {
+      "id": "sam-the-ghost-chen",
+      "name": "Sam 'The Ghost' Chen",
+      "title": "Mobility & Martial Arts Coach",
+      "disciplines": [
+        "Mobility",
+        "Muay Thai"
+      ],
+      "specializations": [
+        "Mobility",
+        "Muay Thai"
+      ],
+      "certifications": [
+        "Fake Certified Yoga & Mobility Instructor",
+        "Fake 10+ Years of International Experience"
+      ],
+      "imageUrl": "https://images.unsplash.com/photo-1594381898411-846e7d193883?w=800&h=1000&fit=crop",
+      "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+      "bio": "Sam is the silent force at Cowarrior Gym. A master of movement and a veteran of the Muay Thai ring, he is known as 'The Ghost' for his fluid, almost effortless technique. Sam believes that true power comes from a foundation of mobility and control. His classes are a blend of ancient martial arts wisdom and modern biomechanics, designed to help you move with grace, prevent injury, and unlock your body's full potential.",
+      "philosophy": "A warrior who cannot move is a warrior who cannot fight. We build from the ground up, creating a body that is resilient, adaptable, and ready for anything. The fight is not always against an opponent; sometimes, it is against our own limitations.",
+      "achievements": [
+        {
+          "icon": "FaTrophy",
+          "text": "K-1 Kickboxing Veteran"
+        },
+        {
+          "icon": "FaShieldAlt",
+          "text": "Functional Range Conditioning Specialist"
+        },
+        {
+          "icon": "FaStar",
+          "text": "Certified Yoga & Mobility Instructor"
+        },
+        {
+          "icon": "FaFistRaised",
+          "text": "10+ Years of International Experience"
+        }
+      ],
+      "gallery": [
+        "https://images.unsplash.com/photo-1550345332-09e3ac987658?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1598449248223-8b4fb0f05ce3?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1599058917212-0a6cb006a87b?w=800&h=600&fit=crop"
+      ]
+    }
+  ],
+  "schedule": [
+    {
+      "id": 1,
+      "datetime": "2025-10-06T06:00:00",
+      "discipline": "CrossFit",
+      "coachId": "elena-viper-ramirez",
+      "duration": "60 min"
+    },
+    {
+      "id": 2,
+      "datetime": "2025-10-06T09:00:00",
+      "discipline": "Strength",
+      "coachId": "marcus-the-titan-thorne",
+      "duration": "90 min"
+    },
+    {
+      "id": 3,
+      "datetime": "2025-10-06T18:00:00",
+      "discipline": "Jiu-Jitsu",
+      "coachId": "sam-the-ghost-chen",
+      "duration": "90 min"
+    },
+    {
+      "id": 4,
+      "datetime": "2025-10-06T19:30:00",
+      "discipline": "MMA",
+      "coachId": "elena-viper-ramirez",
+      "duration": "60 min"
+    },
+    {
+      "id": 5,
+      "datetime": "2025-10-07T07:00:00",
+      "discipline": "Cardio",
+      "coachId": "guest-coach",
+      "duration": "45 min"
+    },
+    {
+      "id": 6,
+      "datetime": "2025-10-07T17:00:00",
+      "discipline": "Strength",
+      "coachId": "marcus-the-titan-thorne",
+      "duration": "90 min"
+    },
+    {
+      "id": 7,
+      "datetime": "2025-10-07T19:00:00",
+      "discipline": "MMA",
+      "coachId": "elena-viper-ramirez",
+      "duration": "90 min"
+    },
+    {
+      "id": 8,
+      "datetime": "2025-10-08T06:00:00",
+      "discipline": "CrossFit",
+      "coachId": "elena-viper-ramirez",
+      "duration": "60 min"
+    },
+    {
+      "id": 9,
+      "datetime": "2025-10-08T09:00:00",
+      "discipline": "Strength",
+      "coachId": "marcus-the-titan-thorne",
+      "duration": "90 min"
+    },
+    {
+      "id": 10,
+      "datetime": "2025-10-08T18:00:00",
+      "discipline": "Jiu-Jitsu",
+      "coachId": "sam-the-ghost-chen",
+      "duration": "90 min"
+    },
+    {
+      "id": 11,
+      "datetime": "2025-10-09T07:00:00",
+      "discipline": "Cardio",
+      "coachId": "guest-coach",
+      "duration": "45 min"
+    },
+    {
+      "id": 12,
+      "datetime": "2025-10-09T17:00:00",
+      "discipline": "Strength",
+      "coachId": "marcus-the-titan-thorne",
+      "duration": "90 min"
+    },
+    {
+      "id": 13,
+      "datetime": "2025-10-09T19:00:00",
+      "discipline": "Jiu-Jitsu",
+      "coachId": "sam-the-ghost-chen",
+      "duration": "90 min"
+    },
+    {
+      "id": 14,
+      "datetime": "2025-10-10T06:00:00",
+      "discipline": "CrossFit",
+      "coachId": "elena-viper-ramirez",
+      "duration": "60 min"
+    },
+    {
+      "id": 15,
+      "datetime": "2025-10-10T09:00:00",
+      "discipline": "Strength",
+      "coachId": "marcus-the-titan-thorne",
+      "duration": "90 min"
+    },
+    {
+      "id": 16,
+      "datetime": "2025-10-10T18:00:00",
+      "discipline": "MMA",
+      "coachId": "elena-viper-ramirez",
+      "duration": "60 min"
+    },
+    {
+      "id": 17,
+      "datetime": "2025-10-11T09:00:00",
+      "discipline": "CrossFit",
+      "coachId": "all-coaches",
+      "duration": "75 min"
+    },
+    {
+      "id": 18,
+      "datetime": "2025-10-11T11:00:00",
+      "discipline": "Jiu-Jitsu",
+      "coachId": "sam-the-ghost-chen",
+      "duration": "120 min"
+    },
+    {
+      "id": 19,
+      "datetime": "2025-10-12T10:00:00",
+      "discipline": "Mobility",
+      "coachId": "sam-the-ghost-chen",
+      "duration": "60 min"
+    }
+  ],
+  "pricing": [
+    {
+      "id": "adults",
+      "title": "Adult Programs",
+      "tiers": [
+        {
+          "id": "muay-thai-adult",
+          "name": "Muay Thai Only",
+          "price": "$219.99",
+          "period": " month for 6 months",
+          "description": "Focused. Essential. Specialized.",
+          "features": [
+            "Access Fitness Equipment",
+            "Access to Open Gym",
+            "Access 6 Days / Week",
+            "Style Specific Group Classes"
+          ],
+          "isFeatured": true
+        },
+        {
+          "id": "jiu-jitsu-adult",
+          "name": "Jiu Jitsu Only",
+          "price": "$119.99",
+          "period": "/ month for 6 months",
+          "description": "Focused. Essential. Specialized.",
+          "features": [
+            "Access Fitness Equipment",
+            "Access to Open Gym",
+            "Access 6 Days / Week",
+            "Style Specific Group Classes"
+          ]
+        },
+        {
+          "id": "all-inclusive-adult",
+          "name": "All Inclusive",
+          "price": "$139.99",
+          "period": "/ month for 6 months",
+          "description": "Dynamic. Versatile. Empowering.",
+          "features": [
+            "Access Fitness Equipment",
+            "Access to Open Gym",
+            "Access 6 Days / Week",
+            "All Group Classes",
+            "Access All Available Classes"
+          ],
+          "isFeatured": true
+        },
+        {
+          "id": "premier-adult",
+          "name": "Premier",
+          "price": "$199.99",
+          "period": "/ month for 6 months",
+          "description": "Unlimited. Exclusive. Mastery.",
+          "features": [
+            "Access Fitness Equipment",
+            "Access to Open Gym",
+            "Access 6 Days / Week",
+            "All Group Classes",
+            "Access All Available Classes",
+            "Recovery Room",
+            "One Private Lesson / Month"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "kids",
+      "title": "Kids Programs",
+      "tiers": [
+        {
+          "id": "muay-thai-kids",
+          "name": "Muay Thai Only",
+          "price": "$99.99",
+          "period": "/ month for 6 months",
+          "description": "Focused. Essential. Specialized.",
+          "features": [
+            "Access Kids Muay Thai Classes",
+            "Build Discipline & Focus",
+            "Develop Coordination"
+          ]
+        },
+        {
+          "id": "jiu-jitsu-kids",
+          "name": "Jiu Jitsu Only",
+          "price": "$99.99",
+          "period": "/ month for 6 months",
+          "description": "Focused. Essential. Specialized.",
+          "features": [
+            "Access Kids Jiu Jitsu Classes",
+            "Learn Self-Defense",
+            "Improve Problem Solving"
+          ]
+        },
+        {
+          "id": "all-inclusive-kids",
+          "name": "All Inclusive",
+          "price": "$119.99",
+          "period": "/ month for 6 months",
+          "description": "Dynamic. Versatile. Empowering.",
+          "features": [
+            "Access All Kids Classes",
+            "Comprehensive Martial Arts Training",
+            "Character Development"
+          ],
+          "isFeatured": true
+        }
+      ]
+    }
+  ],
+  "settings": {
+    "heroTitle": "Forge Your Inner Warrior",
+    "heroSlides": [
+      {
+        "id": 1,
+        "url": "https://images.unsplash.com/photo-1555597673-b21d5c935865?w=1200&h=600&fit=crop",
+        "title": "MASTER BRAZILIAN JIU-JITSU",
+        "subtitle": "The gentle art of submission"
+      },
+      {
+        "id": 2,
+        "url": "https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?w=1200&h=600&fit=crop",
+        "title": "MUAY THAI MASTERY",
+        "subtitle": "The art of eight limbs"
+      },
+      {
+        "id": 3,
+        "url": "https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?w=1200&h=600&fit=crop",
+        "title": "MIXED MARTIAL ARTS",
+        "subtitle": "Complete combat training"
+      },
+      {
+        "id": 4,
+        "url": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=1200&h=600&fit=crop",
+        "title": "ELITE FITNESS TRAINING",
+        "subtitle": "Forge an unbreakable body"
+      }
+    ],
+    "testimonials": [
+      {
+        "id": 1,
+        "author": "Sarah M.",
+        "text": "Best gym I've ever joined! The coaches are amazing and the community is so supportive. I've learned so much in just 6 months."
+      },
+      {
+        "id": 2,
+        "author": "Mike T.",
+        "text": "I've seen incredible results in just 3 months. The training programs are top-notch and the atmosphere is unmatched!"
+      },
+      {
+        "id": 3,
+        "author": "Jessica L.",
+        "text": "The facilities are world-class and the atmosphere keeps me motivated every single day. This is more than a gym—it's a family."
+      }
+    ],
+    "cta": {
+      "title": "Ready to Transform Your Lifi?",
+      "subtitle": "Join Cowarrior Gym Today and Unleash Your Inner Warrior!",
+      "primaryButtonText": "Sign Up Now",
+      "secondaryButtonText": "Book a Free Consultation"
+    },
+    "programsSection": {
+      "title": "Programs for all levels from beginners to pros.",
+      "description": "Our gym has had both a local and a national presence since its founding in 2011, however its roots go much deeper. Our Team has been training and competing across the world in multiple combat sports to bring you the best instruction available. We are athletes, hobbyists, competitors, students and professionals. We strive to learn and grow while pushing others around us to do the same. We are a family, and we are a team."
+    },
+    "imageSectionTraining": {
+      "imageUrl": "https://images.unsplash.com/photo-1517438476312-10d79c077509?w=1600&h=600&fit=crop"
+    },
+    "gymFeaturesSection": {
+      "features": [
+        {
+          "value": "infinity",
+          "label": "Access to Open Gym"
+        },
+        {
+          "value": "6",
+          "label": "Days / Week"
+        },
+        {
+          "value": "â™¨",
+          "label": "Recovery & Wellness"
+        },
+        {
+          "value": "23",
+          "label": "World Medals"
+        },
+        {
+          "value": "12",
+          "label": "Expert Trainers"
+        },
+        {
+          "value": "1478",
+          "label": "Happy Clients"
+        }
+      ]
+    },
+    "coreValuesSection": {
+      "title": "Are We Right For You",
+      "introParagraph": "At Warrior, we recognize that every student walks through our doors with a unique set of goals, motivations, and reasons for training. Some come to compete, some to get in shape, some for self-defense, and others to find structure or community. We believe wholeheartedly that these goals don't need to be the same for us to support one another.",
+      "values": [
+        {
+          "heading": "REALISM",
+          "description": "We train for real life. The foundation of our practice is self-defense and practical application—not gamesmanship."
+        },
+        {
+          "heading": "Growth Mindset",
+          "description": "We believe that who you are today doesn't define who you can become."
+        },
+        {
+          "heading": "Respect",
+          "description": "Even when it's not obvious, respect is always present."
+        },
+        {
+          "heading": "Safety",
+          "description": "Training is only sustainable when we take care of each other."
+        },
+        {
+          "heading": "Diversity",
+          "description": "We embrace different styles, backgrounds, and perspectives."
+        },
+        {
+          "heading": "Cohesion",
+          "description": "We are individuals, but we train as one team."
+        }
+      ]
+    },
+    "teamPhotoSection": {
+      "imageUrl": "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1600&h=600&fit=crop",
+      "title": "Our Team"
+    },
+    "coachesSectionIntro": {
+      "title": "Our Coaches",
+      "introParagraph": "With years of experience both in coaching and competing, you will not find a more well-rounded and professional coaching team to help you achieve your goals.",
+      "buttonText": "Meet All Coaches"
+    },
+    "scheduleSection": {
+      "title": "Schedule",
+      "buttonText": "Save Calendar",
+      "filterButtons": [
+        "ALL",
+        "BJJ",
+        "KICKBOXING",
+        "MUAY THAI",
+        "KIDS"
+      ],
+      "dateRange": "Nov 10 - 15, 2025"
+    },
+    "pricingSection": {
+      "title": "Program Pricing",
+      "adultsTitle": "ADULTS",
+      "kidsTitle": "KIDS",
+      "disclaimers": [
+        "Active Military / LEO / First Responder discounts are applied to the month-to-month price.",
+        "Family rates cap out at $350 monthly for all members. Immediate family only.",
+        "Must be active military, LEO, first responder or on a six-month commitment plan for discount to apply.",
+        "**Premier Membership cannot be combined with membership discount / family rates."
+      ]
+    },
+    "newsletterSection": {
+      "title": "Stay Updated",
+      "description": "Subscribe to our newsletter for the latest news, programs, and exclusive offers.",
+      "inputPlaceholder": "Enter your email",
+      "buttonText": "Subscribe"
+    },
+    "coachesHeroSection": {
+      "backgroundImageUrl": "https://images.unsplash.com/photo-1605296867304-46d5465a13f1?w=1200&h=600&fit=crop",
+      "mainHeadline": "Meet the Commanders",
+      "subHeadline": "The elite coaches dedicated to forging you into a warrior."
+    },
+    "scheduleHeroSection": {
+      "backgroundImageUrl": "",
+      "mainHeadline": "Class Schedule",
+      "subHeadline": "Find your next challenge. Plan your week, dominate your goals."
+    },
+    "pricingHeroSection": {
+      "backgroundImageUrl": "https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=1200&h=600&fit=crop",
+      "mainHeadline": "Flexible Pricing",
+      "subHeadline": "Find a plan that fits your goals"
+    }
+  },
+  "whyChooseUs": {
+    "title": "Unparalleled Training Experience",
+    "description": "At Cowarrior Gym, we are dedicated to providing the highest quality martial arts and fitness training. Here's what sets us apart.",
+    "features": [
+      {
+        "title": "Expert Coaches",
+        "description": "Learn from world-class instructors with years of experience in their respective disciplines."
+      },
+      {
+        "title": "State-of-the-Art Facilities",
+        "description": "Train in a modern, fully-equipped gym designed for optimal performance and safety."
+      },
+      {
+        "title": "Supportive Community",
+        "description": "Join a welcoming and motivating community that will push you to achieve your goals."
+      }
+    ]
+  },
+  "disciplinesHeroSection": {
+    "backgroundImageUrl": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=1200&h=600&fit=crop",
+    "mainHeadline": "Choose Your Discipline",
+    "subHeadline": "Discover the elite training programs designed to forge your inner warrior."
+  },
+  "coachesHeroSection": {
+    "backgroundImageUrl": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1200&h=600&fit=crop",
+    "mainHeadline": "Meet Our Coaches",
+    "subHeadline": "Learn from the best in the business."
+  },
+  "pricingHeroSection": {
+    "backgroundImageUrl": "https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=1200&h=600&fit=crop",
+    "mainHeadline": "Flexible Pricing",
+    "subHeadline": "Find a plan that fits your goals."
+  },
+  "scheduleHeroSection": {
+    "backgroundImageUrl": "https://images.unsplash.com/photo-1533538790353-61202501920a?w=1200&h=600&fit=crop",
+    "mainHeadline": "Our Class Schedule",
+    "subHeadline": "Plan your training week."
+  },
+  "membershipPage": {
+    "freeTrial": {
+      "title": "Start Your Journey for Free",
+      "description": "Experience the Cowarrior difference with a no-strings-attached 3-day trial. Access our facilities, join our classes, and feel the community firsthand.",
+      "buttonText": "Claim Your Free Trial"
+    },
+    "importantNotes": {
+      "title": "Important Notes",
+      "notes": [
+        "Active Military / LEO / First Responder discounts are applied to the month-to-month price.",
+        "Family rates are capped at $350 monthly for all immediate family members.",
+        "Must be active military, LEO, first responder or on a six-month commitment plan for discount to apply.",
+        "**Premier Membership cannot be combined with membership discount / family rates."
+      ]
+    },
+    "inquiryForm": {
+      "title": "Have Questions?",
+      "description": "Fill out the form below and one of our commanders will get back to you to discuss your path to becoming a warrior."
+    }
+  }
+}
