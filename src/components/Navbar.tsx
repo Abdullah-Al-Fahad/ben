@@ -3,11 +3,13 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { FaInstagram, FaFacebookF } from 'react-icons/fa';
 import { CgMenu, CgClose } from 'react-icons/cg';
+import { usePathname } from 'next/navigation';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-
+const pathname = usePathname();
+  const isAdminPage = pathname.startsWith('/admin');
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
@@ -19,7 +21,7 @@ const Navbar = () => {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        className={` ${isAdminPage && "hidden" }fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           isScrolled ? 'bg-black shadow-lg' : 'bg-transparent'
         } ${
           !isScrolled && !isMenuOpen ? 'hidden' : ''

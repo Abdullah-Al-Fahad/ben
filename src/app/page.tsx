@@ -5,6 +5,7 @@ import {
   FaDumbbell, FaBatteryFull, FaCalendarAlt, FaUserFriends, FaMedal, FaSmile, 
   FaChevronRight, FaCheckCircle, FaTimesCircle, FaInstagram, FaFacebookF, FaArrowRight,  
 } from 'react-icons/fa';
+import Image from "next/image";
 
 //=================================================================
 //  HELPER COMPONENTS & DATA
@@ -85,9 +86,11 @@ const IntroSection = () => {
   return (
     <section className="relative bg-black text-white overflow-hidden">
       <div className="absolute inset-0 z-0">
-        <img
+        <Image
           src="https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e95350c431166c54c51460_warrior_01.jpg"
           alt="MMA fighters grappling in a gym"
+          width={1920}
+          height={1080}
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-black/30"></div>
@@ -277,29 +280,32 @@ const MainContent = () => {
     return (
         <main>
             {/* HERO SECTION */}
-            <section className="relative h-screen w-full overflow-hidden bg-black">
+            <section className="relative h-screen w-full overflow-hidden">
               <video 
                 autoPlay 
                 loop 
                 muted 
                 playsInline
-                className="absolute top-0 left-0 w-full h-full object-cover"
+                className="absolute top-0 left-0 w-full h-full object-cover filter grayscale"
                 src="https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e43e0279ad2b357d6c0f43_homepageclipwarrior-transcode.mp4"
-              />
-              <div className="relative h-full flex flex-col justify-center items-center text-center p-4">
+              />             
+              {/* <div className="absolute top-0 left-0 w-full h-full bg-gray-600/30"/> */}
+              <div className="relative h-full mix-blend-screen flex flex-col justify-center items-center text-center">
                 <div className="relative">
-                  <div className="bg-white mix-blend-screen">
+                  <div className="bg-white ">
                     <h1 className="text-8xl sm:text-9xl md:text-[16vw] lg:text-[15vw] font-black uppercase leading-none tracking-tighter text-black p-4">
                       Train like a<br/>Champion
                     </h1>
                   </div>
-                  <img 
-                    src="https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e43e0279ad2b357d6c0f16_warrioricon.svg" 
-                    alt="Warrior Logo" 
-                    className="absolute top-1/2 right-0 transform -translate-y-[5%] translate-x-[15%] w-[30%] h-auto"
-                  />
                 </div>
               </div>
+                  <Image 
+                    src="https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e43e0279ad2b357d6c0f16_warrioricon.svg" 
+                    alt="Warrior Logo"
+                    width={1920}
+                    height={1080}
+                    className="absolute top-1/2 right-20 transform -translate-y-[5%] translate-x-[15%] w-[30%] h-auto"
+                  />
               <div className="absolute bottom-10 left-10 z-20 text-sm uppercase tracking-[0.5em] text-white">
                 S C R O L L
               </div>

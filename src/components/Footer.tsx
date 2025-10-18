@@ -1,4 +1,5 @@
 'use client';
+import { usePathname } from 'next/navigation';
 import React from 'react';
 import { FaFacebookF, FaInstagram, FaEnvelope, FaPhone, FaClock, FaMapMarkerAlt } from 'react-icons/fa';
 
@@ -31,8 +32,11 @@ const socialLinks = [
 ];
 
 export default function Footer() {
+
+  const pathname = usePathname();
+    const isAdminPage = pathname.startsWith('/admin');
   return (
-   <footer className="bg-[#0d0d0d] border-t border-gray-800 py-16 px-4">
+   <footer className={`bg-[#0d0d0d] border-t border-gray-800 py-16 px-4 ${isAdminPage ? 'hidden' : ''}`}>
         <div className="container mx-auto text-center">
             <div className="text-3xl font-black tracking-widest mb-8 text-gray-600">WARRIOR</div>
             <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto mb-12 text-gray-400">
