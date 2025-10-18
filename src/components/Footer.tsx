@@ -32,35 +32,29 @@ const socialLinks = [
 
 export default function Footer() {
   return (
-    <footer className="bg-neutral-950 text-white py-16 px-4">
-      <div className="container mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 text-center md:text-left">
-          {footerSections.map((section) => (
-            <div key={section.title} className="flex flex-col items-center md:items-start">
-              <div className="text-red-500 mb-4 text-2xl">{section.icon}</div>
-              <h3 className="font-bold uppercase mb-2">{section.title}</h3>
-              <p className="text-neutral-400 text-sm">{section.content}</p>
+   <footer className="bg-[#0d0d0d] border-t border-gray-800 py-16 px-4">
+        <div className="container mx-auto text-center">
+            <div className="text-3xl font-black tracking-widest mb-8 text-gray-600">WARRIOR</div>
+            <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto mb-12 text-gray-400">
+                <div>
+                    <h4 className="font-bold text-white mb-2">WARRIOR FITNESS CENTER</h4>
+                    <p>3711 Drennan Road,<br/>Colorado Springs, CO 80916</p>
+                </div>
+                 <div>
+                    <h4 className="font-bold text-white mb-2">HOURS</h4>
+                    <p>M-F: 11:30 - 21:30<br/>SAT: 09:00 - 13:00</p>
+                </div>
+                 <div>
+                    <h4 className="font-bold text-white mb-2">CALL US</h4>
+                    <p>+1-719-465-2136</p>
+                </div>
             </div>
-          ))}
+             <div className="flex justify-center space-x-6 mb-8">
+                <a href="#" aria-label="Instagram"><FaInstagram className="text-3xl text-gray-500 hover:text-red-500 transition-colors" /></a>
+                <a href="#" aria-label="Facebook"><FaFacebookF className="text-3xl text-gray-500 hover:text-red-500 transition-colors" /></a>
+            </div>
+            <p className="text-xs text-gray-600">&copy; 2025 Warrior Fitness Center. All Rights Reserved.</p>
         </div>
-        <div className="mt-16 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-neutral-500 text-sm mb-4 md:mb-0">
-            &copy; {new Date().getFullYear()} Cowarrior Gym. All Rights Reserved.
-          </p>
-          <div className="flex gap-4">
-            {socialLinks.map((social) => (
-              <a
-                key={social.name}
-                href={social.href}
-                aria-label={social.name}
-                className="text-neutral-400 hover:text-red-500 transition-colors"
-              >
-                {social.icon}
-              </a>
-            ))}
-          </div>
-        </div>
-      </div>
-    </footer>
+      </footer>
   );
 }

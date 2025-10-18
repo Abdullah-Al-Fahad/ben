@@ -1,870 +1,563 @@
 'use client';
-import React, { useEffect, useState, useCallback, useRef } from "react";
-import html2canvas from 'html2canvas-pro';
-import jsPDF from 'jspdf';
-import { FaInstagram, FaFacebookF, FaChevronDown, FaDownload, FaCheck, FaTimes, FaArrowRight, FaInfinity, FaSpa } from 'react-icons/fa';
+import React from "react";
 import Link from 'next/link';
-import ConsultationModal from "../components/ConsultationModal";
+import { 
+  FaDumbbell, FaBatteryFull, FaCalendarAlt, FaUserFriends, FaMedal, FaSmile, 
+  FaChevronRight, FaCheckCircle, FaTimesCircle, FaInstagram, FaFacebookF, FaArrowRight,  
+} from 'react-icons/fa';
 
-// Interfaces
-interface Coach {
-  id: number;
-  name: string;
-  role: string;
-  imageUrl: string;
-  bio: string;
-  specializations: string[];
-  certifications: string[];
-}
+//=================================================================
+//  HELPER COMPONENTS & DATA
+//=================================================================
+const PricingFeature = ({ text, included = true }) => (
+  <li className={`flex items-center space-x-3 ${included ? 'text-gray-300' : 'text-gray-600 line-through'}`}>
+    {included ? <FaCheckCircle className="text-red-500" /> : <FaTimesCircle className="text-gray-700" />}
+    <span>{text}</span>
+  </li>
+);
 
-interface HeroSlide {
-  id: number;
-  url: string;
-  title: string;
-  subtitle: string;
-}
+const coachesData = [
+    { name: "Angela Hayes", specialties: "MUAY THAI, MMA", imageUrl: "https://storage.googleapis.com/presented_images/73507d9f-a63e-436f-b251-50da747bb771.jpg" },
+    { name: "Ben Westrich", specialties: "BRAZILIAN JIU-JITSU, MMA", imageUrl: "https://storage.googleapis.com/presented_images/1a88b48c-d6b7-47b7-951b-42ef7a2b2260.jpg" },
+    { name: "Kay Hansen", specialties: "BRAZILIAN JIU-JITSU, MMA, MUAY THAI", imageUrl: "https://storage.googleapis.com/presented_images/17cc2e1f-72f1-419b-a010-09a96f1d2c6c.jpg" },
+    { name: "Larry Ruiz", specialties: "BRAZILIAN JIU-JITSU, MMA", imageUrl: "https://storage.googleapis.com/presented_images/e02c6b45-a7b6-4ac4-913a-c8401aa96d8e.jpg" },
+    { name: "Natalie Salcedo", specialties: "BRAZILIAN JIU-JITSU, MUAY THAI, MMA", imageUrl: "https://storage.googleapis.com/presented_images/7c0c1b05-502a-43d9-a29d-bb894b912630.jpg" }
+];
 
-interface PricingSection {
-  id: string;
-  title: string;
-  tiers: PricingTier[];
-}
+const scheduleData = {
+  'Sat, Oct 18': [
+    { time: '900-1000', name: 'Muay Thai', level: 'All Levels', category: 'Muay Thai Adult' },
+    { time: '1000-1100', name: 'BJJ Fundamentals', level: 'Adults and Children', category: 'BJJ Adult' },
+    { time: '1000-1100', name: 'Kids Muay Thai', level: 'All Ages, All Levels', category: 'Muay Thai Kids' },
+    { time: '1100-1200', name: 'Fighter Practice', level: 'MMA / Muay Thai', category: 'All-Inclusive' },
+    { time: '1100-1300', name: 'No-Gi Open Mat', level: 'All Levels', category: 'BJJ Adult' },
+  ]
+};
 
-interface PricingTier {
-  id: string;
-  name: string;
-  price: string;
-  period: string;
-  description: string;
-  features: string[];
-  isFeatured?: boolean;
-}
-
-// ... (the rest of the interfaces)
-
-export default function Home() {
-  const [pricingSections, setPricingSections] = useState<PricingSection[]>([]);
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
-  const [coaches, setCoaches] = useState<Coach[]>([]);
-  const [settings, setSettings] = useState<Settings>({ heroTitle: '', heroSlides: [] });
-  const [disciplines, setDisciplines] = useState<Discipline[]>([]);
-  const [whyChooseUsData, setWhyChooseUsData] = useState<WhyChooseUsData | null>(null);
-  const [ctaData, setCtaData] = useState<CtaData | null>(null);
-  const [programsSectionData, setProgramsSectionData] = useState<ProgramsSectionData | null>(null);
-  const [imageSectionTrainingData, setImageSectionTrainingData] = useState<ImageSectionTrainingData | null>(null);
-  const [gymFeaturesSectionData, setGymFeaturesSectionData] = useState<GymFeaturesSectionData | null>(null);
-  const [coreValuesSectionData, setCoreValuesSectionData] = useState<CoreValuesSectionData | null>(null);
-  const [teamPhotoSectionData, setTeamPhotoSectionData] = useState<TeamPhotoSectionData | null>(null);
-  const [coachesSectionIntroData, setCoachesSectionIntroData] = useState<CoachesSectionIntroData | null>(null);
-  const [scheduleSectionData, setScheduleSectionData] = useState<ScheduleSectionData | null>(null);
-  const [pricingSectionData, setPricingSectionData] = useState<PricingSectionData | null>(null);
-  const [newsletterSectionData, setNewsletterSectionData] = useState<NewsletterSectionData | null>(null);
-  const [homeSchedule, setHomeSchedule] = useState<any>({}); // State for schedule data
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [newsletterEmail, setNewsletterEmail] = useState("");
-  const [newsletterStatus, setNewsletterStatus] = useState("");
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [isVisible, setIsVisible] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [fullSchedule, setFullSchedule] = useState<any[]>([]);
-  const [scheduleFilters, setScheduleFilters] = useState<string[]>(['ALL']);
-  const [activeFilter, setActiveFilter] = useState<string>('ALL');
-  const [scheduleDateRange, setScheduleDateRange] = useState('');
-  const scheduleRef = useRef<HTMLDivElement>(null);
-
-  const handleDownload = () => {
-    if (scheduleRef.current) {
-      const button = scheduleRef.current.querySelector('button');
-      if (button) {
-        button.style.display = 'none';
-      }
-
-      html2canvas(scheduleRef.current, { useCORS: true, allowTaint: true }).then((canvas) => {
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF('p', 'mm', 'a4');
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = pdf.internal.pageSize.getHeight();
-        const canvasWidth = canvas.width;
-        const canvasHeight = canvas.height;
-        const ratio = canvasWidth / canvasHeight;
-        const width = pdfWidth;
-        const height = width / ratio;
-        pdf.addImage(imgData, 'PNG', 0, 0, width, height);
-        pdf.save('schedule.pdf');
-
-        if (button) {
-          button.style.display = 'flex';
-        }
-      });
-    }
-  };
-
-  useEffect(() => {
-    setIsVisible(true);
-    
-    const fetchCoaches = async () => {
-      const response = await fetch('/api/coaches');
-      const data = await response.json();
-      setCoaches(data);
-    };
-
-    const fetchSettingsAndTestimonials = async () => {
-        const response = await fetch('/api/settings'); // Assuming /api/settings can return all settings, including testimonials
-        const data = await response.json();
-        setSettings(data);
-        setTestimonials(data.testimonials || []); // Assuming testimonials are nested under settings
-    };
-
-    const fetchSchedule = async () => {
-      const response = await fetch('/api/schedule');
-      const data = await response.json();
-      setFullSchedule(data);
-
-      if (data.length > 0) {
-        const dates = data.map((item: any) => new Date(item.datetime));
-        const minDate = new Date(Math.min.apply(null, dates));
-        const maxDate = new Date(Math.max.apply(null, dates));
-
-        const formattedStartDate = minDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-        const formattedEndDate = maxDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-
-        setScheduleDateRange(`${formattedStartDate} - ${formattedEndDate}`);
-      }
-
-      const disciplines = [...new Set(data.map((item: any) => item.discipline))];
-      setScheduleFilters(['ALL', ...disciplines]);
-
-      const groupedSchedule = data.reduce((acc: any, item: any) => {
-        const date = new Date(item.datetime);
-        const day = date.toLocaleDateString('en-US', { weekday: 'short', month: 'numeric', day: 'numeric' });
-        if (!acc[day]) {
-          acc[day] = [];
-        }
-        acc[day].push({ time: date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }), class: item.discipline, color: "blue" });
-        return acc;
-      }, {});
-      setHomeSchedule(groupedSchedule);
-    };
-
-    const fetchPricing = async () => {
-      const response = await fetch('/api/pricing');
-      const data = await response.json();
-      setPricingSections(Array.isArray(data) ? data : []);
-    };
-
-    const fetchDisciplines = async () => {
-      const response = await fetch('/api/disciplines');
-      const data = await response.json();
-      setDisciplines(data);
-    };
-
-    const fetchWhyChooseUs = async () => {
-      const response = await fetch('/api/whyChooseUs');
-      const data = await response.json();
-      setWhyChooseUsData(data);
-    };
-
-    const fetchCtaData = async () => {
-      const response = await fetch('/api/cta');
-      const data = await response.json();
-      setCtaData(data);
-    };
-
-    const fetchProgramsSectionData = async () => {
-      const response = await fetch('/api/programs-section');
-      const data = await response.json();
-      setProgramsSectionData(data);
-    };
-
-    const fetchImageSectionTrainingData = async () => {
-      const response = await fetch('/api/image-section-training');
-      const data = await response.json();
-      setImageSectionTrainingData(data);
-    };
-
-    const fetchGymFeaturesSectionData = async () => {
-      const response = await fetch('/api/gym-features-section');
-      const data = await response.json();
-      setGymFeaturesSectionData(data);
-    };
-
-    const fetchCoreValuesSectionData = async () => {
-      const response = await fetch('/api/core-values-section');
-      const data = await response.json();
-      setCoreValuesSectionData(data);
-    };
-
-    const fetchTeamPhotoSectionData = async () => {
-      const response = await fetch('/api/team-photo-section');
-      const data = await response.json();
-      setTeamPhotoSectionData(data);
-    };
-
-    const fetchCoachesSectionIntroData = async () => {
-      const response = await fetch('/api/coaches-section-intro');
-      const data = await response.json();
-      setCoachesSectionIntroData(data);
-    };
-
-    const fetchScheduleSectionData = async () => {
-      const response = await fetch('/api/schedule-section');
-      const data = await response.json();
-      setScheduleSectionData(data);
-    };
-
-    const fetchPricingSectionData = async () => {
-      const response = await fetch('/api/pricing-section');
-      const data = await response.json();
-      setPricingSectionData(data);
-    };
-
-    const fetchNewsletterSectionData = async () => {
-      const response = await fetch('/api/newsletter-section');
-      const data = await response.json();
-      setNewsletterSectionData(data);
-    };
-
-    fetchCoaches();
-    fetchSettingsAndTestimonials();
-    fetchSchedule();
-    fetchPricing();
-    fetchDisciplines();
-    fetchWhyChooseUs();
-    fetchCtaData();
-    fetchProgramsSectionData();
-    fetchImageSectionTrainingData();
-    fetchGymFeaturesSectionData();
-    fetchCoreValuesSectionData();
-    fetchTeamPhotoSectionData();
-    fetchCoachesSectionIntroData();
-    fetchScheduleSectionData();
-    fetchPricingSectionData();
-    fetchNewsletterSectionData();
-  }, []);
-
-  // Auto-play carousel
-  useEffect(() => {
-    if (settings.heroSlides.length === 0) return;
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % settings.heroSlides.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [settings.heroSlides]);
-
-  useEffect(() => {
-    let filteredSchedule = fullSchedule;
-    if (activeFilter !== 'ALL') {
-      filteredSchedule = fullSchedule.filter(item => item.discipline === activeFilter);
-    }
-
-    const groupedSchedule = filteredSchedule.reduce((acc: any, item: any) => {
-      const date = new Date(item.datetime);
-      const day = date.toLocaleDateString('en-US', { weekday: 'short', month: 'numeric', day: 'numeric' });
-      if (!acc[day]) {
-        acc[day] = [];
-      }
-      acc[day].push({ time: date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }), class: item.discipline, color: "blue" });
-      return acc;
-    }, {});
-    setHomeSchedule(groupedSchedule);
-  }, [activeFilter, fullSchedule]);
-
-  const handleNewsletterSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setNewsletterStatus("Submitting...");
-
-    if (!newsletterEmail) {
-      setNewsletterStatus("Please enter your email.");
-      return;
-    }
-
-    // Simulated submission
-    setTimeout(() => {
-      setNewsletterStatus("Subscribed successfully!");
-      setNewsletterEmail("");
-      setTimeout(() => setNewsletterStatus(""), 3000);
-    }, 1000);
-  };
-
-  const scrollPrev = () => {
-    if (settings.heroSlides.length === 0) return;
-    setCurrentSlide((prev) => (prev - 1 + settings.heroSlides.length) % settings.heroSlides.length);
-  };
-
-  const scrollNext = () => {
-    if (settings.heroSlides.length === 0) return;
-    setCurrentSlide((prev) => (prev + 1) % settings.heroSlides.length);
-  };
-
-
-  const renderIcon = (value: string) => {
-    switch (value.toLowerCase()) {
-      case 'infinity':
-      case 'âˆž':
-        return <FaInfinity />;
-      case 'spa':
-      case 'â™¨':
-        return <FaSpa />;
-      default:
-        return value;
-    }
-  };
-
+//=================================================================
+//  HEADER COMPONENT
+//=================================================================
+const Header = () => {
   return (
-    <main className="flex flex-col bg-neutral-950 text-white">
-      <style jsx global>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        
-        @keyframes slideIn {
-          from {
-            opacity: 0;
-            transform: translateX(-100%);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-
-        @keyframes pulse {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.05); }
-        }
-
-        @keyframes glow {
-          0%, 100% { box-shadow: 0 0 20px rgba(220, 38, 38, 0.5); }
-          50% { box-shadow: 0 0 40px rgba(220, 38, 38, 0.8), 0 0 60px rgba(220, 38, 38, 0.4); }
-        }
-
-        .animate-fade-in-up {
-          animation: fadeInUp 0.8s ease-out forwards;
-        }
-
-        .animate-fade-in {
-          animation: fadeIn 1s ease-out forwards;
-        }
-
-        .animate-slide-in {
-          animation: slideIn 0.8s ease-out forwards;
-        }
-
-        .hover-lift {
-          transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .hover-lift:hover {
-          transform: translateY(-8px);
-          box-shadow: 0 20px 40px rgba(220, 38, 38, 0.3);
-        }
-
-        .gradient-text {
-          background: linear-gradient(135deg, #dc2626 0%, #f87171 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-        }
-
-        .glass-effect {
-          background: rgba(23, 23, 23, 0.7);
-          backdrop-filter: blur(10px);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .shimmer {
-          position: relative;
-          overflow: hidden;
-        }
-
-        .shimmer::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: -100%;
-          width: 100%;
-          height: 100%;
-          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-          animation: shimmer 2s infinite;
-        }
-
-        @keyframes shimmer {
-          100% { left: 100%; }
-        }
-
-        .feature-card {
-          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .feature-card:hover {
-          transform: translateY(-12px) scale(1.02);
-          box-shadow: 0 25px 50px rgba(220, 38, 38, 0.4);
-        }
-
-        .icon-bounce {
-          animation: pulse 2s ease-in-out infinite;
-        }
-
-        .slide-transition {
-          transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
-        }
-      `}</style>
-
-      {/* Hero Carousel Section */}
-      <section className="relative min-h-screen overflow-hidden">
-        {settings.heroSlides.map((slide, index) => (
-          <div
-            key={index}
-            className={`absolute inset-0 slide-transition ${
-              index === currentSlide ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-            }`}
-            style={{
-              transform: index === currentSlide ? 'scale(1)' : 'scale(1.1)',
-            }}
-          >
-            {/* Background Image with Parallax Effect */}
-            <div 
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ 
-                backgroundImage: `url(${slide.url})`,
-                transform: `scale(${1 + (index === currentSlide ? 0 : 0.1)})`
-              }}
-            >
-              {/* Gradient Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent"></div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+    <header className="w-full bg-white shadow-sm absolute top-0 z-50">
+      <div className="bg-[#212121] text-white text-center py-2 px-4 text-xs font-light">
+        <span>Warrior Fitness Center - 3711 Drennan Road, Colorado Springs, CO 80916</span>
+        <span className="mx-2">|</span>
+        <span>+1-719-465-2136</span>
+      </div>
+      <div className="container mx-auto flex justify-between items-center py-3 px-6">
+        <Link href="/" className="flex-shrink-0">
+            <img 
+              src="https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e43e0279ad2b357d6c0efd_fulllogowarrior.svg" 
+              alt="Warrior Logo" 
+              className="h-12"
+            />
+        </Link>
+        <div className="flex items-center">
+            <nav className="hidden md:flex items-center space-x-7 text-gray-800 font-extrabold uppercase tracking-wider text-xs">
+                <Link href="#" className="hover:text-red-600 transition-colors">Our Gym</Link>
+                <Link href="#" className="hover:text-red-600 transition-colors">Who We Are</Link>
+                <Link href="#" className="hover:text-red-600 transition-colors">Disciplines</Link>
+                <Link href="#" className="hover:text-red-600 transition-colors">Coaches</Link>
+                <Link href="#" className="hover:text-red-600 transition-colors">Schedule</Link>
+                <Link href="#" className="hover:text-red-600 transition-colors">Pricing</Link>
+                <Link href="#" className="hover:text-red-600 transition-colors">Shop</Link>
+            </nav>
+            <div className="flex items-stretch ml-6">
+                <a href="#" aria-label="Instagram" className="bg-gray-300 flex items-center justify-center p-3 hover:bg-gray-400 transition-colors">
+                    <FaInstagram className="h-5 w-5 text-white" />
+                </a>
+                <a href="#" aria-label="Facebook" className="bg-gray-300 flex items-center justify-center p-3 ml-px hover:bg-gray-400 transition-colors">
+                    <FaFacebookF className="h-5 w-5 text-white" />
+                </a>
             </div>
+        </div>
+      </div>
+    </header>
+  );
+};
 
-            {/* Content */}
-            <div className="container relative z-20 mx-auto px-8 h-full flex items-center">
-              <div className={`max-w-3xl ${index === currentSlide ? 'animate-fade-in-up' : ''}`}>
-                <div className="mb-6 inline-block">
-                  <div className="h-1 w-20 bg-gradient-to-r from-red-600 to-red-400"></div>
-                </div>
-                <h1 className="mb-6 text-6xl md:text-8xl font-black leading-tight tracking-tight">
-                  {slide.title}
-                </h1>
-                <p className="mb-8 text-2xl text-neutral-300 font-light tracking-wide">{slide.subtitle}</p>
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <button
-                    onClick={() => setIsModalOpen(true)}
-                    className={`group relative inline-block rounded-full bg-gradient-to-r from-red-600 to-red-700 px-10 py-4 text-lg font-bold 
-                               uppercase tracking-wide transition-all hover:shadow-2xl hover:shadow-red-600/50 overflow-hidden`}
-                  >
-                    <span className="relative z-10">Let's train</span>
-                    <div className="absolute inset-0 bg-gradient-to-r from-red-700 to-red-800 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  </button>
-                </div>
+//=================================================================
+//  SECTION COMPONENTS
+//=================================================================
+
+const IntroSection = () => {
+  return (
+    <section className="relative bg-black text-white overflow-hidden">
+      <div className="absolute inset-0 z-0">
+        <img
+          src="https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e95350c431166c54c51460_warrior_01.jpg"
+          alt="MMA fighters grappling in a gym"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-black/30"></div>
+      </div>
+      <div className="container mx-auto relative z-10 py-24 px-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="flex flex-col justify-center">
+            <h2 className="text-5xl lg:text-6xl font-black uppercase leading-tight">
+              Join our world class mma training programs for all levels - from <span className="text-red-600">beginners</span> to <span className="text-red-600">pros.</span>
+            </h2>
+            <p className="mt-8 text-gray-300 leading-relaxed max-w-lg">
+              Our gym has had both a local and a national presence since its founding in 2011, <strong className="text-white">however its roots go much deeper.</strong> Our Team has been training and competing across the world in multiple combat sports to bring you the best instruction available. We are athletes, hobbyists, competitors, students and professionals. We strive to learn and grow while pushing others around us to do the same. We are people who always are working to improve ourselves and our community.
+            </p>
+            <div className="mt-12">
+              <h3 className="text-2xl font-bold uppercase tracking-wide">
+                We are a family, and we are a team.
+              </h3>
+              <div className="w-48 h-1.5 bg-red-600 mt-2"></div>
+            </div>
+          </div>
+          <div></div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const VideoSection = () => {
+  return (
+    <section className="bg-black py-16 px-4">
+      <div className="container mx-auto">
+        <div className="relative h-0 pb-[56.25%]"> 
+          <video 
+            className="absolute top-0 left-0 w-full h-full"
+            controls 
+            autoPlay 
+            muted 
+            loop 
+            playsInline
+          >
+            <source 
+              src="https://www.dropbox.com/scl/fi/vcz6n8i01h3p43md584pn/Copy-of-promo-vid-horizontal-3.mp4?rlkey=nx9t0luzuk9x86sgwbkks3sk1&raw=1" 
+              type="video/mp4" 
+            />
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const FeaturesSection = () => {
+  const SectionTitle = ({ title }) => (
+    <div>
+      <h2 className="text-3xl font-black uppercase tracking-wider">{title}</h2>
+      <div className="w-24 h-1.5 bg-red-600 mt-2"></div>
+    </div>
+  );
+  const DisciplineLink = ({ href, children }) => (
+    <li>
+      <Link href={href} className="flex items-center justify-between text-lg text-gray-300 hover:text-white transition-colors group">
+        <span>{children}</span>
+        <FaChevronRight className="text-red-500 opacity-75 group-hover:opacity-100 group-hover:translate-x-1 transition-transform" />
+      </Link>
+    </li>
+  );
+  const GymFeature = ({ icon, text }) => (
+    <li className="flex items-center space-x-4 text-lg text-gray-300">
+      <div className="w-6 text-center">{icon}</div>
+      <span>{text}</span>
+    </li>
+  );
+  return (
+    <section className="bg-[#121212] text-white py-24 px-4 overflow-hidden">
+      <div className="container mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+          <div className="flex flex-col space-y-16">
+            <div>
+              <SectionTitle title="Disciplines" />
+              <ul className="mt-8 space-y-4">
+                <DisciplineLink href="#">Brazillian Jiu-Jitsu</DisciplineLink>
+                <DisciplineLink href="#">Muay Thai</DisciplineLink>
+                <DisciplineLink href="#">Mixed Martial Arts</DisciplineLink>
+                <DisciplineLink href="#">Fitness</DisciplineLink>
+              </ul>
+            </div>
+            <div>
+              <SectionTitle title="Gym Features" />
+              <ul className="mt-8 space-y-4">
+                <GymFeature icon={<FaDumbbell />} text="Access to Open Gym" />
+                <GymFeature icon={<FaBatteryFull />} text="Recovery and Wellness Facilities" />
+                <GymFeature icon={<FaCalendarAlt />} text="Open 6 Days / Week" />
+                <GymFeature icon={<FaUserFriends />} text="12 Trainers" />
+                <GymFeature icon={<FaMedal />} text="23 World Medals" />
+                <GymFeature icon={<FaSmile />} text="1478 Happy Clients" />
+              </ul>
+            </div>
+          </div>
+          <div className="relative">
+            <img 
+              src="https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e43e0279ad2b357d6c0f16_warrioricon.svg"
+              alt="Warrior Logo background"
+              className="absolute bottom-0 right-0 w-[80%] h-auto opacity-10 pointer-events-none -mr-24"
+            />
+            <div className="relative z-10 space-y-6 text-gray-300 leading-relaxed">
+              <p>
+                We are students, athletes, and builders of our team. <strong className="text-white">Warrior Fitness Center</strong> is home to a diverse and dedicated community united by our shared pursuit of growth through martial arts. Our training blends Brazillian Jiu-Jitsu, Muay Thai, Wrestling, Judo, and MMA to foster personal development, confidence, and discipline in an atmosphere that feels like family.
+              </p>
+              <p>
+                Our coaching staff reflects the diversity of our community, each bringing a wealth of experience from different walks of life. This variety isn’t just a point of pride; it’s a strength that enriches our students’ learning. With coaches who’ve lived through high-level competition, military service, and personal transformation, we offer perspectives that go beyond the technical and into the mental, emotional, and strategic dimensions of martial arts.
+              </p>
+              <p>
+                Whether you’re just starting your journey or looking to sharpen your edge, you’ll find guidance, accountability, and support here. We are a team that trains, learns, and grows together—while pushing each other toward the next accomplishment in life.
+              </p>
+              <div className="pt-8">
+                <h3 className="text-2xl font-bold uppercase tracking-wider text-white">
+                  We are a family, and we are a team.
+                </h3>
               </div>
             </div>
           </div>
-        ))}
-
-        {/* Navigation Buttons */}
-        <button
-          onClick={scrollPrev}
-          className={`absolute left-8 top-1/2 -translate-y-1/2 z-30 glass-effect hover:bg-red-600/80 
-                     p-4 rounded-full transition-all hover:scale-110`}
-          aria-label="Previous slide"
-        >
-          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
-        <button
-          onClick={scrollNext}
-          className={`absolute right-8 top-1/2 -translate-y-1/2 z-30 glass-effect hover:bg-red-600/80 
-                     p-4 rounded-full transition-all hover:scale-110`}
-          aria-label="Next slide"
-        >
-          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
-
-        {/* Slide Indicators */}
-        <div className="absolute bottom-7 left-1/2 -translate-x-1/2 z-30 flex gap-3">
-          {settings.heroSlides.map((_, index) => (
-            <button  
-              key={index}
-              onClick={() => setCurrentSlide(index)}
-              className={`h-2 rounded-full transition-all ${
-                index === currentSlide ? 'w-12 bg-red-600' : 'w-2 bg-white/50 hover:bg-white/80'
-              }`}
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))}
         </div>
+      </div>
+    </section>
+  );
+};
 
-        
-             {/* Scroll Indicator */}
-        <div className="absolute bottom-14 left-1/2 -translate-x-1/2 z-20 animate-bounce hidden md:block">
-          <svg className="w-6 h-6 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-          </svg>
+const CoreValuesSection = () => {
+  const ValueBlock = ({ title, children }) => (
+    <div className="bg-[#1a1a1a] p-6">
+      <h3 className="text-red-600 font-bold tracking-widest mb-3 border-l-4 border-red-500 pl-3 uppercase">
+        {title}
+      </h3>
+      <p className="text-sm text-gray-400 leading-relaxed">
+        {children}
+      </p>
+    </div>
+  );
+  return (
+    <section className="bg-black text-white py-24 px-4">
+      <div className="container mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+          <div>
+            <h2 className="text-4xl font-black mb-4 uppercase">ARE...</h2>
+            <div className="w-24 h-1.5 bg-red-600 mb-12"></div>
+            <div className="space-y-6 text-gray-400 leading-relaxed max-w-xl">
+              <p>
+                At Warrior, we recognize that every student walks through our doors with a unique set of goals, motivations, and reasons for training. Some come to compete, some to get in shape, some for self-defense, and others to find structure or community. We believe wholeheartedly that these goals don’t need to be the same for us to support one another. In fact, it’s the diversity of those goals—and the shared commitment to growth—that makes our community strong.
+              </p>
+              <p>
+                We approach training with a mindset rooted in collaboration, not transaction. It’s not about what you get in return—it’s about how we all grow stronger by investing in each other. When one person levels up, we all benefit. When one person struggles, we all step in.
+              </p>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+            <ValueBlock title="Realism">
+              We train for real life. The foundation of our practice is self-defense and practical application—not gamesmanship.
+            </ValueBlock>
+            <ValueBlock title="Growth Mindset">
+              We believe that who you are today doesn’t define who you can become.
+            </ValueBlock>
+            <ValueBlock title="Respect">
+              Even when it’s not obvious, respect is always present.
+            </ValueBlock>
+            <ValueBlock title="Safety">
+              Training is only sustainable when we take care of each other.
+            </ValueBlock>
+            <ValueBlock title="Diversity">
+              We embrace different styles, backgrounds, and perspectives.
+            </ValueBlock>
+            <ValueBlock title="Cohesion">
+              We are individuals, but we train as one team.
+            </ValueBlock>
+          </div>
         </div>
-      </section>
-      <ConsultationModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-   {/* Disciplines Section */}
-         <section className="bg-neutral-900 border-t border-neutral-800">
-           <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 justify-center">
-             {disciplines.map((discipline, index) => (
-               <Link key={discipline.id} href={`/disciplines/${discipline.id}`} className={`p-8 text-center ${index < disciplines.length - 1 ? 'border-r border-neutral-800' : ''} hover:bg-neutral-800 transition-colors cursor-pointer`}>
-                 <h3 className="text-xl font-bold uppercase tracking-wide">{discipline.name}</h3>
-               </Link>
-             ))}
-           </div>
-         </section>
-   
-         {/* Programs Section */}
-         {programsSectionData && (
-           <section className="py-24 px-4 container mx-auto">
-             <div className="grid md:grid-cols-2 gap-16 items-center">
-               <div>
-                 <div className="h-1 w-16 bg-red-600 mb-6"></div>
-                 <h2 className="text-5xl font-black uppercase leading-tight mb-6">{programsSectionData.title}</h2>
-               </div>
-               <div>
-                 <p className="text-gray-400 text-lg leading-relaxed">
-                   {programsSectionData.description.split('We are a family, and we are a team.').map((part, index, array) => (
-                     <React.Fragment key={index}>
-                       {part}
-                       {index < array.length - 1 && <span className="text-white font-bold">We are a family, and we are a team.</span>}
-                     </React.Fragment>
-                   ))}
-                 </p>
-               </div>
-             </div>
-           </section>
-         )}
-   
-         {/* Image Section - Training */}
-         {imageSectionTrainingData && (
-           <section className="relative h-96 overflow-hidden">
-             <div 
-               className="absolute inset-0 bg-cover bg-center"
-               style={{ 
-                 backgroundImage: `url(${imageSectionTrainingData.imageUrl})`,
-               }}
-             >
-               <div className="absolute inset-0 bg-black/40"></div>
-             </div>
-           </section>
-         )}
-   
-         {/* Gym Features Section */}
-         {gymFeaturesSectionData && (
-           <section className="bg-black py-16 border-y border-neutral-800">
-             <div className="container mx-auto px-4">
-               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 text-center">
-                 {gymFeaturesSectionData.features.map((feature, index) => (
-                   <div key={index} className="p-4">
-                     <div className="text-red-600 text-4xl font-black mb-2 h-10 flex justify-center items-center">
-                       {renderIcon(feature.value)}
-                     </div>
-                     <span className="font-bold text-sm uppercase tracking-wide">{feature.label}</span>
-                   </div>
-                 ))}
-               </div>
-             </div>
-           </section>
-         )}
-   
-         {/* Core Values Section */}
-         <section className="py-24 px-4 container mx-auto">
-           <div className="h-1 w-16 bg-red-600 mb-6"></div>
-           <h2 className="text-5xl font-black uppercase mb-12">Are We Right For You</h2>
-           <div className="max-w-4xl space-y-8">
-             <p className="text-gray-400 text-lg leading-relaxed">
-               At Warrior, we recognize that every student walks through our doors with a unique set of goals, motivations, and reasons for training. Some come to compete, some to get in shape, some for self-defense, and others to find structure or community. We believe wholeheartedly that these goals don't need to be the same for us to support one another.
-             </p>
-             <div className="grid md:grid-cols-2 gap-8 mt-12">
-               <div>
-                 <h3 className="text-red-600 font-bold text-xl mb-3 uppercase tracking-wide">REALISM</h3>
-                 <p className="text-gray-400">We train for real life. The foundation of our practice is self-defense and practical application—not gamesmanship.</p>
-               </div>
-               <div>
-                 <h3 className="text-red-600 font-bold text-xl mb-3 uppercase tracking-wide">Growth Mindset</h3>
-                 <p className="text-gray-400">We believe that who you are today doesn't define who you can become.</p>
-               </div>
-               <div>
-                 <h3 className="text-red-600 font-bold text-xl mb-3 uppercase tracking-wide">Respect</h3>
-                 <p className="text-gray-400">Even when it's not obvious, respect is always present.</p>
-               </div>
-               <div>
-                 <h3 className="text-red-600 font-bold text-xl mb-3 uppercase tracking-wide">Safety</h3>
-                 <p className="text-gray-400">Training is only sustainable when we take care of each other.</p>
-               </div>
-               <div>
-                 <h3 className="text-red-600 font-bold text-xl mb-3 uppercase tracking-wide">Diversity</h3>
-                 <p className="text-gray-400">We embrace different styles, backgrounds, and perspectives.</p>
-               </div>
-               <div>
-                 <h3 className="text-red-600 font-bold text-xl mb-3 uppercase tracking-wide">Cohesion</h3>
-                 <p className="text-gray-400">We are individuals, but we train as one team.</p>
-               </div>
-             </div>
-           </div>
-         </section>
-   
-         {/* Team Photo Section */}
-         {teamPhotoSectionData && (
-           <section className="relative h-96 overflow-hidden border-y border-neutral-800">
-             <div 
-               className="absolute inset-0 bg-cover bg-center grayscale"
-               style={{ 
-                 backgroundImage: `url(${teamPhotoSectionData.imageUrl})`,
-               }}
-             >
-               <div className="absolute inset-0 bg-black/50"></div>
-             </div>
-             <div className="relative z-10 h-full flex items-center justify-center">
-               <div className="text-center">
-                 <h2 className="text-6xl font-black uppercase mb-4">{teamPhotoSectionData.title.split(' ')[0]}<br/>{teamPhotoSectionData.title.split(' ')[1]}</h2>
-                 <div className="h-1 w-24 bg-red-600 mx-auto"></div>
-               </div>
-             </div>
-           </section>
-         )}
-   
-         {/* Coaches Section */}
-         {coachesSectionIntroData && (
-           <section className="py-24 bg-neutral-900 px-4">
-             <div className="container mx-auto">
-               <div className="h-1 w-16 bg-red-600 mb-6"></div>
-               <h2 className="text-5xl font-black uppercase mb-6">{coachesSectionIntroData.title}</h2>
-               <p className="max-w-2xl mb-8 text-gray-400 text-lg">
-                 {coachesSectionIntroData.introParagraph}
-               </p>
-               <Link href="/coaches" className="bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-8 uppercase flex items-center gap-4 mb-12 transition-all w-fit">
-                 {coachesSectionIntroData.buttonText} <FaArrowRight />
-               </Link>
-               
-               {/* Removed filter buttons as they are not functional with the current setup and data */}
-     
-               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8">
-                 {coaches.map(coach => (
-                   <Link href={`/coaches/${coach.id}`} key={coach.id} className="text-center group cursor-pointer">
-                     <div className="aspect-square mb-4 overflow-hidden bg-neutral-800">
-                       <img 
-                         src={coach.imageUrl} 
-                         alt={coach.name}
-                         className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all"
-                       />
-                     </div>
-                     <h3 className="font-bold text-lg mb-1">{coach.name}</h3>
-                     <p className="text-sm text-gray-400">{coach.specializations.join(' / ')}</p>
-                   </Link>
-                 ))}
-               </div>
-             </div>
-           </section>
-         )}
-   
-         {/* Schedule Section */}
-         {scheduleSectionData && (
-           <section className="py-24 px-4 container mx-auto" ref={scheduleRef}>
-             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-4">
-               <div>
-                 <div className="h-1 w-16 bg-red-600 mb-6"></div>
-                 <h2 className="text-5xl font-black uppercase">{scheduleSectionData.title}</h2>
-               </div>
-               <button onClick={handleDownload} className="bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-8 uppercase flex items-center gap-3 transition-all">
-                 {scheduleSectionData.buttonText} <FaDownload />
-               </button>
-             </div>
-     
-             <div className="flex flex-wrap gap-4 border-b border-neutral-700 mb-8">
-               {scheduleFilters.map((buttonText, index) => (
-                 <button 
-                    key={index} 
-                    onClick={() => setActiveFilter(buttonText)}
-                    className={`py-3 px-6 font-bold uppercase text-sm ${
-                   activeFilter === buttonText ? 'bg-red-600' : 'hover:bg-neutral-800 transition-colors'
-                 }`}>
-                   {buttonText}
-                 </button>
-               ))}
-             </div>
-     
-             <div className="text-sm text-gray-400 mb-4">{scheduleDateRange}</div>
-             
-             <div className="overflow-x-auto">
-               <div className="grid grid-cols-6 gap-2 min-w-[800px]">
-                 {Object.entries(homeSchedule).map(([day, classes]) => (
-                   <div key={day} className="bg-neutral-900 border border-neutral-800">
-                     <div className="text-center py-3 border-b border-neutral-800 font-bold uppercase text-sm bg-black">
-                       {day}
-                     </div>
-                     <div className="p-2 space-y-2">
-                       {classes.map((c, index) => (
-                         <div 
-                           key={`${c.time}-${c.class}-${index}`}
-                           className={`p-3 rounded text-xs ${
-                             c.color === 'blue' ? 'bg-blue-900/50' :
-                             c.color === 'red' ? 'bg-red-900/50' :
-                             c.color === 'green' ? 'bg-green-900/50' :
-                             'bg-orange-900/50'
-                           }`}
-                         >
-                           <div className="font-bold mb-1">{c.time}</div>
-                           <div className="text-gray-300">{c.class}</div>
-                         </div>
-                       ))}
-                     </div>
-                   </div>
-                 ))}
-               </div>
-             </div>
-           </section>
-         )}
-   
-         {/* Pricing Section */}
-         {pricingSectionData && (
-           <section className="py-24 bg-neutral-900 px-4">
-             <div className="container mx-auto">
-               <div className="h-1 w-16 bg-red-600 mb-6"></div>
-               <h2 className="text-5xl font-black uppercase mb-16">{pricingSectionData.title}</h2>
-               {!pricingSections || pricingSections.length === 0 ? (
-                 <div>Loading pricing data...</div>
-               ) : (
-                 <>
-                  {pricingSections.map(section => (
-                    <div key={section.id} className="mb-16">
-                      <div className="inline-block bg-red-600 text-white font-bold py-4 px-12 text-lg uppercase mb-4">
-                        {section.title}
-                      </div>
-                      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {section.tiers.map((tier: any) => (
-                          <div key={tier.id} className={`bg-black p-8 border ${tier.isFeatured ? 'border-red-600' : 'border-neutral-800'} relative`}>
-                            {tier.isFeatured && (
-                              <div className="absolute top-0 right-0 bg-red-600 text-white text-xs font-bold px-3 py-1 uppercase">
-                                Popular
-                              </div>
-                            )}
-                            <h3 className="text-2xl font-bold uppercase mb-2">{tier.name}</h3>
-                            <p className="text-gray-400 text-sm mb-6">{tier.description}</p>
-                            <ul className="space-y-3 text-sm mb-8">
-                              {tier.features.map((feature: any) => (
-                                <li key={feature} className="flex items-start gap-3"><FaCheck className="text-green-500 mt-1 flex-shrink-0"/> {feature}</li>
-                              ))}
-                            </ul>
-                            <div className={`border-t ${tier.isFeatured ? 'border-red-600' : 'border-neutral-800'} pt-6`}>
-                              <div className="text-4xl font-black mb-2">{tier.price}</div>
-                              <div className="text-gray-400 text-sm">{tier.period?.split('for ')[1] || tier.period}</div>
+      </div>
+    </section>
+  );
+};
+
+
+//=================================================================
+//  MAIN CONTENT COMPONENT
+//=================================================================
+const MainContent = () => {
+    return (
+        <main>
+            {/* HERO SECTION */}
+            <section className="relative h-screen w-full overflow-hidden bg-black">
+              <video 
+                autoPlay 
+                loop 
+                muted 
+                playsInline
+                className="absolute top-0 left-0 w-full h-full object-cover"
+                src="https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e43e0279ad2b357d6c0f43_homepageclipwarrior-transcode.mp4"
+              />
+              <div className="relative h-full flex flex-col justify-center items-center text-center p-4">
+                <div className="relative">
+                  <div className="bg-white mix-blend-screen">
+                    <h1 className="text-8xl sm:text-9xl md:text-[16vw] lg:text-[15vw] font-black uppercase leading-none tracking-tighter text-black p-4">
+                      Train like a<br/>Champion
+                    </h1>
+                  </div>
+                  <img 
+                    src="https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e43e0279ad2b357d6c0f16_warrioricon.svg" 
+                    alt="Warrior Logo" 
+                    className="absolute top-1/2 right-0 transform -translate-y-[5%] translate-x-[15%] w-[30%] h-auto"
+                  />
+                </div>
+              </div>
+              <div className="absolute bottom-10 left-10 z-20 text-sm uppercase tracking-[0.5em] text-white">
+                S C R O L L
+              </div>
+            </section>
+    
+            <IntroSection />
+            <VideoSection />
+            <FeaturesSection />
+            <CoreValuesSection />
+
+            {/* Coaches Section */}
+            <section className="py-24 px-4 bg-[#0d0d0d]">
+                <div className="container mx-auto">
+                    <h2 className="text-4xl font-black mb-4 uppercase">Our Coaches</h2>
+                    <div className="w-24 h-1.5 bg-red-600 mb-12"></div>
+                    <div className="grid lg:grid-cols-3 gap-12 mb-16">
+                        <div className="lg:col-span-1 space-y-4 text-gray-300">
+                            <p className="font-bold text-white">With years of experience both in coaching and competing, you will not find a more well rounded and professional coaching team to help you achieve your goals.</p>
+                            <p>Our coaching is rooted in purpose and clarity, to help students reach personal and professional goals through structured, meaningful training.</p>
+                        </div>
+                        <div className="lg:col-span-2 grid md:grid-cols-3 gap-8">
+                           <div>
+                                <h3 className="font-bold text-lg border-l-4 border-red-500 pl-4 mb-2">STREET</h3>
+                                <p className="text-sm text-gray-400">Training should be grounded in real-life efficacy.</p>
+                           </div>
+                           <div>
+                                <h3 className="font-bold text-lg border-l-4 border-red-500 pl-4 mb-2">SPORT</h3>
+                                <p className="text-sm text-gray-400">Sport offers structure, feedback, and challenge.</p>
+                           </div>
+                           <div>
+                                <h3 className="font-bold text-lg border-l-4 border-red-500 pl-4 mb-2">ART</h3>
+                                <p className="text-sm text-gray-400">Martial arts is also a path of self-discovery.</p>
+                           </div>
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                        {coachesData.map(coach => (
+                            <div key={coach.name} className="relative text-center group bg-black">
+                                <img src={coach.imageUrl} alt={coach.name} className="w-full h-auto"/>
+                                <div className="py-4">
+                                   <h3 className="font-bold text-lg">{coach.name.toUpperCase()}</h3>
+                                   <div className="text-xs text-gray-400 space-x-2 mt-1">
+                                      {coach.specialties.split(', ').map(spec => <span key={spec} className="bg-gray-800 px-2 py-1 rounded">{spec}</span>)}
+                                   </div>
+                                </div>
                             </div>
-                          </div>
                         ))}
+                    </div>
+                </div>
+            </section>
+    
+            {/* Schedule Section */}
+            <section className="py-24 px-4 bg-black">
+              <div className="container mx-auto">
+                <div className="flex justify-between items-center mb-8">
+                  <h2 className="text-4xl font-black uppercase tracking-wider">SCHEDULE</h2>
+                  <button className="bg-red-600 text-white font-bold py-3 px-6 text-sm flex items-center space-x-2 hover:bg-red-700 transition-colors">
+                    <span>PRINT SCHEDULE</span>
+                    <span className="text-lg">&darr;</span>
+                  </button>
+                </div>
+                <div className="flex space-x-1 mb-8 border-b-2 border-gray-800">
+                  {['All', 'Kids', 'Adult', 'BJJ', 'Muay Thai'].map(filter => (
+                    <button key={filter} className={`py-2 px-4 text-sm font-semibold text-gray-400 hover:text-white transition-colors border-b-2 ${filter === 'All' ? 'border-red-600 text-white' : 'border-transparent'}`}>{filter}</button>
+                  ))}
+                </div>
+                <div className="flex space-x-1 mb-8">
+                    {['Full Week', 'Mon, Oct 13', 'Tue, Oct 14', 'Wed, Oct 15', 'Thu, Oct 16', 'Fri, Oct 17', 'Today: Sat, Oct 18'].map(day => (
+                        <button key={day} className={`py-3 px-5 text-sm font-bold ${day.includes('Today') ? 'bg-red-600 text-white' : 'bg-[#1a1a1a] text-gray-300 hover:bg-gray-800'}`}>
+                            {day.split(':')[0]}
+                        </button>
+                    ))}
+                </div>
+                <div className="bg-[#1a1a1a] p-1">
+                  <div className="space-y-1">
+                    {scheduleData['Sat, Oct 18'].map((item, index) => (
+                        <div key={index} className="grid grid-cols-12 gap-2 items-center bg-[#2d2d2d] p-3">
+                            <div className="col-span-2 font-bold text-lg text-gray-400">{item.time}</div>
+                            <div className="col-span-6">
+                                <h4 className="font-bold text-xl">{item.name}</h4>
+                                <p className="text-gray-400 text-sm">{item.level}</p>
+                            </div>
+                            <div className="col-span-4 text-right">
+                               <span className={`text-xs font-bold py-2 px-3 ${item.category.includes('Muay Thai') ? 'bg-purple-900 text-purple-300' : 'bg-blue-900 text-blue-300'}`}>{item.category}</span>
+                            </div>
+                        </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </section>
+    
+            {/* Pricing Section */}
+            <section className="py-24 px-4 bg-[#0d0d0d]">
+                <div className="container mx-auto">
+                    <div className="flex justify-between items-center mb-8">
+                        <div>
+                            <h2 className="text-4xl font-black mb-2 uppercase">Program Pricing</h2>
+                            <p className="text-gray-400">Currently we have 48 Classes covering over 50 hours a week of instruction in class times.</p>
+                        </div>
+                        <a href="#" className="bg-red-600 text-white font-bold py-4 px-8 text-sm flex items-center space-x-2 hover:bg-red-700 transition-colors">
+                          <span>VIEW FULL PRICING</span>
+                          <FaArrowRight/>
+                        </a>
+                    </div>
+    
+                    {/* Adults Pricing */}
+                    <div className="mb-12">
+                      <div className="inline-block bg-red-600 text-white py-3 px-12 text-lg font-bold mb-6">ADULTS</div>
+                      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                          <div className="bg-black p-8 border border-gray-800 flex flex-col justify-between">
+                              <div>
+                                <h3 className="text-2xl font-bold mb-2">MUAY THAI ONLY</h3>
+                                <ul className="space-y-2 my-6 text-sm">
+                                    <PricingFeature text="Access Fitness Equipment" />
+                                    <PricingFeature text="Access to Open Gym" />
+                                    <PricingFeature text="Access 6 Days / Week" />
+                                    <PricingFeature text="Style Specific Group Classes" />
+                                    <PricingFeature text="Recovery Room" included={false} />
+                                    <PricingFeature text="Included Private Lessons" included={false} />
+                                </ul>
+                              </div>
+                              <div>
+                                  <div className="text-4xl font-black">$119.99</div>
+                                  <p className="text-xs text-gray-400">Per Month for 6 Months</p>
+                              </div>
+                          </div>
+                          <div className="bg-black p-8 border border-gray-800 flex flex-col justify-between">
+                              <div>
+                                <h3 className="text-2xl font-bold mb-2">JIU JITSU ONLY</h3>
+                                 <ul className="space-y-2 my-6 text-sm">
+                                    <PricingFeature text="Access Fitness Equipment" />
+                                    <PricingFeature text="Access to Open Gym" />
+                                    <PricingFeature text="Access 6 Days / Week" />
+                                    <PricingFeature text="Style Specific Group Classes" />
+                                    <PricingFeature text="Recovery Room" included={false} />
+                                    <PricingFeature text="Included Private Lessons" included={false} />
+                                </ul>
+                              </div>
+                              <div>
+                                  <div className="text-4xl font-black">$119.99</div>
+                                  <p className="text-xs text-gray-400">Per Month for 6 Months</p>
+                              </div>
+                          </div>
+                          <div className="bg-black p-8 border border-gray-800 flex flex-col justify-between">
+                              <div>
+                                <h3 className="text-2xl font-bold mb-2">ALL INCLUSIVE</h3>
+                                 <ul className="space-y-2 my-6 text-sm">
+                                    <PricingFeature text="Access Fitness Equipment" />
+                                    <PricingFeature text="Access to Open Gym" />
+                                    <PricingFeature text="Access 6 Days / Week" />
+                                    <PricingFeature text="All Group Classes" />
+                                    <PricingFeature text="Access All Available Classes" />
+                                    <PricingFeature text="Recovery Room" included={false} />
+                                    <PricingFeature text="Included Private Lessons" included={false} />
+                                </ul>
+                              </div>
+                              <div>
+                                  <div className="text-4xl font-black">$139.99</div>
+                                  <p className="text-xs text-gray-400">Per Month for 6 Months</p>
+                              </div>
+                          </div>
+                          <div className="bg-black p-8 border-2 border-red-500 flex flex-col justify-between">
+                              <div>
+                                <h3 className="text-2xl font-bold mb-2">PREMIER**</h3>
+                                 <ul className="space-y-2 my-6 text-sm">
+                                    <PricingFeature text="Access Fitness Equipment" />
+                                    <PricingFeature text="Access to Open Gym" />
+                                    <PricingFeature text="Access 6 Days / Week" />
+                                    <PricingFeature text="All Group Classes" />
+                                    <PricingFeature text="Access All Available Classes" />
+                                    <PricingFeature text="Recovery Room" />
+                                    <PricingFeature text="One Private Lesson per Month" />
+                                </ul>
+                              </div>
+                              <div>
+                                  <div className="text-4xl font-black">$199.99</div>
+                                  <p className="text-xs text-gray-400">Per Month for 6 Months</p>
+                              </div>
+                          </div>
                       </div>
                     </div>
-                  ))}
-                 </>
-               )}
-     
-               <div className="text-center text-xs text-gray-500 max-w-3xl mx-auto space-y-2">
-                 {pricingSectionData.disclaimers.map((disclaimer, index) => (
-                   <p key={index}>{disclaimer}</p>
-                 ))}
-               </div>
-             </div>
-           </section>
-         )}
-   
-         {/* Apparel Section removed as requested. Adjusted flow for visual consistency. */}
-   
-         {/* Testimonials Section */}
-         <section className="py-24 px-4">
-           <div className="container mx-auto">
-             <div className="h-1 w-16 bg-red-600 mb-6"></div>
-             <h2 className="text-5xl font-black uppercase mb-16">What Our Members Say</h2>
-             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-               {[
-                 { name: "Sarah M.", text: "Best gym I've ever joined! The coaches are amazing and the community is so supportive. I've learned so much in just 6 months." },
-                 { name: "Mike T.", text: "I've seen incredible results in just 3 months. The training programs are top-notch and the atmosphere is unmatched!" },
-                 { name: "Jessica L.", text: "The facilities are world-class and the atmosphere keeps me motivated every single day. This is more than a gym—it's a family." }
-               ].map((testimonial, index) => (
-                 <div key={index} className="bg-black p-8 border border-neutral-800">
-                   <div className="mb-6">
-                     <svg className="w-10 h-10 text-red-600 mb-4" fill="currentColor" viewBox="0 0 24 24">
-                       <path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"/>
-                     </svg>
-                     <p className="text-gray-300 text-lg leading-relaxed">"{testimonial.text}"</p>
-                   </div>
-                   <div className="flex items-center gap-3">
-                     <div className="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center text-lg font-bold">
-                       {testimonial.name.split(' ').map(n => n[0]).join('')}
-                     </div>
-                     <p className="text-white font-bold">{testimonial.name}</p>
-                   </div>
-                 </div>
-               ))}
-             </div>
-           </div>
-         </section>
-   
-         {/* Newsletter Section */}
-         {newsletterSectionData && (
-           <section className="py-24 bg-black px-4 border-y border-neutral-800">
-             <div className="container mx-auto text-center">
-               <div className="h-1 w-16 bg-red-600 mx-auto mb-6"></div>
-               <h2 className="text-5xl font-black uppercase mb-6">{newsletterSectionData.title}</h2>
-               <p className="text-xl mb-10 text-gray-400 max-w-2xl mx-auto">
-                 {newsletterSectionData.description}
-               </p>
-               <form onSubmit={handleNewsletterSubmit} className="max-w-xl mx-auto">
-                 <div className="flex flex-col sm:flex-row gap-4">
-                   <input
-                     type="email"
-                     placeholder={newsletterSectionData.inputPlaceholder}
-                     value={newsletterEmail}
-                     onChange={(e) => setNewsletterEmail(e.target.value)}
-                     required
-                     className="flex-1 px-6 py-4 bg-neutral-900 border border-neutral-700 text-white placeholder-gray-500 focus:outline-none focus:border-red-600"
-                   />
-                   <button
-                     type="submit"
-                     className="bg-red-600 hover:bg-red-700 text-white px-8 py-4 font-bold uppercase transition-all"
-                   >
-                     {newsletterSectionData.buttonText}
-                   </button>
-                 </div>
-                 {newsletterStatus && (
-                   <p className={`mt-4 text-sm font-medium ${newsletterStatus.includes('success') ? 'text-green-400' : 'text-red-400'}`}>
-                     {newsletterStatus}
-                   </p>
-                 )}
-               </form>
-             </div>
-           </section>
-         )}
-   
-         {/* CTA Section */}
-         {ctaData && (
-           <section className="bg-red-600 py-20">
-             <div className="container mx-auto px-8 text-center">
-               <h2 className="text-5xl font-black uppercase mb-6">{ctaData.title}</h2>
-               <p className="text-xl mb-8 opacity-90">{ctaData.subtitle}</p>
-               <button onClick={() => setIsModalOpen(true)} className="bg-black hover:bg-neutral-900 text-white px-12 py-5 text-lg font-bold uppercase transition-all">
-                 {ctaData.primaryButtonText}
-               </button>
-             </div>
-           </section>
-         )}
-   
-       
-       </main>
-     );
-   }
+    
+                    {/* Kids Pricing */}
+                    <div>
+                      <div className="inline-block bg-red-600 text-white py-3 px-12 text-lg font-bold mb-6">KIDS</div>
+                      <div className="grid md:grid-cols-3 gap-6">
+                        <div className="bg-black p-8 border border-gray-800 text-center">
+                            <h3 className="text-2xl font-bold mb-2">MUAY THAI ONLY</h3>
+                            <div className="text-4xl font-black my-4">$99.99</div>
+                            <p className="text-xs text-gray-400">Per Month for 6 Months</p>
+                        </div>
+                         <div className="bg-black p-8 border border-gray-800 text-center">
+                            <h3 className="text-2xl font-bold mb-2">JIU JITSU ONLY</h3>
+                            <div className="text-4xl font-black my-4">$99.99</div>
+                            <p className="text-xs text-gray-400">Per Month for 6 Months</p>
+                        </div>
+                         <div className="bg-black p-8 border border-gray-800 text-center">
+                            <h3 className="text-2xl font-bold mb-2">ALL INCLUSIVE</h3>
+                            <div className="text-4xl font-black my-4">$119.99</div>
+                            <p className="text-xs text-gray-400">Per Month for 6 Months</p>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+            </section>
+    
+            {/* Apparel CTA Section */}
+            <section className="py-24 px-4 bg-black relative text-center" style={{ backgroundImage: "url('https://storage.googleapis.com/presented_images/c8c36081-37d4-46c5-a6e3-5140b2a3bb36.jpg')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
+                <div className="absolute inset-0 bg-black opacity-80"></div>
+                <div className="container mx-auto relative z-10 flex flex-col items-center">
+                    <img src="https://storage.googleapis.com/presented_images/6334a1d4-814d-4560-84f9-251f2e1469e0.png" alt="War Forged Apparel" className="w-48 h-auto mb-4"/>
+                    <h2 className="text-4xl font-black uppercase mb-4">Shop War Forged Apparel</h2>
+                    <p className="max-w-2xl mx-auto text-gray-300 mb-8">
+                        Based in Colorado Springs, we're a team of veterans, competitors, and fighters committed to providing exceptional, affordable gear and lifestyle clothing for athletes of all levels.
+                    </p>
+                    <a href="#" className="bg-red-600 text-white font-bold py-4 px-10 text-sm flex items-center space-x-2 hover:bg-red-700 transition-colors">
+                        <span>SHOP NOW</span>
+                        <FaArrowRight />
+                    </a>
+                </div>
+            </section>
+        </main>
+    );
+}
+
+//=================================================================
+//  FINAL EXPORTED PAGE
+//=================================================================
+export default function Home() {
+  return (
+    <>
+      <Header />
+      <MainContent />
+      <footer className="bg-[#0d0d0d] border-t border-gray-800 py-16 px-4">
+        <div className="container mx-auto text-center">
+            <div className="text-3xl font-black tracking-widest mb-8 text-gray-600">WARRIOR</div>
+            <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto mb-12 text-gray-400">
+                <div>
+                    <h4 className="font-bold text-white mb-2">WARRIOR FITNESS CENTER</h4>
+                    <p>3711 Drennan Road,<br/>Colorado Springs, CO 80916</p>
+                </div>
+                 <div>
+                    <h4 className="font-bold text-white mb-2">HOURS</h4>
+                    <p>M-F: 11:30 - 21:30<br/>SAT: 09:00 - 13:00</p>
+                </div>
+                 <div>
+                    <h4 className="font-bold text-white mb-2">CALL US</h4>
+                    <p>+1-719-465-2136</p>
+                </div>
+            </div>
+             <div className="flex justify-center space-x-6 mb-8">
+                <a href="#" aria-label="Instagram"><FaInstagram className="text-3xl text-gray-500 hover:text-red-500 transition-colors" /></a>
+                <a href="#" aria-label="Facebook"><FaFacebookF className="text-3xl text-gray-500 hover:text-red-500 transition-colors" /></a>
+            </div>
+            <p className="text-xs text-gray-600">&copy; 2025 Warrior Fitness Center. All Rights Reserved.</p>
+        </div>
+      </footer>
+    </>
+  );
+}
