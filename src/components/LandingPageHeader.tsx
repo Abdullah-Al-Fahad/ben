@@ -20,16 +20,16 @@ const navItems: NavItem[] = [
     name: "Disciplines",
     href: "#disciplines",
     dropdown: [
-      { name: "The Art of Muay Thai", href: "#" },
-      { name: "Brazilian Jiu Jitsu (BJJ)", href: "#" },
-      { name: "Mixed Martial Arts (MMA)", href: "#" },
-      { name: "Fitness", href: "#" },
+      { name: "The Art of Muay Thai", href: "/disciplines/mua-thai" },
+      { name: "Brazilian Jiu Jitsu (BJJ)", href: "/disciplines/jutsu" },
+      { name: "Mixed Martial Arts (MMA)", href: "/disciplines/mua-thai" },
+      { name: "Fitness", href: "/disciplines/fitness" },
     ],
   },
   { name: "Coaches", href: "/coaches" },
   { name: "Schedule", href: "/schedule" },
   { name: "Pricing", href: "/membership" },
-  { name: "Shop", href: "#" },
+  { name: "Shop", href: "https://warforgedapparel.com/" },
 ];
 
 export default function LandingPageHeader() {
