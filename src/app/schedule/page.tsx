@@ -1,233 +1,119 @@
-'use client';
-import React, { useEffect, useState, useMemo } from "react";
-import { FiCalendar, FiUser, FiZap, FiHeart, FiShield, FiCrosshair } from 'react-icons/fi';
-import { format, getDay, parseISO } from 'date-fns';
-import ConsultationModal from "../../components/ConsultationModal";
-import ScheduleDetailModal from "../../components/ScheduleDetailModal";
-import { Schedule } from "@/lib/schedule";
-import { Coach } from "@/lib/types";
-import { ScheduleHeroSection } from "../../lib/types";
+import React from 'react';
 
-const disciplineIcons = {
-    Strength: <FiZap className="w-6 h-6" />,
-    MMA: <FiShield className="w-6 h-6" />,
-    'Jiu-Jitsu': <FiCrosshair className="w-6 h-6" />,
-    CrossFit: <FiHeart className="w-6 h-6" />,
-    Cardio: <FiHeart className="w-6 h-6" />,
-    Mobility: <FiUser className="w-6 h-6" />,
+// Using an SVG component for the icon to ensure it matches the style
+const DownloadIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" className=" size-7" fill="currentColor" viewBox="0 0 20 20">
+        <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
+    </svg>
+);
+
+
+const scheduleData = [
+    { time: '5:00-6:00', days: ['M', 'W', 'F'], title: 'Kickboxing', level: 'Beginner', category: 'Muay Thai Adult', categoryType: 'muay-thai-adult' },
+    { time: '6:00-7:15', days: ['M', 'W'], title: 'Adult Gi BJJ', level: 'All Levels', category: 'BJJ Adult', categoryType: 'bjj-adult' },
+    { time: '6:00-7:15', days: ['F'], title: 'Adult No-Gi BJJ', level: 'All Levels', category: 'BJJ Adult', categoryType: 'bjj-adult' },
+    { time: '9:00-10:00', days: ['S'], title: 'Muay Thai', level: 'All Levels', category: 'Muay Thai Adult', categoryType: 'muay-thai-adult' },
+    { time: '10:00-11:00', days: ['S'], title: 'BJJ Fundamentals', level: 'Adults and Children', category: 'BJJ Adult', categoryType: 'bjj-adult' },
+    { time: '10:00-11:00', days: ['S'], title: 'Kids Muay Thai', level: 'All Ages, All Levels', category: 'Muay Thai Kids', categoryType: 'muay-thai-kids' },
+    { time: '11:00-12:00', days: ['S'], title: 'Fighter Practice', level: 'MMA / Muay Thai', category: 'All-Inclusive', categoryType: 'all-inclusive' },
+    { time: '11:00-13:00', days: ['S'], title: 'No-Gi Open Mat', level: 'All Levels', category: 'BJJ Adult', categoryType: 'bjj-adult' },
+    { time: '12:00-13:00', days: ['M', 'T', 'W', 'Th', 'F'], title: 'Adult No-Gi BJJ', level: 'All Levels', category: 'BJJ Adult', categoryType: 'bjj-adult' },
+    { time: '16:00-17:00', days: ['M', 'W'], title: 'Adult Gi BJJ', level: 'All Levels', category: 'BJJ Adult', categoryType: 'bjj-adult' },
+    { time: '16:00-18:00', days: ['F'], title: 'Adult No-Gi BJJ', level: 'All Levels', category: 'BJJ Adult', categoryType: 'bjj-adult' },
+    { time: '16:30-17:30', days: ['M', 'W'], title: 'Kids Gi BJJ', level: 'Advanced Class', category: 'BJJ Kids', categoryType: 'bjj-kids' },
+    { time: '16:30-17:30', days: ['T', 'Th'], title: 'Fighter Practice', level: 'MMA / Muay Thai', category: 'All-Inclusive', categoryType: 'all-inclusive' },
+    { time: '17:00-17:30', days: ['M', 'W'], title: 'Kids Gi BJJ', level: 'Ages 3-6', category: 'BJJ Kids', categoryType: 'bjj-kids' },
+    { time: '17:00-17:30', days: ['F'], title: 'Kids No-Gi BJJ', level: 'Ages 3-6', category: 'BJJ Kids', categoryType: 'bjj-kids' },
+    { time: '17:30-18:30', days: ['M', 'W'], title: 'Kids Gi BJJ', level: 'Ages 7+', category: 'BJJ Kids', categoryType: 'bjj-kids' },
+    { time: '17:30-18:30', days: ['M', 'T', 'W', 'Th', 'F'], title: 'Kickboxing', level: 'Beginner**', category: 'Muay Thai Adult', categoryType: 'muay-thai-adult' },
+    { time: '17:30-18:30', days: ['T', 'Th'], title: 'Kids Muay Thai', level: 'Beginners - All Ages', category: 'Muay Thai Kids', categoryType: 'muay-thai-kids' },
+    { time: '17:30-18:30', days: ['F'], title: 'Kids No-Gi BJJ', level: 'Ages 7+', category: 'BJJ Kids', categoryType: 'bjj-kids' },
+    { time: '18:30-19:30', days: ['M', 'W'], title: 'Kickboxing', level: 'Beginner**', category: 'Muay Thai Adult', categoryType: 'muay-thai-adult' },
+    { time: '18:30-19:30', days: ['T', 'Th'], title: 'Kids Muay Thai', level: 'Intermediate / Adv - All Ages', category: 'Muay Thai Kids', categoryType: 'muay-thai-kids' },
+    { time: '18:30-19:30', days: ['F'], title: 'Muay Thai', level: 'All Levels**', category: 'Muay Thai Adult', categoryType: 'muay-thai-adult' },
+    { time: '18:30-20:30', days: ['M', 'T'], title: 'Adult Gi BJJ', level: 'All Levels', category: 'BJJ Adult', categoryType: 'bjj-adult' },
+    { time: '18:30-20:30', days: ['W', 'F'], title: 'Adult No-Gi BJJ', level: 'All Levels', category: 'BJJ Adult', categoryType: 'bjj-adult' },
+    { time: '19:30-20:30', days: ['M', 'W'], title: 'Muay Thai', level: 'Fundamentals', category: 'Muay Thai Adult', categoryType: 'muay-thai-adult' },
+    { time: '19:30-20:30', days: ['T', 'Th'], title: 'Muay Thai', level: 'Advanced / Intermediate', category: 'Muay Thai Adult', categoryType: 'muay-thai-adult' },
+    { time: '20:00-21:30', days: ['M', 'W'], title: 'Fighter Practice', level: 'MMA / Muay Thai', category: 'All-Inclusive', categoryType: 'all-inclusive' },
+];
+
+const categoryStyles = {
+    'muay-thai-adult': 'bg-[#6a617a]',
+    'bjj-adult': 'bg-[#6c6861]',
+    'muay-thai-kids': 'bg-[#5b6e67]',
+    'all-inclusive': 'bg-[#7a6161]',
+    'bjj-kids': 'bg-[#5f697a]',
 };
 
-const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-export default function SchedulePage() {
-  const [isVisible, setIsVisible] = useState(false);
-  const [activeDay, setActiveDay] = useState<string>(dayNames[new Date().getDay()]);
-  const [disciplineFilter, setDisciplineFilter] = useState('all');
-  const [coachFilter, setCoachFilter] = useState('all');
-  const [allSchedules, setAllSchedules] = useState<Schedule[]>([]);
-  const [allCoaches, setAllCoaches] = useState<Coach[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
-  const [selectedSession, setSelectedSession] = useState<Schedule | null>(null);
-  const [scheduleHeroSection, setScheduleHeroSection] = useState<ScheduleHeroSection | null>(null);
+const SchedulePage = () => {
+    const topFilters = ['All', 'Kids', 'Adult', 'BJJ', 'Muay Thai'];
+    const dayFilters = ['Full Week', 'Mon, Oct 20', 'Tue, Oct 21', 'Wed, Oct 22', 'Thu, Oct 23', 'Fri, Oct 24', 'Sat, Oct 25'];
 
-  useEffect(() => {
-    setIsVisible(true);
-    
-    const fetchData = async () => {
-      try {
-        const [scheduleResponse, coachesResponse, heroResponse] = await Promise.all([
-          fetch('/api/schedule'),
-          fetch('/api/coaches'),
-          fetch('/api/schedule-hero-section')
-        ]);
-
-        if (!scheduleResponse.ok) {
-          throw new Error(`Failed to fetch schedule data: ${scheduleResponse.status}`);
-        }
-        if (!coachesResponse.ok) {
-          throw new Error(`Failed to fetch coaches data: ${coachesResponse.status}`);
-        }
-        if (!heroResponse.ok) {
-          throw new Error(`Failed to fetch schedule hero section: ${heroResponse.status}`);
-        }
-
-        const scheduleData: Schedule[] = await scheduleResponse.json();
-        const coachesData: Coach[] = await coachesResponse.json();
-        const heroData: ScheduleHeroSection = await heroResponse.json();
-
-        setAllSchedules(scheduleData);
-        setAllCoaches(coachesData);
-        setScheduleHeroSection(heroData);
-
-      } catch (error) {
-        console.error('Error in schedule page fetchData:', error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const disciplines = useMemo(() => ['all', ...Array.from(new Set(allSchedules.map(c => c.discipline)))], [allSchedules]);
-  const coaches = useMemo(() => ['all', ...allCoaches.map(c => c.id)], [allCoaches]);
-  const coachNameMap = useMemo(() => allCoaches.reduce((acc, coach) => ({ ...acc, [coach.id]: coach.name }), {} as Record<string, string>), [allCoaches]);
-
-  const filteredClasses = useMemo(() => {
-    return allSchedules
-      .filter(c => dayNames[getDay(parseISO(c.datetime))] === activeDay)
-      .filter(c => disciplineFilter === 'all' || c.discipline === disciplineFilter)
-      .filter(c => coachFilter === 'all' || c.coachId === coachFilter)
-      .sort((a, b) => a.datetime.localeCompare(b.datetime));
-  }, [activeDay, disciplineFilter, coachFilter, allSchedules]);
-
-  const handleSessionClick = (session: Schedule) => {
-    setSelectedSession(session);
-    setIsDetailModalOpen(true);
-  };
-
-  if (allSchedules.length === 0) {
-    return <div>Loading schedule data...</div>;
-  }
-
-  return (
-    <main 
-        className="relative flex min-h-screen flex-col bg-neutral-950 text-white overflow-hidden"
-        style={{
-            backgroundImage: `url(https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=1200&q=80)`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundAttachment: 'fixed',
-        }}
-    >
-      <style jsx global>{`
-        @keyframes fadeInUp {
-          from { opacity: 0; transform: translateY(30px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        .animate-fade-in-up { animation: fadeInUp 0.8s ease-out forwards; }
-        .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
-        .gradient-text {
-          background: linear-gradient(135deg, #dc2626 0%, #f87171 100%);
-          -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-        }
-        .day-tab::after {
-          content: '';
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          right: 0;
-          height: 3px;
-          background: #dc2626;
-          box-shadow: 0 0 15px #dc2626;
-          transform: scaleX(0);
-          transition: transform 0.3s ease-in-out;
-        }
-        .day-tab.active::after, .day-tab:hover::after {
-          transform: scaleX(1);
-        }
-        .class-card {
-          transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-        }
-        .class-card:hover {
-          transform: translateY(-8px);
-          border-color: rgba(220, 38, 38, 0.5);
-          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        }
-      `}</style>
-
-      <div className="absolute inset-0 bg-black/70 z-0"></div>
-
-      {scheduleHeroSection ? (
-        <section className="relative h-[60vh] flex items-center justify-center text-center overflow-hidden">
-          <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${scheduleHeroSection.backgroundImageUrl})` }}>
-            <div className="absolute inset-0 bg-black/75"></div>
-          </div>
-          <div className={`relative z-10 container mx-auto px-8 ${isVisible && 'animate-fade-in-up'}`}>
-            <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tight">
-              {scheduleHeroSection.mainHeadline.split(/(schedule)/gi).map((part, index) => (
-                part.toLowerCase() === 'schedule' ? <span key={index} className="gradient-text">{part}</span> : <span key={index}>{part}</span>
-              ))}
-            </h1>
-            <p className="mt-6 text-xl text-neutral-300 max-w-3xl mx-auto">
-              {scheduleHeroSection.subHeadline}
-            </p>
-          </div>
-        </section>
-      ) : (
-        <div className="text-center py-8">Loading Hero Section...</div>
-      )}
-
-      <section className="relative py-24 bg-black/80 backdrop-blur-sm">
-        <div className="container mx-auto px-8">
-            <div className={`bg-neutral-900/80 backdrop-blur-md rounded-xl p-6 mb-12 flex flex-col md:flex-row gap-6 items-center ${isVisible && 'animate-fade-in-up'}`} style={{animationDelay: '0.2s'}}>
-                <div className="flex-grow w-full md:w-auto">
-                    <label className="block text-sm font-bold text-neutral-400 mb-2">FILTER BY DISCIPLINE</label>
-                    <select value={disciplineFilter} onChange={(e) => setDisciplineFilter(e.target.value)} className="w-full px-5 py-3 rounded-lg bg-neutral-800 border border-neutral-700 focus:border-red-600 outline-none">
-                        {disciplines.map(d => <option key={d} value={d}>{d.toUpperCase()}</option>)}
-                    </select>
-                </div>
-                <div className="flex-grow w-full md:w-auto">
-                    <label className="block text-sm font-bold text-neutral-400 mb-2">FILTER BY COACH</label>
-                    <select value={coachFilter} onChange={(e) => setCoachFilter(e.target.value)} className="w-full px-5 py-3 rounded-lg bg-neutral-800 border border-neutral-700 focus:border-red-600 outline-none">
-                        {coaches.map(c => <option key={c} value={c}>{coachNameMap[c] ? coachNameMap[c].toUpperCase() : c.toUpperCase()}</option>)}
-                    </select>
-                </div>
-                <div className="w-full md:w-auto md:pt-7">
-                    <button onClick={() => { setDisciplineFilter('all'); setCoachFilter('all'); }} className="w-full bg-neutral-700 hover:bg-red-600 px-8 py-3 rounded-lg font-bold transition-colors">RESET</button>
-                </div>
-            </div>
-
-            <div className={`border-b border-neutral-800 flex justify-between overflow-x-auto ${isVisible && 'animate-fade-in-up'}`} style={{animationDelay: '0.3s'}}>
-                {dayNames.map(day => (
-                    <button key={day} onClick={() => setActiveDay(day)} className={`day-tab relative flex-shrink-0 px-4 py-4 text-lg font-bold uppercase transition-colors ${activeDay === day ? 'text-red-500' : 'text-neutral-500 hover:text-white'}`}>
-                        {day}
+    return (
+        <div className="bg-[#121212] text-white min-h-screen  py-16">
+            <div className="container mx-auto px-4 lg:px-8 max-w-7xl">
+                <div className="flex flex-col md:flex-row justify-between md:items-center mb-8">
+                    <div className="mb-6 md:mb-0">
+                        <h1 className="text-5xl lg:text-6xl font-black tracking-tighter">SCHEDULE THIS WEEK</h1>
+                        <div className="h-1.5 bg-red-600 w-3/4 mt-1"></div>
+                    </div>
+                    <button className="flex items-stretch bg-red-600  text-base hover:bg-white hover:text-red-600 transition-colors duration-300 self-start md:self-auto">
+                        <span className="pl-8 pr-6 py-5 font-bold text-xl">PRINT SCHEDULE</span>
+                        <span className="flex items-center px-6" style={{borderLeft: '2px solid rgba(0,0,0,0.2)'}}>
+                            <DownloadIcon />
+                        </span>
                     </button>
-                ))}
-            </div>
+                </div>
 
-            <div className="mt-12">
-                {filteredClasses.length > 0 ? (
-                    <div className="space-y-4 animate-fade-in">
-                        {filteredClasses.map(session => (
-                            <div key={session.id} onClick={() => handleSessionClick(session)} className="class-card bg-neutral-900/80 backdrop-blur-md rounded-lg p-6 flex flex-col md:flex-row items-center gap-6 border border-transparent cursor-pointer">
-                                <div className="flex items-center gap-4 w-full md:w-1/4">
-                                    <div className="text-red-500">{(disciplineIcons as any)[session.discipline]}</div>
-                                    <div>
-                                        <p className="text-xl font-bold text-white">{session.discipline}</p>
-                                        <p className="text-sm text-neutral-400">w/ {coachNameMap[session.coachId] || 'Unknown Coach'}</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-center gap-2 text-2xl font-black gradient-text w-full md:w-auto">
-                                    <FiCalendar/>
-                                    <span>{format(parseISO(session.datetime), 'p')}</span>
-                                </div>
-                                <p className="text-neutral-400 flex-grow">{session.duration}</p>
-                                <button onClick={(e) => { e.stopPropagation(); setIsModalOpen(true); }} className="w-full md:w-auto bg-gradient-to-r from-red-600 to-red-700 text-white px-8 py-3 rounded-full font-bold uppercase transition-all hover:shadow-lg hover:shadow-red-600/50 hover:scale-105">
-                                    Book Slot
-                                </button>
-                            </div>
+                <div className="flex flex-col text-sm font-semibold">
+                    <div className="grid grid-cols-2 sm:grid-cols-5 text-center">
+                        {topFilters.map((filter) => (
+                            <button key={filter} className="bg-[#2a2a2a] hover:bg-[#3a3a3a] text-gray-300 py-3 px-2 border-r border-b border-black transition-colors duration-200">
+                                {filter}
+                            </button>
                         ))}
                     </div>
-                ) : (
-                    <div className="text-center py-20 animate-fade-in">
-                        <h3 className="text-2xl font-bold">No Classes Found</h3>
-                        <p className="text-neutral-500 mt-2">Try adjusting your filters or check back on another day.</p>
+                    <div className="grid grid-cols-2 md:grid-cols-7 text-center">
+                        {dayFilters.map((filter, index) => (
+                            <button key={filter} className={`${index === 0 ? 'bg-red-600 text-white' : 'bg-[#2a2a2a] hover:bg-[#3a3a3a] text-gray-300'} py-3 px-2 border-r border-black transition-colors duration-200`}>
+                                {filter}
+                            </button>
+                        ))}
                     </div>
-                )}
+                </div>
+
+                <div className="bg-[#222222]">
+                    {scheduleData.map((item, index) => (
+                        <div key={index} className="flex items-center justify-between p-4 border-b border-[#333333]">
+                           <div className="flex items-center gap-x-4 sm:gap-x-6">
+                                <div className="w-20 sm:w-28 flex-shrink-0">
+                                    <div className="font-bold text-base sm:text-lg">{item.time}</div>
+                                    <div className="flex flex-wrap gap-1 mt-1.5">
+                                        {item.days.map((day) => (
+                                            <span key={day} className="bg-[#4a4a4a] text-gray-200 text-xs font-bold w-5 h-5 flex items-center justify-center">
+                                                {day}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div>
+                                    <h3 className="text-lg sm:text-xl font-bold">{item.title}</h3>
+                                    <p className="text-gray-400 text-sm">{item.level}</p>
+                                </div>
+                           </div>
+                            <div className="flex-shrink-0 ml-4">
+                                <span className={`px-3 py-2 text-xs font-semibold rounded-md ${categoryStyles[item.categoryType]}`}>
+                                    {item.category}
+                                </span>
+                            </div>
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
-      </section>
-      <ConsultationModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-      <ScheduleDetailModal 
-        isOpen={isDetailModalOpen} 
-        onClose={() => setIsDetailModalOpen(false)} 
-        session={selectedSession} 
-        coach={allCoaches.find(c => c.id === selectedSession?.coachId) || null}
-      />
-    </main>
-  );
-}
+    );
+};
+
+export default SchedulePage;

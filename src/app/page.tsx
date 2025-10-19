@@ -1,11 +1,12 @@
 'use client';
 import React from "react";
 import Link from 'next/link';
-import { 
-  FaDumbbell, FaBatteryFull, FaCalendarAlt, FaUserFriends, FaMedal, FaSmile, 
-  FaChevronRight, FaCheckCircle, FaTimesCircle, FaInstagram, FaFacebookF, FaArrowRight,  
+import {
+  FaDumbbell, FaBatteryFull, FaCalendarAlt, FaUserFriends, FaMedal, FaSmile,
+  FaChevronRight, FaCheckCircle, FaTimesCircle, FaInstagram, FaFacebookF, FaArrowRight,
 } from 'react-icons/fa';
 import Image from "next/image";
+import { ValueBlock } from "@/components/Landing/LandingCard";
 
 //=================================================================
 //  HELPER COMPONENTS & DATA
@@ -18,11 +19,11 @@ const PricingFeature = ({ text, included = true }) => (
 );
 
 const coachesData = [
-    { name: "Angela Hayes", specialties: "MUAY THAI, MMA", imageUrl: "https://storage.googleapis.com/presented_images/73507d9f-a63e-436f-b251-50da747bb771.jpg" },
-    { name: "Ben Westrich", specialties: "BRAZILIAN JIU-JITSU, MMA", imageUrl: "https://storage.googleapis.com/presented_images/1a88b48c-d6b7-47b7-951b-42ef7a2b2260.jpg" },
-    { name: "Kay Hansen", specialties: "BRAZILIAN JIU-JITSU, MMA, MUAY THAI", imageUrl: "https://storage.googleapis.com/presented_images/17cc2e1f-72f1-419b-a010-09a96f1d2c6c.jpg" },
-    { name: "Larry Ruiz", specialties: "BRAZILIAN JIU-JITSU, MMA", imageUrl: "https://storage.googleapis.com/presented_images/e02c6b45-a7b6-4ac4-913a-c8401aa96d8e.jpg" },
-    { name: "Natalie Salcedo", specialties: "BRAZILIAN JIU-JITSU, MUAY THAI, MMA", imageUrl: "https://storage.googleapis.com/presented_images/7c0c1b05-502a-43d9-a29d-bb894b912630.jpg" }
+  { name: "Angela Hayes", specialties: "MUAY THAI, MMA", imageUrl: "https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0f20/68e43e0279ad2b357d6c0f3c_67f9a7a48dea388609cd7c33_AngieStaffPhoto.jpeg" },
+  { name: "Ben Westrich", specialties: "BRAZILIAN JIU-JITSU, MMA", imageUrl: "https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0f20/68e43e0279ad2b357d6c0f3d_67f98256486dddbebb682a94_BenStaffPhoto.jpeg" },
+  { name: "Kay Hansen", specialties: "BRAZILIAN JIU-JITSU, MMA, MUAY THAI", imageUrl: "https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0f20/68e43e0279ad2b357d6c0f56_IMG_20250922_183529.jpg" },
+  { name: "Larry Ruiz", specialties: "BRAZILIAN JIU-JITSU, MMA", imageUrl: "https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0f20/68e43e0279ad2b357d6c0f55_67f9a6a3e5c4a366b4034f55_LarryStaffPhoto.jpeg" },
+  { name: "Natalie Salcedo", specialties: "BRAZILIAN JIU-JITSU, MUAY THAI, MMA", imageUrl: "https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0f20/68e43e0279ad2b357d6c0f54_67f9a48c2f2816a346c54aa7_NatalieStaffPhoto-1.jpeg" }
 ];
 
 const scheduleData = {
@@ -35,48 +36,7 @@ const scheduleData = {
   ]
 };
 
-//=================================================================
-//  HEADER COMPONENT
-//=================================================================
-const Header = () => {
-  return (
-    <header className="w-full bg-white shadow-sm absolute top-0 z-50">
-      <div className="bg-[#212121] text-white text-center py-2 px-4 text-xs font-light">
-        <span>Warrior Fitness Center - 3711 Drennan Road, Colorado Springs, CO 80916</span>
-        <span className="mx-2">|</span>
-        <span>+1-719-465-2136</span>
-      </div>
-      <div className="container mx-auto flex justify-between items-center py-3 px-6">
-        <Link href="/" className="flex-shrink-0">
-            <img 
-              src="https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e43e0279ad2b357d6c0efd_fulllogowarrior.svg" 
-              alt="Warrior Logo" 
-              className="h-12"
-            />
-        </Link>
-        <div className="flex items-center">
-            <nav className="hidden md:flex items-center space-x-7 text-gray-800 font-extrabold uppercase tracking-wider text-xs">
-                <Link href="#" className="hover:text-red-600 transition-colors">Our Gym</Link>
-                <Link href="#" className="hover:text-red-600 transition-colors">Who We Are</Link>
-                <Link href="#" className="hover:text-red-600 transition-colors">Disciplines</Link>
-                <Link href="#" className="hover:text-red-600 transition-colors">Coaches</Link>
-                <Link href="#" className="hover:text-red-600 transition-colors">Schedule</Link>
-                <Link href="#" className="hover:text-red-600 transition-colors">Pricing</Link>
-                <Link href="#" className="hover:text-red-600 transition-colors">Shop</Link>
-            </nav>
-            <div className="flex items-stretch ml-6">
-                <a href="#" aria-label="Instagram" className="bg-gray-300 flex items-center justify-center p-3 hover:bg-gray-400 transition-colors">
-                    <FaInstagram className="h-5 w-5 text-white" />
-                </a>
-                <a href="#" aria-label="Facebook" className="bg-gray-300 flex items-center justify-center p-3 ml-px hover:bg-gray-400 transition-colors">
-                    <FaFacebookF className="h-5 w-5 text-white" />
-                </a>
-            </div>
-        </div>
-      </div>
-    </header>
-  );
-};
+
 
 //=================================================================
 //  SECTION COMPONENTS
@@ -122,18 +82,18 @@ const VideoSection = () => {
   return (
     <section className="bg-black py-16 px-4">
       <div className="container mx-auto">
-        <div className="relative h-0 pb-[56.25%]"> 
-          <video 
-            className="absolute top-0 left-0 w-full h-full"
-            controls 
-            autoPlay 
-            muted 
-            loop 
+        <div className="relative h-0 pb-[56.25%]">
+          <video
+            className="absolute top-0 left-0 w-full h-full rounded-[3rem]"
+            controls={false}
+            autoPlay
+            muted
+            loop
             playsInline
           >
-            <source 
-              src="https://www.dropbox.com/scl/fi/vcz6n8i01h3p43md584pn/Copy-of-promo-vid-horizontal-3.mp4?rlkey=nx9t0luzuk9x86sgwbkks3sk1&raw=1" 
-              type="video/mp4" 
+            <source
+              src="https://www.dropbox.com/scl/fi/vcz6n8i01h3p43md584pn/Copy-of-promo-vid-horizontal-3.mp4?rlkey=nx9t0luzuk9x86sgwbkks3sk1&raw=1"
+              type="video/mp4"
             />
             Your browser does not support the video tag.
           </video>
@@ -165,7 +125,7 @@ const FeaturesSection = () => {
     </li>
   );
   return (
-    <section className="bg-[#121212] text-white py-24 px-4 overflow-hidden">
+    <section id="disciplines" className="bg-[#121212] text-white py-24 px-4 overflow-hidden">
       <div className="container mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
           <div className="flex flex-col space-y-16">
@@ -191,7 +151,7 @@ const FeaturesSection = () => {
             </div>
           </div>
           <div className="relative">
-            <img 
+            <img
               src="https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e43e0279ad2b357d6c0f16_warrioricon.svg"
               alt="Warrior Logo background"
               className="absolute bottom-0 right-0 w-[80%] h-auto opacity-10 pointer-events-none -mr-24"
@@ -220,24 +180,15 @@ const FeaturesSection = () => {
 };
 
 const CoreValuesSection = () => {
-  const ValueBlock = ({ title, children }) => (
-    <div className="bg-[#1a1a1a] p-6">
-      <h3 className="text-red-600 font-bold tracking-widest mb-3 border-l-4 border-red-500 pl-3 uppercase">
-        {title}
-      </h3>
-      <p className="text-sm text-gray-400 leading-relaxed">
-        {children}
-      </p>
-    </div>
-  );
+
   return (
-    <section className="bg-black text-white py-24 px-4">
+    <section id="who-we-are" className="bg-black text-white py-24 px-4">
       <div className="container mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
           <div>
-            <h2 className="text-4xl font-black mb-4 uppercase">ARE...</h2>
-            <div className="w-24 h-1.5 bg-red-600 mb-12"></div>
-            <div className="space-y-6 text-gray-400 leading-relaxed max-w-xl">
+            <h2 className="text-5xl font-black mb-4 uppercase">Are We Right For You</h2>
+            <div className="w-44 h-1.5 bg-red-600 mb-12"></div>
+            <div className="space-y-6 text-white-400 leading-relaxed max-w-xl">
               <p>
                 At Warrior, we recognize that every student walks through our doors with a unique set of goals, motivations, and reasons for training. Some come to compete, some to get in shape, some for self-defense, and others to find structure or community. We believe wholeheartedly that these goals don’t need to be the same for us to support one another. In fact, it’s the diversity of those goals—and the shared commitment to growth—that makes our community strong.
               </p>
@@ -246,7 +197,8 @@ const CoreValuesSection = () => {
               </p>
             </div>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-">
+
             <ValueBlock title="Realism">
               We train for real life. The foundation of our practice is self-defense and practical application—not gamesmanship.
             </ValueBlock>
@@ -277,259 +229,282 @@ const CoreValuesSection = () => {
 //  MAIN CONTENT COMPONENT
 //=================================================================
 const MainContent = () => {
-    return (
-        <main>
-            {/* HERO SECTION */}
-            <section className="relative h-screen w-full overflow-hidden">
-              <video 
-                autoPlay 
-                loop 
-                muted 
-                playsInline
-                className="absolute top-0 left-0 w-full h-full object-cover filter grayscale"
-                src="https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e43e0279ad2b357d6c0f43_homepageclipwarrior-transcode.mp4"
-              />             
-              {/* <div className="absolute top-0 left-0 w-full h-full bg-gray-600/30"/> */}
-              <div className="relative h-full mix-blend-screen flex flex-col justify-center items-center text-center">
-                <div className="relative">
-                  <div className="bg-white ">
-                    <h1 className="text-8xl sm:text-9xl md:text-[16vw] lg:text-[15vw] font-black uppercase leading-none tracking-tighter text-black p-4">
-                      Train like a<br/>Champion
-                    </h1>
-                  </div>
-                </div>
-              </div>
-                  <Image 
-                    src="https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e43e0279ad2b357d6c0f16_warrioricon.svg" 
-                    alt="Warrior Logo"
-                    width={1920}
-                    height={1080}
-                    className="absolute top-1/2 right-20 transform -translate-y-[5%] translate-x-[15%] w-[30%] h-auto"
-                  />
-              <div className="absolute bottom-10 left-10 z-20 text-sm uppercase tracking-[0.5em] text-white">
-                S C R O L L
-              </div>
-            </section>
-    
-            <IntroSection />
-            <VideoSection />
-            <FeaturesSection />
-            <CoreValuesSection />
+  return (
+    <main>
+      {/* HERO SECTION */}
+      <section className="relative h-screen w-full  overflow-hidden">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute top-0 left-0 w-full h-full object-cover filter grayscale"
+          src="https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e43e0279ad2b357d6c0f43_homepageclipwarrior-transcode.mp4"
+        />
+        <div className="relative  h-full mix-blend-screen flex flex-col justify-center items-center text-center">
+          <div className="absolute w-full top-0 text-start">
+            <div className="bg-white ">
+              <h1 className="text-6xl sm:text-6xl md:text-[16vw] font-clashDisplay lg:text-[12vw] font-black uppercase leading-44 text-black p-4">
+                Train like a<br />Champion
+              </h1>
+            </div>
+          </div>
+        </div>
+        <Image
+          src="https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e43e0279ad2b357d6c0f16_warrioricon.svg"
+          alt="Warrior Logo"
+          width={1920}
+          height={1080}
+          className="absolute top-48 right-20 transform -translate-y-[5%] translate-x-[15%] w-[35%] h-auto"
+        />
+        <div className="absolute bottom-10 left-10 z-20 text-sm uppercase tracking-[0.5em] text-white">
+          S C R O L L
+        </div>
+      </section>
 
-            {/* Coaches Section */}
-            <section className="py-24 px-4 bg-[#0d0d0d]">
-                <div className="container mx-auto">
-                    <h2 className="text-4xl font-black mb-4 uppercase">Our Coaches</h2>
-                    <div className="w-24 h-1.5 bg-red-600 mb-12"></div>
-                    <div className="grid lg:grid-cols-3 gap-12 mb-16">
-                        <div className="lg:col-span-1 space-y-4 text-gray-300">
-                            <p className="font-bold text-white">With years of experience both in coaching and competing, you will not find a more well rounded and professional coaching team to help you achieve your goals.</p>
-                            <p>Our coaching is rooted in purpose and clarity, to help students reach personal and professional goals through structured, meaningful training.</p>
-                        </div>
-                        <div className="lg:col-span-2 grid md:grid-cols-3 gap-8">
-                           <div>
-                                <h3 className="font-bold text-lg border-l-4 border-red-500 pl-4 mb-2">STREET</h3>
-                                <p className="text-sm text-gray-400">Training should be grounded in real-life efficacy.</p>
-                           </div>
-                           <div>
-                                <h3 className="font-bold text-lg border-l-4 border-red-500 pl-4 mb-2">SPORT</h3>
-                                <p className="text-sm text-gray-400">Sport offers structure, feedback, and challenge.</p>
-                           </div>
-                           <div>
-                                <h3 className="font-bold text-lg border-l-4 border-red-500 pl-4 mb-2">ART</h3>
-                                <p className="text-sm text-gray-400">Martial arts is also a path of self-discovery.</p>
-                           </div>
-                        </div>
-                    </div>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                        {coachesData.map(coach => (
-                            <div key={coach.name} className="relative text-center group bg-black">
-                                <img src={coach.imageUrl} alt={coach.name} className="w-full h-auto"/>
-                                <div className="py-4">
-                                   <h3 className="font-bold text-lg">{coach.name.toUpperCase()}</h3>
-                                   <div className="text-xs text-gray-400 space-x-2 mt-1">
-                                      {coach.specialties.split(', ').map(spec => <span key={spec} className="bg-gray-800 px-2 py-1 rounded">{spec}</span>)}
-                                   </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-    
-            {/* Schedule Section */}
-            <section className="py-24 px-4 bg-black">
-              <div className="container mx-auto">
-                <div className="flex justify-between items-center mb-8">
-                  <h2 className="text-4xl font-black uppercase tracking-wider">SCHEDULE</h2>
-                  <button className="bg-red-600 text-white font-bold py-3 px-6 text-sm flex items-center space-x-2 hover:bg-red-700 transition-colors">
-                    <span>PRINT SCHEDULE</span>
-                    <span className="text-lg">&darr;</span>
-                  </button>
-                </div>
-                <div className="flex space-x-1 mb-8 border-b-2 border-gray-800">
-                  {['All', 'Kids', 'Adult', 'BJJ', 'Muay Thai'].map(filter => (
-                    <button key={filter} className={`py-2 px-4 text-sm font-semibold text-gray-400 hover:text-white transition-colors border-b-2 ${filter === 'All' ? 'border-red-600 text-white' : 'border-transparent'}`}>{filter}</button>
-                  ))}
-                </div>
-                <div className="flex space-x-1 mb-8">
-                    {['Full Week', 'Mon, Oct 13', 'Tue, Oct 14', 'Wed, Oct 15', 'Thu, Oct 16', 'Fri, Oct 17', 'Today: Sat, Oct 18'].map(day => (
-                        <button key={day} className={`py-3 px-5 text-sm font-bold ${day.includes('Today') ? 'bg-red-600 text-white' : 'bg-[#1a1a1a] text-gray-300 hover:bg-gray-800'}`}>
-                            {day.split(':')[0]}
-                        </button>
-                    ))}
-                </div>
-                <div className="bg-[#1a1a1a] p-1">
-                  <div className="space-y-1">
-                    {scheduleData['Sat, Oct 18'].map((item, index) => (
-                        <div key={index} className="grid grid-cols-12 gap-2 items-center bg-[#2d2d2d] p-3">
-                            <div className="col-span-2 font-bold text-lg text-gray-400">{item.time}</div>
-                            <div className="col-span-6">
-                                <h4 className="font-bold text-xl">{item.name}</h4>
-                                <p className="text-gray-400 text-sm">{item.level}</p>
-                            </div>
-                            <div className="col-span-4 text-right">
-                               <span className={`text-xs font-bold py-2 px-3 ${item.category.includes('Muay Thai') ? 'bg-purple-900 text-purple-300' : 'bg-blue-900 text-blue-300'}`}>{item.category}</span>
-                            </div>
-                        </div>
-                    ))}
+      <IntroSection />
+      <VideoSection />
+      <FeaturesSection />
+      <CoreValuesSection />
+
+      {/* Coaches Section */}
+      <section id="coaches" className=" bg-black">
+        <div className="relative h-[60vh] min-h-[550px] overflow-hidden flex items-center justify-center">
+          <div
+            className="absolute inset-0 bg-cover -top-80 filter grayscale"
+            style={{
+              backgroundImage: "url('https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e43e0279ad2b357d6c0f26_67f85e7e1dfe540942d24018_489283717_1143059611166111_4972771042462498311_n.jpg')",
+            }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+          </div>
+        </div>
+        <div className="container mx-auto ">
+          <div className="flex flex-col md:flex-row justify-between items-stretch gap-12 mb-16">
+            <div className="space-y-4 text-gray-300 w-1/2">
+              <h2 className="text-7xl font-black mb-12 uppercase text-white border-b-[6px] border-b-red-600 w-fit">Our {' '}Coaches</h2>
+              <div className="max-w-[550px] space-y-8 text-justify">
+                <p className="font-semibold text-white text-xl  font-exo">With years of experience both in coaching and competing, you will not find a more well rounded and professional coaching team to help you achieve your goals.</p>
+                <p className="text-gray-400 text-xl ">Our coaching is rooted in purpose and clarity: to help students reach personal and professional goals through structured, meaningful training. We focus on developing a conceptual framework for understanding physical conflict—skills that extend beyond the mat into real life.</p>
+                <p className="text-gray-400 text-xl ">We teach and train through three interconnected lenses. This multi-faceted approach lets us coach with intention and adaptability, honoring the individual journey of each student.</p>
+              </div>
+            </div>
+            <div className="flex flex-col w-1/2 gap-4">
+
+              {
+                [{
+                  title: "STREET",
+                  subtitle: `Training should be grounded in real-life efficacy. We prioritize practical applicability over sport-specific rulesets or "gaming" the system.`,
+                },
+                {
+                  title: "SPORT",
+                  subtitle: "Sport offers structure, feedback, and challenge. Competing isn't the only goal—growth is. From drilling to tournaments, every layer is an opportunity to refine your skills.",
+                },
+                {
+                  title: "ART",
+                  subtitle: "Martial arts is also a path of self-discovery. Through the joy of training, we strive to uncover personal truth and embrace continuous improvement.",
+                },].map((item, index) =>
+
+                  <div key={index} className="w-full">
+                    <ValueBlock title={item.title}>
+                      {item.subtitle}
+                    </ValueBlock>
+                  </div>
+                )
+              }
+
+
+            </div>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            {coachesData.map(coach => (
+              <div key={coach.name} className="relative text-center group bg-black">
+                <img src={coach.imageUrl} alt={coach.name} className="w-full h-auto" />
+                <div className="py-4">
+                  <h3 className="font-bold text-lg text-white">{coach.name.toUpperCase()}</h3>
+                  <div className="text-xs text-gray-400 space-x-2 mt-1">
+                    {coach.specialties.split(', ').map(spec => <span key={spec} className="bg-gray-800 px-2 py-1 rounded">{spec}</span>)}
                   </div>
                 </div>
               </div>
-            </section>
-    
-            {/* Pricing Section */}
-            <section className="py-24 px-4 bg-[#0d0d0d]">
-                <div className="container mx-auto">
-                    <div className="flex justify-between items-center mb-8">
-                        <div>
-                            <h2 className="text-4xl font-black mb-2 uppercase">Program Pricing</h2>
-                            <p className="text-gray-400">Currently we have 48 Classes covering over 50 hours a week of instruction in class times.</p>
-                        </div>
-                        <a href="#" className="bg-red-600 text-white font-bold py-4 px-8 text-sm flex items-center space-x-2 hover:bg-red-700 transition-colors">
-                          <span>VIEW FULL PRICING</span>
-                          <FaArrowRight/>
-                        </a>
-                    </div>
-    
-                    {/* Adults Pricing */}
-                    <div className="mb-12">
-                      <div className="inline-block bg-red-600 text-white py-3 px-12 text-lg font-bold mb-6">ADULTS</div>
-                      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                          <div className="bg-black p-8 border border-gray-800 flex flex-col justify-between">
-                              <div>
-                                <h3 className="text-2xl font-bold mb-2">MUAY THAI ONLY</h3>
-                                <ul className="space-y-2 my-6 text-sm">
-                                    <PricingFeature text="Access Fitness Equipment" />
-                                    <PricingFeature text="Access to Open Gym" />
-                                    <PricingFeature text="Access 6 Days / Week" />
-                                    <PricingFeature text="Style Specific Group Classes" />
-                                    <PricingFeature text="Recovery Room" included={false} />
-                                    <PricingFeature text="Included Private Lessons" included={false} />
-                                </ul>
-                              </div>
-                              <div>
-                                  <div className="text-4xl font-black">$119.99</div>
-                                  <p className="text-xs text-gray-400">Per Month for 6 Months</p>
-                              </div>
-                          </div>
-                          <div className="bg-black p-8 border border-gray-800 flex flex-col justify-between">
-                              <div>
-                                <h3 className="text-2xl font-bold mb-2">JIU JITSU ONLY</h3>
-                                 <ul className="space-y-2 my-6 text-sm">
-                                    <PricingFeature text="Access Fitness Equipment" />
-                                    <PricingFeature text="Access to Open Gym" />
-                                    <PricingFeature text="Access 6 Days / Week" />
-                                    <PricingFeature text="Style Specific Group Classes" />
-                                    <PricingFeature text="Recovery Room" included={false} />
-                                    <PricingFeature text="Included Private Lessons" included={false} />
-                                </ul>
-                              </div>
-                              <div>
-                                  <div className="text-4xl font-black">$119.99</div>
-                                  <p className="text-xs text-gray-400">Per Month for 6 Months</p>
-                              </div>
-                          </div>
-                          <div className="bg-black p-8 border border-gray-800 flex flex-col justify-between">
-                              <div>
-                                <h3 className="text-2xl font-bold mb-2">ALL INCLUSIVE</h3>
-                                 <ul className="space-y-2 my-6 text-sm">
-                                    <PricingFeature text="Access Fitness Equipment" />
-                                    <PricingFeature text="Access to Open Gym" />
-                                    <PricingFeature text="Access 6 Days / Week" />
-                                    <PricingFeature text="All Group Classes" />
-                                    <PricingFeature text="Access All Available Classes" />
-                                    <PricingFeature text="Recovery Room" included={false} />
-                                    <PricingFeature text="Included Private Lessons" included={false} />
-                                </ul>
-                              </div>
-                              <div>
-                                  <div className="text-4xl font-black">$139.99</div>
-                                  <p className="text-xs text-gray-400">Per Month for 6 Months</p>
-                              </div>
-                          </div>
-                          <div className="bg-black p-8 border-2 border-red-500 flex flex-col justify-between">
-                              <div>
-                                <h3 className="text-2xl font-bold mb-2">PREMIER**</h3>
-                                 <ul className="space-y-2 my-6 text-sm">
-                                    <PricingFeature text="Access Fitness Equipment" />
-                                    <PricingFeature text="Access to Open Gym" />
-                                    <PricingFeature text="Access 6 Days / Week" />
-                                    <PricingFeature text="All Group Classes" />
-                                    <PricingFeature text="Access All Available Classes" />
-                                    <PricingFeature text="Recovery Room" />
-                                    <PricingFeature text="One Private Lesson per Month" />
-                                </ul>
-                              </div>
-                              <div>
-                                  <div className="text-4xl font-black">$199.99</div>
-                                  <p className="text-xs text-gray-400">Per Month for 6 Months</p>
-                              </div>
-                          </div>
-                      </div>
-                    </div>
-    
-                    {/* Kids Pricing */}
-                    <div>
-                      <div className="inline-block bg-red-600 text-white py-3 px-12 text-lg font-bold mb-6">KIDS</div>
-                      <div className="grid md:grid-cols-3 gap-6">
-                        <div className="bg-black p-8 border border-gray-800 text-center">
-                            <h3 className="text-2xl font-bold mb-2">MUAY THAI ONLY</h3>
-                            <div className="text-4xl font-black my-4">$99.99</div>
-                            <p className="text-xs text-gray-400">Per Month for 6 Months</p>
-                        </div>
-                         <div className="bg-black p-8 border border-gray-800 text-center">
-                            <h3 className="text-2xl font-bold mb-2">JIU JITSU ONLY</h3>
-                            <div className="text-4xl font-black my-4">$99.99</div>
-                            <p className="text-xs text-gray-400">Per Month for 6 Months</p>
-                        </div>
-                         <div className="bg-black p-8 border border-gray-800 text-center">
-                            <h3 className="text-2xl font-bold mb-2">ALL INCLUSIVE</h3>
-                            <div className="text-4xl font-black my-4">$119.99</div>
-                            <p className="text-xs text-gray-400">Per Month for 6 Months</p>
-                        </div>
-                      </div>
-                    </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Schedule Section */}
+      <section id="schedule" className="py-24 px-4 bg-black">
+        <div className="container mx-auto">
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-4xl font-black uppercase tracking-wider text-white">SCHEDULE</h2>
+            <button className="bg-red-600 text-white font-bold py-3 px-6 text-sm flex items-center space-x-2 hover:bg-red-700 transition-colors">
+              <span>PRINT SCHEDULE</span>
+              <span className="text-lg">&darr;</span>
+            </button>
+          </div>
+          <div className="flex space-x-1 mb-8 border-b-2 border-gray-800">
+            {['All', 'Kids', 'Adult', 'BJJ', 'Muay Thai'].map(filter => (
+              <button key={filter} className={`py-2 px-4 text-sm font-semibold text-gray-400 hover:text-white transition-colors border-b-2 ${filter === 'All' ? 'border-red-600 text-white' : 'border-transparent'}`}>{filter}</button>
+            ))}
+          </div>
+          <div className="flex space-x-1 mb-8">
+            {['Full Week', 'Mon, Oct 13', 'Tue, Oct 14', 'Wed, Oct 15', 'Thu, Oct 16', 'Fri, Oct 17', 'Today: Sat, Oct 18'].map(day => (
+              <button key={day} className={`py-3 px-5 text-sm font-bold ${day.includes('Today') ? 'bg-red-600 text-white' : 'bg-[#1a1a1a] text-gray-300 hover:bg-gray-800'}`}>
+                {day.split(':')[0]}
+              </button>
+            ))}
+          </div>
+          <div className="bg-[#1a1a1a] p-1">
+            <div className="space-y-1">
+              {scheduleData['Sat, Oct 18'].map((item, index) => (
+                <div key={index} className="grid grid-cols-12 gap-2 items-center bg-[#2d2d2d] p-3">
+                  <div className="col-span-2 font-bold text-lg text-gray-400">{item.time}</div>
+                  <div className="col-span-6">
+                    <h4 className="font-bold text-xl text-white">{item.name}</h4>
+                    <p className="text-gray-400 text-sm">{item.level}</p>
+                  </div>
+                  <div className="col-span-4 text-right">
+                    <span className={`text-xs font-bold py-2 px-3 ${item.category.includes('Muay Thai') ? 'bg-purple-900 text-purple-300' : 'bg-blue-900 text-blue-300'}`}>{item.category}</span>
+                  </div>
                 </div>
-            </section>
-    
-            {/* Apparel CTA Section */}
-            <section className="py-24 px-4 bg-black relative text-center" style={{ backgroundImage: "url('https://storage.googleapis.com/presented_images/c8c36081-37d4-46c5-a6e3-5140b2a3bb36.jpg')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
-                <div className="absolute inset-0 bg-black opacity-80"></div>
-                <div className="container mx-auto relative z-10 flex flex-col items-center">
-                    <img src="https://storage.googleapis.com/presented_images/6334a1d4-814d-4560-84f9-251f2e1469e0.png" alt="War Forged Apparel" className="w-48 h-auto mb-4"/>
-                    <h2 className="text-4xl font-black uppercase mb-4">Shop War Forged Apparel</h2>
-                    <p className="max-w-2xl mx-auto text-gray-300 mb-8">
-                        Based in Colorado Springs, we're a team of veterans, competitors, and fighters committed to providing exceptional, affordable gear and lifestyle clothing for athletes of all levels.
-                    </p>
-                    <a href="#" className="bg-red-600 text-white font-bold py-4 px-10 text-sm flex items-center space-x-2 hover:bg-red-700 transition-colors">
-                        <span>SHOP NOW</span>
-                        <FaArrowRight />
-                    </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section id="pricing" className="py-24 px-4 bg-[#0d0d0d]">
+        <div className="container mx-auto">
+          <div className="flex justify-between items-center mb-8">
+            <div>
+              <h2 className="text-4xl font-black mb-2 uppercase text-white">Program Pricing</h2>
+              <p className="text-gray-400">Currently we have 48 Classes covering over 50 hours a week of instruction in class times.</p>
+            </div>
+            <a href="#" className="bg-red-600 text-white font-bold py-4 px-8 text-sm flex items-center space-x-2 hover:bg-red-700 transition-colors">
+              <span>VIEW FULL PRICING</span>
+              <FaArrowRight />
+            </a>
+          </div>
+
+          {/* Adults Pricing */}
+          <div className="mb-12">
+            <div className="inline-block bg-red-600 text-white py-3 px-12 text-lg font-bold mb-6">ADULTS</div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="bg-black p-8 border border-gray-800 flex flex-col justify-between">
+                <div>
+                  <h3 className="text-2xl font-bold mb-2 text-white">MUAY THAI ONLY</h3>
+                  <ul className="space-y-2 my-6 text-sm">
+                    <PricingFeature text="Access Fitness Equipment" />
+                    <PricingFeature text="Access to Open Gym" />
+                    <PricingFeature text="Access 6 Days / Week" />
+                    <PricingFeature text="Style Specific Group Classes" />
+                    <PricingFeature text="Recovery Room" included={false} />
+                    <PricingFeature text="Included Private Lessons" included={false} />
+                  </ul>
                 </div>
-            </section>
-        </main>
-    );
+                <div>
+                  <div className="text-4xl font-black text-white">$119.99</div>
+                  <p className="text-xs text-gray-400">Per Month for 6 Months</p>
+                </div>
+              </div>
+              <div className="bg-black p-8 border border-gray-800 flex flex-col justify-between">
+                <div>
+                  <h3 className="text-2xl font-bold mb-2 text-white">JIU JITSU ONLY</h3>
+                  <ul className="space-y-2 my-6 text-sm">
+                    <PricingFeature text="Access Fitness Equipment" />
+                    <PricingFeature text="Access to Open Gym" />
+                    <PricingFeature text="Access 6 Days / Week" />
+                    <PricingFeature text="Style Specific Group Classes" />
+                    <PricingFeature text="Recovery Room" included={false} />
+                    <PricingFeature text="Included Private Lessons" included={false} />
+                  </ul>
+                </div>
+                <div>
+                  <div className="text-4xl font-black text-white">$119.99</div>
+                  <p className="text-xs text-gray-400">Per Month for 6 Months</p>
+                </div>
+              </div>
+              <div className="bg-black p-8 border border-gray-800 flex flex-col justify-between">
+                <div>
+                  <h3 className="text-2xl font-bold mb-2 text-white">ALL INCLUSIVE</h3>
+                  <ul className="space-y-2 my-6 text-sm">
+                    <PricingFeature text="Access Fitness Equipment" />
+                    <PricingFeature text="Access to Open Gym" />
+                    <PricingFeature text="Access 6 Days / Week" />
+                    <PricingFeature text="All Group Classes" />
+                    <PricingFeature text="Access All Available Classes" />
+                    <PricingFeature text="Recovery Room" included={false} />
+                    <PricingFeature text="Included Private Lessons" included={false} />
+                  </ul>
+                </div>
+                <div>
+                  <div className="text-4xl font-black text-white">$139.99</div>
+                  <p className="text-xs text-gray-400">Per Month for 6 Months</p>
+                </div>
+              </div>
+              <div className="bg-black p-8 border-2 border-red-500 flex flex-col justify-between">
+                <div>
+                  <h3 className="text-2xl font-bold mb-2 text-white">PREMIER**</h3>
+                  <ul className="space-y-2 my-6 text-sm">
+                    <PricingFeature text="Access Fitness Equipment" />
+                    <PricingFeature text="Access to Open Gym" />
+                    <PricingFeature text="Access 6 Days / Week" />
+                    <PricingFeature text="All Group Classes" />
+                    <PricingFeature text="Access All Available Classes" />
+                    <PricingFeature text="Recovery Room" />
+                    <PricingFeature text="One Private Lesson per Month" />
+                  </ul>
+                </div>
+                <div>
+                  <div className="text-4xl font-black text-white">$199.99</div>
+                  <p className="text-xs text-gray-400">Per Month for 6 Months</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Kids Pricing */}
+          <div>
+            <div className="inline-block bg-red-600 text-white py-3 px-12 text-lg font-bold mb-6">KIDS</div>
+            <div className="grid md:grid-cols-3 gap-6">
+              <div className="bg-black p-8 border border-gray-800 text-center">
+                <h3 className="text-2xl font-bold mb-2 text-white">MUAY THAI ONLY</h3>
+                <div className="text-4xl font-black my-4 text-white">$99.99</div>
+                <p className="text-xs text-gray-400">Per Month for 6 Months</p>
+              </div>
+              <div className="bg-black p-8 border border-gray-800 text-center">
+                <h3 className="text-2xl font-bold mb-2 text-white">JIU JITSU ONLY</h3>
+                <div className="text-4xl font-black my-4 text-white">$99.99</div>
+                <p className="text-xs text-gray-400">Per Month for 6 Months</p>
+              </div>
+              <div className="bg-black p-8 border border-gray-800 text-center">
+                <h3 className="text-2xl font-bold mb-2 text-white">ALL INCLUSIVE</h3>
+                <div className="text-4xl font-black my-4 text-white">$119.99</div>
+                <p className="text-xs text-gray-400">Per Month for 6 Months</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Apparel CTA Section */}
+      <section className="py-24 px-4 bg-black relative text-center" style={{ backgroundImage: "url('https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e6b3e3f604320d81e7c52f_warcollegeproducts.png')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
+        <div className="absolute inset-0 bg-black opacity-80"></div>
+        <div className="container mx-auto relative z-10 flex flex-col items-center">
+          <img src="https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e43e0279ad2b357d6c0f42_warforgedwhite.png" alt="War Forged Apparel" className="w-48 h-auto mb-4" />
+          <h2 className="text-4xl font-black uppercase mb-4 text-white">Shop War Forged Apparel</h2>
+          <p className="max-w-2xl mx-auto text-gray-300 mb-8">
+            Based in Colorado Springs, we're a team of veterans, competitors, and fighters committed to providing exceptional, affordable gear and lifestyle clothing for athletes of all levels.
+          </p>
+          <a href="#" className="bg-red-600 text-white font-bold py-4 px-10 text-sm flex items-center space-x-2 hover:bg-red-700 transition-colors">
+            <span>SHOP NOW</span>
+            <FaArrowRight />
+          </a>
+        </div>
+      </section>
+    </main>
+  );
 }
 
 //=================================================================
@@ -538,32 +513,7 @@ const MainContent = () => {
 export default function Home() {
   return (
     <>
-      <Header />
       <MainContent />
-      <footer className="bg-[#0d0d0d] border-t border-gray-800 py-16 px-4">
-        <div className="container mx-auto text-center">
-            <div className="text-3xl font-black tracking-widest mb-8 text-gray-600">WARRIOR</div>
-            <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto mb-12 text-gray-400">
-                <div>
-                    <h4 className="font-bold text-white mb-2">WARRIOR FITNESS CENTER</h4>
-                    <p>3711 Drennan Road,<br/>Colorado Springs, CO 80916</p>
-                </div>
-                 <div>
-                    <h4 className="font-bold text-white mb-2">HOURS</h4>
-                    <p>M-F: 11:30 - 21:30<br/>SAT: 09:00 - 13:00</p>
-                </div>
-                 <div>
-                    <h4 className="font-bold text-white mb-2">CALL US</h4>
-                    <p>+1-719-465-2136</p>
-                </div>
-            </div>
-             <div className="flex justify-center space-x-6 mb-8">
-                <a href="#" aria-label="Instagram"><FaInstagram className="text-3xl text-gray-500 hover:text-red-500 transition-colors" /></a>
-                <a href="#" aria-label="Facebook"><FaFacebookF className="text-3xl text-gray-500 hover:text-red-500 transition-colors" /></a>
-            </div>
-            <p className="text-xs text-gray-600">&copy; 2025 Warrior Fitness Center. All Rights Reserved.</p>
-        </div>
-      </footer>
     </>
   );
 }

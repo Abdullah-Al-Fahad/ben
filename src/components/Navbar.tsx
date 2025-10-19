@@ -32,7 +32,7 @@ const pathname = usePathname();
             WARRIOR
           </Link>
           <nav className="hidden md:flex items-center space-x-6 uppercase text-sm font-bold">
-            <Link href="/about" className="hover:text-red-600 text-white">
+            <Link href="/ourgym" className="hover:text-red-600 text-white">
               Our Gym
             </Link>
             <Link href="/disciplines" className="hover:text-red-600 text-white">
