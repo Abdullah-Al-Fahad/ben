@@ -4,6 +4,7 @@ import "./globals.css";
 import Footer from "@/components/Footer";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ConditionalHeader from "@/components/ConditionalHeader";
+import { ModalProvider } from "@/context/ModalContext";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -32,12 +33,14 @@ export default function RootLayout({
       <body
         className={`${clashDisplay.variable} ${inter.variable} ${exo.variable}  bg-neutral-50 text-neutral-800 antialiased`}
       >
-        <LoadingSpinner />
-        <div className="min-h-screen flex flex-col font-clashDisplay">
-          <ConditionalHeader />
-          <div className="flex-1">{children}</div>
-          <Footer />
-        </div>
+        <ModalProvider>
+          <LoadingSpinner />
+          <div className="min-h-screen flex flex-col font-clashDisplay">
+            <ConditionalHeader />
+            <div className="flex-1">{children}</div>
+            <Footer />
+          </div>
+        </ModalProvider>
       </body>
     </html>
   );

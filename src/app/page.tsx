@@ -316,21 +316,50 @@ const MainContent = () => {
 
             </div>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            {coachesData.map(coach => (
-              <div key={coach.name} className="relative text-center group bg-black">
-                <img src={coach.imageUrl} alt={coach.name} className="w-full h-auto" />
-                <div className="py-4">
-                  <h3 className="font-bold text-lg text-white">{coach.name.toUpperCase()}</h3>
-                  <div className="text-xs text-gray-400 space-x-2 mt-1">
-                    {coach.specialties.split(', ').map(spec => <span key={spec} className="bg-gray-800 px-2 py-1 rounded">{spec}</span>)}
-                  </div>
-                </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+      {coachesData.map(coach => (
+        <div key={coach.name} className="group relative overflow-hidden rounded-lg">
+          {/* Card Container */}
+          <div className="relative h-80 overflow-hidden rounded-lg bg-black">
+            {/* Image */}
+            <img 
+              src={coach.imageUrl} 
+              alt={coach.name} 
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 group-hover:brightness-75"
+            />
+            
+            {/* Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
+            
+            {/* Red accent line on hover */}
+            <div className="absolute bottom-0 left-0 h-1 w-0 bg-red-600 transition-all duration-500 group-hover:w-full"></div>
+            
+            {/* Content - positioned absolutely */}
+            <div className="absolute inset-0 flex flex-col justify-end p-4">
+              {/* Name is now always visible */}
+              <h3 className="font-black text-lg text-white uppercase tracking-wider mb-2">
+                {coach.name}
+              </h3>
+              
+              {/* Specialties Tags are now always visible */}
+              <div className="flex flex-wrap gap-2">
+                {/* Corrected to map over the specialties array */}
+                {coach.specialties.split(', ').map(spec => (
+    <span 
+      key={spec} 
+      className="bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full"
+    >
+      {spec}
+                  </span>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
         </div>
-      </section>
+      ))}
+    </div>
+  </div>
+</section>
 
       {/* Schedule Section */}
       <section id="schedule" className="py-24 px-4 bg-black">

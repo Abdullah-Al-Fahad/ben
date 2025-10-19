@@ -1,0 +1,28 @@
+{
+  "ben-westrich": {
+    "name": "Ben Westrich",
+    "imageUrl": "https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0f20/68e43e0279ad2b357d6c0f3d_67f98256486dddbebb682a94_BenStaffPhoto.jpeg",
+    "specialties": ["Brazilian Jiu-Jitsu", "MMA"],
+    "achievements": [
+      "Retired Pro MMA Fighter (9-0 with 8 submission finishes)",
+      "IBJFF Black Belt No-Gi Pan AM Medalist",
+      "Multi Time World/National/Pan AM Medalist",
+      "Army Combat Veteran (13F)",
+      "Master Combatives Trainer",
+      "All Army Combatives Medalist"
+    ],
+    "bio": [
+      "Ben, a Chris Haueter Black Belt, opened the Warrior Fitness Center in 2011...",
+      "His background extends beyond the mat as well...",
+      "Stationed in Germany, Ben began his BJJ and MMA training...",
+      "Now, Ben divides his time between teaching..."
+    ]
+  },
+  "angela-hayes": {
+    "name": "Angela Hayes",
+    "imageUrl": "https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0f20/68e43e0279ad2b357d6c0f3c_67f9a7a48dea388609cd7c33_AngieStaffPhoto.jpeg",
+    "specialties": ["Muay Thai", "MMA"],
+    "bio": [ "Angela's bio paragraph 1.", "Angela's bio paragraph 2." ],
+    "achievements": [ "Angela's Achievement 1", "Angela's Achievement 2" ]
+  }
+}
