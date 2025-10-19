@@ -112,8 +112,8 @@ const FeaturesSection = () => {
   );
   const DisciplineLink = ({ href, children }) => (
     <li>
-      <Link href={href} className="flex items-center justify-between text-lg text-gray-300 hover:text-white transition-colors group">
-        <span>{children}</span>
+      <Link href={href} className="flex items-center justify-between text-lg text-gray-300 hover:text-white transition-colors group max-w-48">
+        <h4 className="text-xl">{children}</h4>
         <FaChevronRight className="text-red-500 opacity-75 group-hover:opacity-100 group-hover:translate-x-1 transition-transform" />
       </Link>
     </li>
@@ -212,7 +212,7 @@ const CoreValuesSection = () => {
               Training is only sustainable when we take care of each other.
             </ValueBlock>
             <ValueBlock title="Diversity">
-              We embrace different styles, backgrounds, and perspectives.
+              We embrace different styles, and perspectives.
             </ValueBlock>
             <ValueBlock title="Cohesion">
               We are individuals, but we train as one team.
@@ -232,7 +232,7 @@ const MainContent = () => {
   return (
     <main>
       {/* HERO SECTION */}
-      <section className="relative h-screen w-full  overflow-hidden">
+      <section className="relative h-[calc(100vh-100px)] w-full  overflow-hidden">
         <video
           autoPlay
           loop
