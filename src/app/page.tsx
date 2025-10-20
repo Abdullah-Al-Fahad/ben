@@ -554,7 +554,7 @@ const MainContent = () => {
           <p className="max-w-2xl mx-auto text-gray-300 mb-8">
             Based in Colorado Springs, we're a team of veterans, competitors, and fighters committed to providing exceptional, affordable gear and lifestyle clothing for athletes of all levels.
           </p>
-          <a href="#" className="bg-red-600 text-white font-bold py-4 px-10 text-sm flex items-center space-x-2 hover:bg-red-700 transition-colors rounded-md">
+          <a href="https://warforgedapparel.com/" className="bg-red-600 text-white font-bold py-4 px-10 text-sm flex items-center space-x-2 hover:bg-red-700 transition-colors rounded-md">
             <span>SHOP NOW</span>
             <FaArrowRight />
           </a>
