@@ -28,11 +28,11 @@ const coachesData = [
 
 const scheduleData = {
   'Sat, Oct 18': [
-    { time: '900-1000', name: 'Muay Thai', level: 'All Levels', category: 'Muay Thai Adult' },
-    { time: '1000-1100', name: 'BJJ Fundamentals', level: 'Adults and Children', category: 'BJJ Adult' },
-    { time: '1000-1100', name: 'Kids Muay Thai', level: 'All Ages, All Levels', category: 'Muay Thai Kids' },
-    { time: '1100-1200', name: 'Fighter Practice', level: 'MMA / Muay Thai', category: 'All-Inclusive' },
-    { time: '1100-1300', name: 'No-Gi Open Mat', level: 'All Levels', category: 'BJJ Adult' },
+    { time: '9:00-10:00', name: 'Muay Thai', level: 'All Levels', category: 'Muay Thai Adult' },
+    { time: '10:00-11:00', name: 'BJJ Fundamentals', level: 'Adults and Children', category: 'BJJ Adult' },
+    { time: '10:00-11:00', name: 'Kids Muay Thai', level: 'All Ages, All Levels', category: 'Muay Thai Kids' },
+    { time: '11:00-12:00', name: 'Fighter Practice', level: 'MMA / Muay Thai', category: 'All-Inclusive' },
+    { time: '11:00-13:00', name: 'No-Gi Open Mat', level: 'All Levels', category: 'BJJ Adult' },
   ]
 };
 
@@ -55,10 +55,10 @@ const IntroSection = () => {
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-black/30"></div>
       </div>
-      <div className="container mx-auto relative z-10 py-24 px-8">
+      <div className="container mx-auto relative z-10 py-16 sm:py-24 px-4 sm:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="flex flex-col justify-center">
-            <h2 className="text-5xl lg:text-6xl font-black uppercase leading-tight">
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black uppercase leading-tight">
               Join our world class mma training programs for all levels - from <span className="text-red-600">beginners</span> to <span className="text-red-600">pros.</span>
             </h2>
             <p className="mt-8 text-gray-300 leading-relaxed max-w-lg">
@@ -80,11 +80,11 @@ const IntroSection = () => {
 
 const VideoSection = () => {
   return (
-    <section className="bg-black py-16 px-4">
+    <section className="bg-black py-12 sm:py-16 px-4">
       <div className="container mx-auto">
         <div className="relative h-0 pb-[56.25%]">
           <video
-            className="absolute top-0 left-0 w-full h-full rounded-[3rem]"
+            className="absolute top-0 left-0 w-full h-full rounded-2xl md:rounded-[3rem]"
             controls={false}
             autoPlay
             muted
@@ -112,7 +112,7 @@ const FeaturesSection = () => {
   );
   const DisciplineLink = ({ href, children }) => (
     <li>
-      <Link href={href} className="flex items-center justify-between text-lg text-gray-300 hover:text-white transition-colors group max-w-48">
+      <Link href={href} className="flex items-center justify-between text-lg text-gray-300 hover:text-white transition-colors group max-w-xs">
         <h4 className="text-xl">{children}</h4>
         <FaChevronRight className="text-red-500 opacity-75 group-hover:opacity-100 group-hover:translate-x-1 transition-transform" />
       </Link>
@@ -125,7 +125,7 @@ const FeaturesSection = () => {
     </li>
   );
   return (
-    <section id="disciplines" className="bg-[#121212] text-white py-24 px-4 overflow-hidden">
+    <section id="disciplines" className="bg-[#121212] text-white py-16 sm:py-24 px-4 overflow-hidden">
       <div className="container mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
           <div className="flex flex-col space-y-16">
@@ -154,7 +154,7 @@ const FeaturesSection = () => {
             <img
               src="https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e43e0279ad2b357d6c0f16_warrioricon.svg"
               alt="Warrior Logo background"
-              className="absolute bottom-0 right-0 w-[80%] h-auto opacity-10 pointer-events-none -mr-24"
+              className="hidden lg:block absolute bottom-0 right-0 w-[80%] h-auto opacity-10 pointer-events-none -mr-24"
             />
             <div className="relative z-10 space-y-6 text-gray-300 leading-relaxed">
               <p>
@@ -182,11 +182,11 @@ const FeaturesSection = () => {
 const CoreValuesSection = () => {
 
   return (
-    <section id="who-we-are" className="bg-black text-white py-24 px-4">
+    <section id="who-we-are" className="bg-black text-white py-16 sm:py-24 px-4">
       <div className="container mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
           <div>
-            <h2 className="text-5xl font-black mb-4 uppercase">Are We Right For You</h2>
+            <h2 className="text-4xl sm:text-5xl font-black mb-4 uppercase">Are We Right For You</h2>
             <div className="w-44 h-1.5 bg-red-600 mb-12"></div>
             <div className="space-y-6 text-white-400 leading-relaxed max-w-xl">
               <p>
@@ -197,7 +197,7 @@ const CoreValuesSection = () => {
               </p>
             </div>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
 
             <ValueBlock title="Realism">
               We train for real life. The foundation of our practice is self-defense and practical application—not gamesmanship.
@@ -232,7 +232,7 @@ const MainContent = () => {
   return (
     <main>
       {/* HERO SECTION */}
-      <section className="relative h-[calc(100vh-100px)] w-full  overflow-hidden">
+      <section className="relative h-[calc(100vh-100px)] w-full overflow-hidden">
         <video
           autoPlay
           loop
@@ -241,10 +241,10 @@ const MainContent = () => {
           className="absolute top-0 left-0 w-full h-full object-cover filter grayscale"
           src="https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e43e0279ad2b357d6c0f43_homepageclipwarrior-transcode.mp4"
         />
-        <div className="relative  h-full mix-blend-screen flex flex-col justify-center items-center text-center">
+        <div className="relative h-full mix-blend-screen flex flex-col justify-center items-center text-center">
           <div className="absolute w-full top-0 text-start">
             <div className="bg-white ">
-              <h1 className="text-6xl sm:text-6xl md:text-[16vw] font-clashDisplay lg:text-[12vw] font-black uppercase leading-44 text-black p-4">
+              <h1 className="text-6xl md:text-[16vw] lg:text-[12vw] font-clashDisplay font-black uppercase leading-tight md:leading-none text-black p-4">
                 Train like a<br />Champion
               </h1>
             </div>
@@ -255,9 +255,9 @@ const MainContent = () => {
           alt="Warrior Logo"
           width={1920}
           height={1080}
-          className="absolute top-48 right-20 transform -translate-y-[5%] translate-x-[15%] w-[35%] h-auto"
+          className="hidden lg:block absolute top-48 right-20 transform -translate-y-[5%] translate-x-[15%] w-[35%] h-auto"
         />
-        <div className="absolute bottom-10 left-10 z-20 text-sm uppercase tracking-[0.5em] text-white">
+        <div className="hidden sm:block absolute bottom-10 left-4 sm:left-10 z-20 text-sm uppercase tracking-[0.5em] text-white">
           S C R O L L
         </div>
       </section>
@@ -268,28 +268,28 @@ const MainContent = () => {
       <CoreValuesSection />
 
       {/* Coaches Section */}
-      <section id="coaches" className=" bg-black">
+      <section id="coaches" className="bg-black">
         <div className="relative h-[60vh] min-h-[550px] overflow-hidden flex items-center justify-center">
           <div
             className="absolute inset-0 bg-cover -top-80 filter grayscale"
             style={{
-              backgroundImage: "url('https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e43e0279ad2b357d6c0f26_67f85e7e1dfe540942d24018_489283717_1143059611166111_4972771042462498311_n.jpg')",
+              backgroundImage: "url('https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e43e0279ad2b357d6c0f26_67f85e7e1dfe540942d24018_489283717_1143059611166111_4972771042462498311_n.jpg')"
             }}
           >
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
           </div> 
         </div>
-        <div className="container mx-auto ">
+        <div className="container mx-auto px-4 py-16 sm:py-24">
           <div className="flex flex-col md:flex-row justify-between items-stretch gap-12 mb-16">
-            <div className="space-y-4 text-gray-300 w-1/2">
-              <h2 className="text-7xl font-black mb-12 uppercase text-white border-b-[6px] border-b-red-600 w-fit">Our {' '}Coaches</h2>
+            <div className="w-full md:w-1/2 space-y-4 text-gray-300">
+              <h2 className="text-5xl md:text-7xl font-black mb-12 uppercase text-white border-b-[6px] border-b-red-600 w-fit">Our Coaches</h2>
               <div className="max-w-[550px] space-y-8 text-justify">
-                <p className="font-semibold text-white text-xl  font-exo">With years of experience both in coaching and competing, you will not find a more well rounded and professional coaching team to help you achieve your goals.</p>
-                <p className="text-gray-400 text-xl ">Our coaching is rooted in purpose and clarity: to help students reach personal and professional goals through structured, meaningful training. We focus on developing a conceptual framework for understanding physical conflict—skills that extend beyond the mat into real life.</p>
-                <p className="text-gray-400 text-xl ">We teach and train through three interconnected lenses. This multi-faceted approach lets us coach with intention and adaptability, honoring the individual journey of each student.</p>
+                <p className="font-semibold text-white text-xl font-exo">With years of experience both in coaching and competing, you will not find a more well rounded and professional coaching team to help you achieve your goals.</p>
+                <p className="text-gray-400 text-xl">Our coaching is rooted in purpose and clarity: to help students reach personal and professional goals through structured, meaningful training. We focus on developing a conceptual framework for understanding physical conflict—skills that extend beyond the mat into real life.</p>
+                <p className="text-gray-400 text-xl">We teach and train through three interconnected lenses. This multi-faceted approach lets us coach with intention and adaptability, honoring the individual journey of each student.</p>
               </div>
             </div>
-            <div className="flex flex-col w-1/2 gap-4">
+            <div className="w-full md:w-1/2 flex flex-col gap-4">
 
               {
                 [{
@@ -362,38 +362,39 @@ const MainContent = () => {
 </section>
 
       {/* Schedule Section */}
-      <section id="schedule" className="py-24 px-4 bg-black">
+      <section id="schedule" className="py-16 sm:py-24 px-4 bg-black">
         <div className="container mx-auto">
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-4xl font-black uppercase tracking-wider text-white">SCHEDULE</h2>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+            <h2 className="text-3xl sm:text-4xl font-black uppercase tracking-wider text-white">SCHEDULE</h2>
             <button className="bg-red-600 text-white font-bold py-3 px-6 text-sm flex items-center space-x-2 hover:bg-red-700 transition-colors">
-              <span>PRINT SCHEDULE</span>
-              <span className="text-lg">&darr;</span>
+              <span className="hidden sm:inline">PRINT SCHEDULE</span>
+              <span className="sm:hidden">PRINT</span>
+              <FaArrowRight className="transform -rotate-90 sm:rotate-0"/>
             </button>
           </div>
-          <div className="flex space-x-1 mb-8 border-b-2 border-gray-800">
+          <div className="flex flex-wrap gap-2 mb-8 border-b-2 border-gray-800">
             {['All', 'Kids', 'Adult', 'BJJ', 'Muay Thai'].map(filter => (
               <button key={filter} className={`py-2 px-4 text-sm font-semibold text-gray-400 hover:text-white transition-colors border-b-2 ${filter === 'All' ? 'border-red-600 text-white' : 'border-transparent'}`}>{filter}</button>
             ))}
           </div>
-          <div className="flex space-x-1 mb-8">
+          <div className="flex flex-wrap gap-2 mb-8">
             {['Full Week', 'Mon, Oct 13', 'Tue, Oct 14', 'Wed, Oct 15', 'Thu, Oct 16', 'Fri, Oct 17', 'Today: Sat, Oct 18'].map(day => (
-              <button key={day} className={`py-3 px-5 text-sm font-bold ${day.includes('Today') ? 'bg-red-600 text-white' : 'bg-[#1a1a1a] text-gray-300 hover:bg-gray-800'}`}>
+              <button key={day} className={`py-3 px-5 text-sm font-bold rounded-md ${day.includes('Today') ? 'bg-red-600 text-white' : 'bg-[#1a1a1a] text-gray-300 hover:bg-gray-800'}`}>
                 {day.split(':')[0]}
               </button>
             ))}
           </div>
-          <div className="bg-[#1a1a1a] p-1">
+          <div className="bg-[#1a1a1a] p-1 rounded-lg">
             <div className="space-y-1">
               {scheduleData['Sat, Oct 18'].map((item, index) => (
-                <div key={index} className="grid grid-cols-12 gap-2 items-center bg-[#2d2d2d] p-3">
-                  <div className="col-span-2 font-bold text-lg text-gray-400">{item.time}</div>
-                  <div className="col-span-6">
+                <div key={index} className="grid grid-cols-1 sm:grid-cols-12 gap-x-4 gap-y-2 items-center bg-[#2d2d2d] p-3 rounded-md">
+                  <div className="col-span-full sm:col-span-2 font-bold text-lg text-gray-400">{item.time}</div>
+                  <div className="col-span-full sm:col-span-6">
                     <h4 className="font-bold text-xl text-white">{item.name}</h4>
                     <p className="text-gray-400 text-sm">{item.level}</p>
                   </div>
-                  <div className="col-span-4 text-right">
-                    <span className={`text-xs font-bold py-2 px-3 ${item.category.includes('Muay Thai') ? 'bg-purple-900 text-purple-300' : 'bg-blue-900 text-blue-300'}`}>{item.category}</span>
+                  <div className="col-span-full sm:col-span-4 text-left sm:text-right">
+                    <span className={`text-xs font-bold py-2 px-3 rounded-full ${item.category.includes('Muay Thai') ? 'bg-purple-900 text-purple-300' : 'bg-blue-900 text-blue-300'}`}>{item.category}</span>
                   </div>
                 </div>
               ))}
@@ -403,14 +404,14 @@ const MainContent = () => {
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-24 px-4 bg-[#0d0d0d]">
+      <section id="pricing" className="py-16 sm:py-24 px-4 bg-[#0d0d0d]">
         <div className="container mx-auto">
-          <div className="flex justify-between items-center mb-8">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
             <div>
-              <h2 className="text-4xl font-black mb-2 uppercase text-white">Program Pricing</h2>
+              <h2 className="text-3xl sm:text-4xl font-black mb-2 uppercase text-white">Program Pricing</h2>
               <p className="text-gray-400">Currently we have 48 Classes covering over 50 hours a week of instruction in class times.</p>
             </div>
-            <a href="#" className="bg-red-600 text-white font-bold py-4 px-8 text-sm flex items-center space-x-2 hover:bg-red-700 transition-colors">
+            <a href="#" className="bg-red-600 text-white font-bold py-3 px-6 sm:py-4 sm:px-8 text-sm flex items-center space-x-2 hover:bg-red-700 transition-colors rounded-md">
               <span>VIEW FULL PRICING</span>
               <FaArrowRight />
             </a>
@@ -419,8 +420,9 @@ const MainContent = () => {
           {/* Adults Pricing */}
           <div className="mb-12">
             <div className="inline-block bg-red-600 text-white py-3 px-12 text-lg font-bold mb-6">ADULTS</div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="bg-black p-8 border border-gray-800 flex flex-col justify-between">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {/* Pricing cards are already responsive with grid-cols-1 default */}
+              <div className="bg-black p-8 border border-gray-800 flex flex-col justify-between rounded-lg">
                 <div>
                   <h3 className="text-2xl font-bold mb-2 text-white">MUAY THAI ONLY</h3>
                   <ul className="space-y-2 my-6 text-sm">
@@ -437,7 +439,7 @@ const MainContent = () => {
                   <p className="text-xs text-gray-400">Per Month for 6 Months</p>
                 </div>
               </div>
-              <div className="bg-black p-8 border border-gray-800 flex flex-col justify-between">
+              <div className="bg-black p-8 border border-gray-800 flex flex-col justify-between rounded-lg">
                 <div>
                   <h3 className="text-2xl font-bold mb-2 text-white">JIU JITSU ONLY</h3>
                   <ul className="space-y-2 my-6 text-sm">
@@ -454,7 +456,7 @@ const MainContent = () => {
                   <p className="text-xs text-gray-400">Per Month for 6 Months</p>
                 </div>
               </div>
-              <div className="bg-black p-8 border border-gray-800 flex flex-col justify-between">
+              <div className="bg-black p-8 border border-gray-800 flex flex-col justify-between rounded-lg">
                 <div>
                   <h3 className="text-2xl font-bold mb-2 text-white">ALL INCLUSIVE</h3>
                   <ul className="space-y-2 my-6 text-sm">
@@ -472,7 +474,7 @@ const MainContent = () => {
                   <p className="text-xs text-gray-400">Per Month for 6 Months</p>
                 </div>
               </div>
-              <div className="bg-black p-8 border-2 border-red-500 flex flex-col justify-between">
+              <div className="bg-black p-8 border-2 border-red-500 flex flex-col justify-between rounded-lg">
                 <div>
                   <h3 className="text-2xl font-bold mb-2 text-white">PREMIER**</h3>
                   <ul className="space-y-2 my-6 text-sm">
@@ -496,18 +498,18 @@ const MainContent = () => {
           {/* Kids Pricing */}
           <div>
             <div className="inline-block bg-red-600 text-white py-3 px-12 text-lg font-bold mb-6">KIDS</div>
-            <div className="grid md:grid-cols-3 gap-6">
-              <div className="bg-black p-8 border border-gray-800 text-center">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-black p-8 border border-gray-800 text-center rounded-lg">
                 <h3 className="text-2xl font-bold mb-2 text-white">MUAY THAI ONLY</h3>
                 <div className="text-4xl font-black my-4 text-white">$99.99</div>
                 <p className="text-xs text-gray-400">Per Month for 6 Months</p>
               </div>
-              <div className="bg-black p-8 border border-gray-800 text-center">
+              <div className="bg-black p-8 border border-gray-800 text-center rounded-lg">
                 <h3 className="text-2xl font-bold mb-2 text-white">JIU JITSU ONLY</h3>
                 <div className="text-4xl font-black my-4 text-white">$99.99</div>
                 <p className="text-xs text-gray-400">Per Month for 6 Months</p>
               </div>
-              <div className="bg-black p-8 border border-gray-800 text-center">
+              <div className="bg-black p-8 border border-gray-800 text-center rounded-lg">
                 <h3 className="text-2xl font-bold mb-2 text-white">ALL INCLUSIVE</h3>
                 <div className="text-4xl font-black my-4 text-white">$119.99</div>
                 <p className="text-xs text-gray-400">Per Month for 6 Months</p>
@@ -518,15 +520,15 @@ const MainContent = () => {
       </section>
 
       {/* Apparel CTA Section */}
-      <section className="py-24 px-4 bg-black relative text-center" style={{ backgroundImage: "url('https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e6b3e3f604320d81e7c52f_warcollegeproducts.png')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
+      <section className="py-16 sm:py-24 px-4 bg-black relative text-center" style={{ backgroundImage: "url('https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e6b3e3f604320d81e7c52f_warcollegeproducts.png')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
         <div className="absolute inset-0 bg-black opacity-80"></div>
         <div className="container mx-auto relative z-10 flex flex-col items-center">
-          <img src="https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e43e0279ad2b357d6c0f42_warforgedwhite.png" alt="War Forged Apparel" className="w-48 h-auto mb-4" />
-          <h2 className="text-4xl font-black uppercase mb-4 text-white">Shop War Forged Apparel</h2>
+          <img src="https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e43e0279ad2b357d6c0f42_warforgedwhite.png" alt="War Forged Apparel" className="w-36 sm:w-48 h-auto mb-4" />
+          <h2 className="text-3xl sm:text-4xl font-black uppercase mb-4 text-white">Shop War Forged Apparel</h2>
           <p className="max-w-2xl mx-auto text-gray-300 mb-8">
             Based in Colorado Springs, we're a team of veterans, competitors, and fighters committed to providing exceptional, affordable gear and lifestyle clothing for athletes of all levels.
           </p>
-          <a href="#" className="bg-red-600 text-white font-bold py-4 px-10 text-sm flex items-center space-x-2 hover:bg-red-700 transition-colors">
+          <a href="#" className="bg-red-600 text-white font-bold py-4 px-10 text-sm flex items-center space-x-2 hover:bg-red-700 transition-colors rounded-md">
             <span>SHOP NOW</span>
             <FaArrowRight />
           </a>
