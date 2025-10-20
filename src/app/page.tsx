@@ -1,5 +1,5 @@
 'use client';
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from 'next/link';
 import {
   FaDumbbell, FaBatteryFull, FaCalendarAlt, FaUserFriends, FaMedal, FaSmile,
@@ -7,6 +7,8 @@ import {
 } from 'react-icons/fa';
 import Image from "next/image";
 import { ValueBlock } from "@/components/Landing/LandingCard";
+import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatedCoachModal, CoachDetail } from '@/components/AnimatedCoachModal';
 
 //=================================================================
 //  HELPER COMPONENTS & DATA
@@ -18,14 +20,6 @@ const PricingFeature = ({ text, included = true }) => (
   </li>
 );
 
-const coachesData = [
-  { name: "Angela Hayes", specialties: "MUAY THAI, MMA", imageUrl: "https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0f20/68e43e0279ad2b357d6c0f3c_67f9a7a48dea388609cd7c33_AngieStaffPhoto.jpeg" },
-  { name: "Ben Westrich", specialties: "BRAZILIAN JIU-JITSU, MMA", imageUrl: "https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0f20/68e43e0279ad2b357d6c0f3d_67f98256486dddbebb682a94_BenStaffPhoto.jpeg" },
-  { name: "Kay Hansen", specialties: "BRAZILIAN JIU-JITSU, MMA, MUAY THAI", imageUrl: "https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0f20/68e43e0279ad2b357d6c0f56_IMG_20250922_183529.jpg" },
-  { name: "Larry Ruiz", specialties: "BRAZILIAN JIU-JITSU, MMA", imageUrl: "https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0f20/68e43e0279ad2b357d6c0f55_67f9a6a3e5c4a366b4034f55_LarryStaffPhoto.jpeg" },
-  { name: "Natalie Salcedo", specialties: "BRAZILIAN JIU-JITSU, MUAY THAI, MMA", imageUrl: "https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0f20/68e43e0279ad2b357d6c0f54_67f9a48c2f2816a346c54aa7_NatalieStaffPhoto-1.jpeg" }
-];
-
 const scheduleData = {
   'Sat, Oct 18': [
     { time: '9:00-10:00', name: 'Muay Thai', level: 'All Levels', category: 'Muay Thai Adult' },
@@ -35,6 +29,15 @@ const scheduleData = {
     { time: '11:00-13:00', name: 'No-Gi Open Mat', level: 'All Levels', category: 'BJJ Adult' },
   ]
 };
+
+interface Coach {
+    slug: string;
+    name: string;
+    specialties: string[];
+    imageUrl: string;
+}
+
+interface CoachDetailsData { [key: string]: CoachDetail; }
 
 
 
@@ -229,6 +232,36 @@ const CoreValuesSection = () => {
 //  MAIN CONTENT COMPONENT
 //=================================================================
 const MainContent = () => {
+  const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
+  const [allCoachDetails, setAllCoachDetails] = useState<CoachDetailsData>({});
+  const [coachesData, setCoachesData] = useState<Coach[]>([]);
+
+  useEffect(() => {
+    const fetchCoaches = async () => {
+        try {
+            const response = await fetch('/coachDetails.json');
+            const data: CoachDetailsData = await response.json();
+            setAllCoachDetails(data);
+            const coachesList = Object.keys(data).map(slug => ({
+                slug,
+                name: data[slug].name,
+                specialties: data[slug].specialties,
+                imageUrl: data[slug].imageUrl,
+            }));
+            setCoachesData(coachesList);
+        } catch (error) {
+            console.error("Failed to fetch coach details:", error);
+        }
+    };
+    fetchCoaches();
+  }, []);
+
+  const selectedCoachDetails = selectedSlug ? allCoachDetails[selectedSlug] : null;
+  
+  const handleCoachClick = (slug: string) => {
+    setSelectedSlug(slug);
+  };
+
   return (
     <main>
       {/* HERO SECTION */}
@@ -317,49 +350,42 @@ const MainContent = () => {
             </div>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-      {coachesData.map(coach => (
-        <div key={coach.name} className="group relative overflow-hidden rounded-lg">
-          {/* Card Container */}
-          <div className="relative h-80 overflow-hidden rounded-lg bg-black">
-            {/* Image */}
-            <img 
-              src={coach.imageUrl} 
-              alt={coach.name} 
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 group-hover:brightness-75"
-            />
-            
-            {/* Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
-            
-            {/* Red accent line on hover */}
-            <div className="absolute bottom-0 left-0 h-1 w-0 bg-red-600 transition-all duration-500 group-hover:w-full"></div>
-            
-            {/* Content - positioned absolutely */}
-            <div className="absolute inset-0 flex flex-col justify-end p-4">
-              {/* Name is now always visible */}
-              <h3 className="font-black text-lg text-white uppercase tracking-wider mb-2">
-                {coach.name}
-              </h3>
-              
-              {/* Specialties Tags are now always visible */}
-              <div className="flex flex-wrap gap-2">
-                {/* Corrected to map over the specialties array */}
-                {coach.specialties.split(', ').map(spec => (
-    <span 
-      key={spec} 
-      className="bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full"
-    >
-      {spec}
-                  </span>
-                ))}
-              </div>
-            </div>
+            {coachesData.map(coach => (
+              <motion.div 
+                key={coach.slug} 
+                layoutId={coach.slug}
+                onClick={() => handleCoachClick(coach.slug)}
+                className="group relative rounded-lg cursor-pointer"
+              >
+                <div className="relative h-80 bg-black rounded-lg overflow-hidden">
+                  <motion.img 
+                    src={coach.imageUrl} 
+                    alt={coach.name} 
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 group-hover:brightness-75"
+                  />
+                  
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/ to-transparent"></div>
+                  
+                  <div className="absolute bottom-0 left-0 h-1 w-0 bg-red-600 transition-all duration-500 group-hover:w-full"></div>
+                  
+                  <div className="absolute bottom-0 left-0 w-full p-4">
+                      <motion.h3 className="font-black text-lg text-white uppercase tracking-wider mb-2">
+                          {coach.name}
+                      </motion.h3>
+                      <div className="flex flex-wrap gap-2">
+                          {coach.specialties.map(spec => (
+                              <span key={spec} className="bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full">
+                                  {spec}
+                              </span>
+                          ))}
+                      </div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
-      ))}
-    </div>
-  </div>
-</section>
+      </section>
 
       {/* Schedule Section */}
       <section id="schedule" className="py-16 sm:py-24 px-4 bg-black">
@@ -534,6 +560,15 @@ const MainContent = () => {
           </a>
         </div>
       </section>
+      <AnimatePresence>
+        {selectedSlug && selectedCoachDetails && (
+          <AnimatedCoachModal 
+            slug={selectedSlug} 
+            coach={selectedCoachDetails} 
+            onClose={() => setSelectedSlug(null)} 
+          />
+        )}
+      </AnimatePresence>
     </main>
   );
 }

@@ -1,62 +1,46 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AnimatedCoachModal, CoachDetail } from '@/components/AnimatedCoachModal';
 import { ValueBlock } from '@/components/Landing/LandingCard';
 
-// Coach data with slugs.
-const coachesData = [
-  {
-    slug: 'angela-hayes',
-    name: 'Angela Hayes',
-    specialties: ['Muay Thai', 'MMA'],
-    imageUrl: 'https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0f20/68e43e0279ad2b357d6c0f3c_67f9a7a48dea388609cd7c33_AngieStaffPhoto.jpeg',
-  },
-  {
-    slug: 'ben-westrich',
-    name: 'Ben Westrich',
-    specialties: ['Brazilian Jiu-Jitsu', 'MMA'],
-    imageUrl: 'https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0f20/68e43e0279ad2b357d6c0f3d_67f98256486dddbebb682a94_BenStaffPhoto.jpeg',
-  },
-  {
-    slug: 'kay-hansen',
-    name: 'Kay Hansen',
-    specialties: ['Brazilian Jiu-Jitsu', 'MMA', 'Muay Thai'],
-    imageUrl: 'https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0f20/68e43e0279ad2b357d6c0f56_IMG_20250922_183529.jpg',
-  },
-  {
-    slug: 'larry-ruiz',
-    name: 'Larry Ruiz',
-    specialties: ['Brazilian Jiu-Jitsu', 'MMA'],
-    imageUrl: 'https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0f20/68e43e0279ad2b357d6c0f55_67f9a6a3e5c4a366b4034f55_LarryStaffPhoto.jpeg',
-  },
-  {
-    slug: 'natalie-salcedo',
-    name: 'Natalie Salcedo',
-    specialties: ['Brazilian Jiu-Jitsu', 'Muay Thai', 'MMA'],
-    imageUrl: 'https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0f20/68e43e0279ad2b357d6c0f54_67f9a48c2f2816a346c54aa7_NatalieStaffPhoto-1.jpeg',
-  },
-];
+interface Coach {
+    slug: string;
+    name: string;
+    specialties: string[];
+    imageUrl: string;
+}
 
 interface CoachDetailsData { [key: string]: CoachDetail; }
 
 const CoachesPage = () => {
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
   const [allCoachDetails, setAllCoachDetails] = useState<CoachDetailsData>({});
-  
-  const selectedCoachDetails = selectedSlug ? allCoachDetails[selectedSlug] : null;
-  
-  const handleCoachClick = async (slug: string) => {
-    if (Object.keys(allCoachDetails).length === 0) {
+  const [coachesData, setCoachesData] = useState<Coach[]>([]);
+
+  useEffect(() => {
+    const fetchCoaches = async () => {
         try {
             const response = await fetch('/coachDetails.json');
             const data: CoachDetailsData = await response.json();
             setAllCoachDetails(data);
+            const coachesList = Object.keys(data).map(slug => ({
+                slug,
+                name: data[slug].name,
+                specialties: data[slug].specialties,
+                imageUrl: data[slug].imageUrl,
+            }));
+            setCoachesData(coachesList);
         } catch (error) {
             console.error("Failed to fetch coach details:", error);
-            return;
         }
-    }
+    };
+    fetchCoaches();
+  }, []);
+
+  const selectedCoachDetails = selectedSlug ? allCoachDetails[selectedSlug] : null;
+  
+  const handleCoachClick = (slug: string) => {
     setSelectedSlug(slug);
   };
 
