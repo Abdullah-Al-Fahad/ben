@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AnimatedCoachModal, CoachDetail } from '@/components/AnimatedCoachModal';
+import { ValueBlock } from '@/components/Landing/LandingCard';
 
 // Coach data with slugs.
 const coachesData = [
@@ -63,14 +64,14 @@ const CoachesPage = () => {
     <div className="bg-black text-white font-sans">
       
       {/* Hero and Main Content sections remain unchanged */}
-      <div className="relative">
+      <div className="relative h-[60vh] min-h-[550px] overflow-hidden flex items-center justify-center">
         <div
-          className="h-[60vh] min-h-[400px] bg-cover bg-center"
+          className="absolute inset-0 bg-cover -top-80 filter grayscale"
           style={{
             backgroundImage: "url('https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e43e0279ad2b357d6c0f26_67f85e7e1dfe540942d24018_489283717_1143059611166111_4972771042462498311_n.jpg')",
           }}
         >
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/70 to-black"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/6 to-black"></div>
         </div>
       </div>
       <main className="relative z-10 -mt-48 container mx-auto px-6 lg:px-8 pb-24">
@@ -80,16 +81,33 @@ const CoachesPage = () => {
           </h1>
           <div className="w-32 h-1.5 bg-red-600 mt-4"></div>
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-20 gap-y-12">
-            <div className="space-y-6 text-gray-300 leading-relaxed">
+        <div className="flex flex-col md:flex-row justify-between items-stretch gap-12 mb-16">
+            <div className="w-1/2 space-y-6 text-gray-300 leading-relaxed">
                 <p className="font-bold text-white text-lg">With years of experience both in coaching and competing, you will not find a more well rounded and professional coaching team to help you achieve your goals.</p>
                 <p>Our coaching is rooted in purpose and clarity: to help students reach personal and professional goals through structured, meaningful training. We focus on developing a conceptual framework for understanding physical conflict—skills that extend beyond the mat into real life.</p>
                 <p>We teach and train through three interconnected lenses. This multi-faceted approach lets us coach with intention and adaptability, honoring the individual journey of each student.</p>
             </div>
-            <div className="space-y-10">
-                <div className="border-l-4 border-red-600 pl-6"><h3 className="text-2xl font-bold tracking-widest">STREET</h3><p className="text-gray-300 mt-2">Training should be grounded in real-life efficacy. We prioritize practical applicability over sport-specific rulesets or "gaming" the system.</p></div>
-                <div className="border-l-4 border-red-600 pl-6"><h3 className="text-2xl font-bold tracking-widest">SPORT</h3><p className="text-gray-300 mt-2">Sport offers structure, feedback, and challenge. Competing isn’t the only goal—growth is. From drilling to tournaments, every layer is an opportunity to refine your skills.</p></div>
-                <div className="border-l-4 border-red-600 pl-6"><h3 className="text-2xl font-bold tracking-widest">ART</h3><p className="text-gray-300 mt-2">Martial arts is also a path of self-discovery. Through the joy of training, we strive to uncover personal truth and embrace continuous improvement.</p></div>
+            <div className="flex flex-col w-1/2 gap-4">
+              {
+                [{
+                  title: "STREET",
+                  subtitle: `Training should be grounded in real-life efficacy. We prioritize practical applicability over sport-specific rulesets or "gaming" the system.`,
+                },
+                {
+                  title: "SPORT",
+                  subtitle: "Sport offers structure, feedback, and challenge. Competing isn’t the only goal—growth is. From drilling to tournaments, every layer is an opportunity to refine your skills.",
+                },
+                {
+                  title: "ART",
+                  subtitle: "Martial arts is also a path of self-discovery. Through the joy of training, we strive to uncover personal truth and embrace continuous improvement.",
+                },].map((item, index) =>
+                  <div key={index} className="w-full">
+                    <ValueBlock title={item.title}>
+                      {item.subtitle}
+                    </ValueBlock>
+                  </div>
+                )
+              }
             </div>
         </div>
 
@@ -110,7 +128,7 @@ const CoachesPage = () => {
                 />
                 
                 {/* Gradient overlay for text readability */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/ to-transparent"></div>
                 
                 {/* Red line hover effect */}
                 <div className="absolute bottom-0 left-0 h-1 w-0 bg-red-600 transition-all duration-500 group-hover:w-full"></div>

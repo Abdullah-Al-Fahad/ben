@@ -277,7 +277,7 @@ const MainContent = () => {
             }}
           >
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
-          </div>
+          </div> 
         </div>
         <div className="container mx-auto ">
           <div className="flex flex-col md:flex-row justify-between items-stretch gap-12 mb-16">
