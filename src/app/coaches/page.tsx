@@ -75,14 +75,14 @@ const CoachesPage = () => {
         </div>
       </div>
       <main className="relative z-10 -mt-48 container mx-auto px-6 lg:px-8 pb-24">
-        <div className="max-w-xl mb-16">
-          <h1 className="text-6xl md:text-7xl font-extrabold uppercase tracking-tight">
-            Our Coaches
-          </h1>
-          <div className="w-32 h-1.5 bg-red-600 mt-4"></div>
-        </div>
         <div className="flex flex-col md:flex-row justify-between items-stretch gap-12 mb-16">
             <div className="w-1/2 space-y-6 text-gray-300 leading-relaxed">
+                <div>
+                    <h1 className="text-6xl md:text-7xl font-extrabold uppercase tracking-tight">
+                        Our Coaches
+                    </h1>
+                    <div className="w-32 h-1.5 bg-red-600 mt-4"></div>
+                </div>
                 <p className="font-bold text-white text-lg">With years of experience both in coaching and competing, you will not find a more well rounded and professional coaching team to help you achieve your goals.</p>
                 <p>Our coaching is rooted in purpose and clarity: to help students reach personal and professional goals through structured, meaningful training. We focus on developing a conceptual framework for understanding physical conflict—skills that extend beyond the mat into real life.</p>
                 <p>We teach and train through three interconnected lenses. This multi-faceted approach lets us coach with intention and adaptability, honoring the individual journey of each student.</p>
