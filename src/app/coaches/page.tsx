@@ -63,10 +63,10 @@ const CoachesPage = () => {
   return (
     <div className="bg-black text-white font-sans">
       
-      {/* Hero and Main Content sections remain unchanged */}
-      <div className="relative h-[60vh] min-h-[550px] overflow-hidden flex items-center justify-center">
+      {/* Responsive Hero Section */}
+      <div className="relative w-full" style={{ paddingBottom: '56.25%' }}> {/* 16:9 Aspect Ratio */}
         <div
-          className="absolute inset-0 bg-cover -top-80 filter grayscale"
+          className="absolute inset-0 bg-cover bg-top filter grayscale"
           style={{
             backgroundImage: "url('https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e43e0279ad2b357d6c0f26_67f85e7e1dfe540942d24018_489283717_1143059611166111_4972771042462498311_n.jpg')",
           }}
@@ -74,11 +74,13 @@ const CoachesPage = () => {
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/6 to-black"></div>
         </div>
       </div>
-      <main className="relative z-10 -mt-48 container mx-auto px-6 lg:px-8 pb-24">
+
+      {/* Responsive Main Content */}
+      <main className="relative z-10 -mt-24 sm:-mt-48 container mx-auto px-4 sm:px-6 lg:px-8 pb-24">
         <div className="flex flex-col md:flex-row justify-between items-stretch gap-12 mb-16">
-            <div className="w-1/2 space-y-6 text-gray-300 leading-relaxed">
+            <div className="w-full md:w-1/2 space-y-6 text-gray-300 leading-relaxed">
                 <div>
-                    <h1 className="text-6xl md:text-7xl font-extrabold uppercase tracking-tight">
+                    <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold uppercase tracking-tight">
                         Our Coaches
                     </h1>
                     <div className="w-32 h-1.5 bg-red-600 mt-4"></div>
@@ -87,7 +89,7 @@ const CoachesPage = () => {
                 <p>Our coaching is rooted in purpose and clarity: to help students reach personal and professional goals through structured, meaningful training. We focus on developing a conceptual framework for understanding physical conflict—skills that extend beyond the mat into real life.</p>
                 <p>We teach and train through three interconnected lenses. This multi-faceted approach lets us coach with intention and adaptability, honoring the individual journey of each student.</p>
             </div>
-            <div className="flex flex-col w-1/2 gap-4">
+            <div className="w-full md:w-1/2 flex flex-col gap-4">
               {
                 [{
                   title: "STREET",

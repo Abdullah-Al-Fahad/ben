@@ -269,9 +269,9 @@ const MainContent = () => {
 
       {/* Coaches Section */}
       <section id="coaches" className="bg-black">
-        <div className="relative h-[60vh] min-h-[550px] overflow-hidden flex items-center justify-center">
+        <div className="relative w-full" style={{ paddingBottom: '56.25%' }}> {/* 16:9 Aspect Ratio */}
           <div
-            className="absolute inset-0 bg-cover -top-80 filter grayscale"
+            className="absolute inset-0 bg-cover bg-top filter grayscale"
             style={{
               backgroundImage: "url('https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e43e0279ad2b357d6c0f26_67f85e7e1dfe540942d24018_489283717_1143059611166111_4972771042462498311_n.jpg')"
             }}

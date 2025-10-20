@@ -3,9 +3,9 @@ import Image from 'next/image';
 
 const OurGym = () => {
   return (
-    <section className="bg-black">
+    <section className="bg-black text-white">
       {/* Hero Section with Background Image */}
-      <div className="relative w-full h-[50vh] min-h-[400px] flex items-center justify-start text-white">
+      <div className="relative w-full h-[50vh] min-h-[300px] sm:min-h-[400px] flex items-center justify-start">
         {/* Background Image using Next.js Image component for optimization */}
         <Image
           src="https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e43e0279ad2b357d6c0f2d_Large_Banner.webp"
@@ -20,14 +20,14 @@ const OurGym = () => {
         
         {/* Content */}
         <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-          <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold tracking-wide uppercase">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-wide uppercase">
             Our Gym
           </h1>
         </div>
       </div>
 
       {/* White Divider Line */}
-      <div className="h-1 w-full bg-white"></div>
+      <div className="h-px w-full bg-gray-700"></div>
 
       {/* About Section */}
       <div className="bg-black py-16 sm:py-24">
