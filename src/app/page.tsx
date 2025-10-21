@@ -136,10 +136,10 @@ const FeaturesSection = () => {
             <div>
               <SectionTitle title="Disciplines" />
               <ul className="mt-8 space-y-4">
-                <DisciplineLink href="#">Brazillian Jiu-Jitsu</DisciplineLink>
-                <DisciplineLink href="#">Muay Thai</DisciplineLink>
-                <DisciplineLink href="#">Mixed Martial Arts</DisciplineLink>
-                <DisciplineLink href="#">Fitness</DisciplineLink>
+                <DisciplineLink href="/disciplines/jutsu">Brazillian Jiu-Jitsu</DisciplineLink>
+                <DisciplineLink href="/disciplines/mua-thai">Muay Thai</DisciplineLink>
+                <DisciplineLink href="/disciplines/mma">Mixed Martial Arts</DisciplineLink>
+                <DisciplineLink href="/disciplines/fitness">Fitness</DisciplineLink>
               </ul>
             </div>
             <div>

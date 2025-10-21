@@ -23,7 +23,7 @@ const navItems: NavItem[] = [
     dropdown: [
       { name: "The Art of Muay Thai", href: "/disciplines/mua-thai" },
       { name: "Brazilian Jiu Jitsu (BJJ)", href: "/disciplines/jutsu" },
-      { name: "Mixed Martial Arts (MMA)", href: "/disciplines/mua-thai" },
+      { name: "Mixed Martial Arts (MMA)", href: "/disciplines/mma" },
       { name: "Fitness", href: "/disciplines/fitness" },
     ],
   },
