@@ -95,7 +95,7 @@ export default function SignUpPage() {
           <div className={`text-center md:text-left ${isVisible && 'animate-fade-in-up'}`} style={{ animationDelay: '0.2s' }}>
             <h2 className="text-4xl font-bold mb-2">Create Your Account</h2>
             <p className="text-neutral-400 mb-8">
-              Already a warrior? <a href="/login" className="font-bold text-red-500 hover:underline">Log In</a>
+              Already a warrior? <a href="/admin/login" className="font-bold text-red-500 hover:underline">Log In</a>
             </p>
           </div>
 

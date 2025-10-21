@@ -1,64 +1,50 @@
+
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { coaches } from '@/lib/coaches';
-import { Coach } from '@/lib/types';
+import Link from 'next/link';
 
-export default function EditCoachPage() {
-  const params = useParams();
-  const { id } = params;
-  const [coach, setCoach] = useState<Coach | null>(null);
-
-  useEffect(() => {
-    if (id) {
-      const coachData = coaches.find((c) => c.id === parseInt(id as string));
-      setCoach(coachData || null);
-    }
-  }, [id]);
-
-  if (!coach) {
-    return <div>Loading...</div>;
-  }
-
+export default function AddCoachPage() {
   return (
     <div className="container mx-auto py-10 px-4 sm:px-6 lg:px-8">
       <Card>
         <CardHeader>
-          <CardTitle>Edit Coach: {coach.name}</CardTitle>
+          <CardTitle>Add New Coach</CardTitle>
         </CardHeader>
         <CardContent className="p-4 sm:p-6">
           <form className="space-y-6">
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Name</label>
-              <Input id="name" defaultValue={coach.name} />
+              <Input id="name" />
             </div>
             <div>
               <label htmlFor="slug" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Slug</label>
-              <Input id="slug" defaultValue={coach.slug} />
+              <Input id="slug" />
             </div>
             <div>
               <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Image URL</label>
-              <Input id="imageUrl" defaultValue={coach.imageUrl} />
+              <Input id="imageUrl" />
             </div>
             <div>
               <label htmlFor="specialties" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Specialties (comma-separated)</label>
-              <Input id="specialties" defaultValue={coach.specializations.join(', ')} />
+              <Input id="specialties" />
             </div>
             <div>
               <label htmlFor="achievements" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Achievements (one per line)</label>
-              <Textarea id="achievements" defaultValue={coach.certifications.join('\n')} />
+              <Textarea id="achievements" />
             </div>
             <div>
               <label htmlFor="bio" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Bio (one paragraph per line)</label>
-              <Textarea id="bio" defaultValue={coach.bio} />
+              <Textarea id="bio" />
             </div>
             <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
-              <Button type="submit">Save Changes</Button>
+              <Button type="submit">Add Coach</Button>
+              <Link href="/admin/coaches">
+                <Button variant="outline">Cancel</Button>
+              </Link>
             </div>
           </form>
         </CardContent>

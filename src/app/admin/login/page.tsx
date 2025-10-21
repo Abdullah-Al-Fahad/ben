@@ -34,6 +34,7 @@ export default function LoginPage() {
   };
 
   return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950">
       <Card className="w-full max-w-md shadow-xl">
         <CardHeader className="text-center space-y-4">
           <Image src="/globe.svg" alt="Logo" width={80} height={80} className="mx-auto" />
@@ -60,5 +61,6 @@ export default function LoginPage() {
           </form>
         </CardContent>
       </Card>
+    </div>
   );
 }

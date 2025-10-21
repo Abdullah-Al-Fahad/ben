@@ -1,239 +1,182 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { PricingSection, PricingTier } from '@/lib/types';
 import { Button } from '@/components/ui/button';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { MoreHorizontal, PlusCircle, FileEdit, Trash2, Star } from 'lucide-react';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { PricingModal } from './PricingModal';
-import { motion } from 'framer-motion';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { adultPlans, addOnPlans, kidsPlans } from '@/lib/pricingData';
+import { AdultPlan, AddOnPlan, KidsPlan } from '@/lib/types';
+import { PlusCircle, Edit, Trash2 } from 'lucide-react';
+import Link from 'next/link';
 
 export default function ManagePricingPage() {
-  const [pricingSections, setPricingSections] = useState<PricingSection[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedPricingId, setSelectedPricingId] = useState<string | null>(null);
-
-  const fetchPricing = async () => {
-    const response = await fetch('/api/pricing');
-    const data = await response.json();
-    setPricingSections(Array.isArray(data) ? data : []);
-  };
-
-  useEffect(() => {
-    fetchPricing();
-  }, []);
-
-  const handleDelete = async (id: string) => {
-    if (window.confirm('Are you sure you want to delete this plan?')) {
-      try {
-        const response = await fetch(`/api/pricing/${id}`, { method: 'DELETE' });
-        if (response.ok) {
-          fetchPricing();
-        }
-      } catch (error) {
-        console.error('An error occurred:', error);
-      }
-    }
-  };
-
-  const openModal = (pricingId?: string) => {
-    setSelectedPricingId(pricingId || null);
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setSelectedPricingId(null);
-    setIsModalOpen(false);
-    fetchPricing();
-  };
-
-    const allTiers = pricingSections.flatMap(section => 
-
-      section.tiers.map(tier => ({
-
-          ...tier,
-
-          sectionTitle: section.title
-
-      }))
-
-    );
-
-  
-
-    return (
-
-      <motion.div
-
-        initial={{ opacity: 0, y: 20 }}
-
-        animate={{ opacity: 1, y: 0 }}
-
-        transition={{ duration: 0.5 }}
-
-        className="container mx-auto py-10"
-
-      >
-
-        <Card className="bg-white/50 dark:bg-white/10 backdrop-blur-lg border border-gray-200 dark:border-white/20 text-gray-800 dark:text-white rounded-xl shadow-lg">
-
-          <CardHeader className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
-
-            <div>
-
-              <CardTitle className="text-3xl font-bold">Manage Pricing</CardTitle>
-
-              <CardDescription className="text-gray-600 dark:text-gray-300 mt-1">
-
-                Create, edit, or remove pricing plans.
-
-              </CardDescription>
-
-            </div>
-
-            <Button 
-
-              onClick={() => openModal()} 
-
-              className="mt-4 sm:mt-0 bg-purple-600 text-white hover:bg-purple-700 transition-all duration-200"
-
-            >
-
-              <PlusCircle className="mr-2 h-4 w-4" /> Add New Plan
-
+  return (
+    <div className="container mx-auto py-10">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold">Manage Pricing</h1>
+        <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+          <Link href="/admin/pricing/adult/add">
+            <Button>
+              <PlusCircle className="mr-2 h-4 w-4" /> Add Adult Plan
             </Button>
+          </Link>
+          <Link href="/admin/pricing/addon/add">
+            <Button>
+              <PlusCircle className="mr-2 h-4 w-4" /> Add Add-on Plan
+            </Button>
+          </Link>
+          <Link href="/admin/pricing/kids/add">
+            <Button>
+              <PlusCircle className="mr-2 h-4 w-4" /> Add Kids Plan
+            </Button>
+          </Link>
+        </div>
+      </div>
 
+      <div className="space-y-8">
+        {/* Adult Plans Card */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Adult Plans</CardTitle>
           </CardHeader>
-
           <CardContent>
-
             <div className="overflow-x-auto">
-
-              <Table className="min-w-full">
-
+              {/* MODIFICATION: Added table-fixed */}
+              <Table className="min-w-full table-fixed">
                 <TableHeader>
-
-                  <TableRow className="border-b border-gray-200 dark:border-white/20">
-
-                    <TableHead className="font-semibold text-gray-800 dark:text-white">Plan Name</TableHead>
-
-                    <TableHead className="font-semibold text-gray-800 dark:text-white">Price</TableHead>
-
-                    <TableHead className="font-semibold text-gray-800 dark:text-white">Period</TableHead>
-
-                    <TableHead className="font-semibold text-gray-800 dark:text-white">Section</TableHead>
-
-                    <TableHead className="font-semibold text-gray-800 dark:text-white">Featured</TableHead>
-
-                    <TableHead className="text-right font-semibold text-gray-800 dark:text-white">Actions</TableHead>
-
+                  <TableRow>
+                    {/* MODIFICATION: Added width classes */}
+                    <TableHead className="w-[40%]">Title</TableHead>
+                    <TableHead className="w-[20%]">Price</TableHead>
+                    <TableHead className="w-[25%]">Term</TableHead>
+                    <TableHead className="w-[15%]">Actions</TableHead>
                   </TableRow>
-
                 </TableHeader>
-
                 <TableBody>
-
-                  {allTiers.map((plan) => (
-
-                    <TableRow key={plan.id} className="border-b border-gray-200 dark:border-white/10 hover:bg-gray-100/50 dark:hover:bg-white/5">
-
-                      <TableCell className="font-medium whitespace-nowrap">{plan.name}</TableCell>
-
-                      <TableCell>{plan.price}</TableCell>
-
-                      <TableCell>{plan.period?.split('for ')[1] || plan.period}</TableCell>
-
-                      <TableCell>{plan.sectionTitle}</TableCell>
-
-                      <TableCell>{plan.isFeatured ? <Star className="h-5 w-5 text-yellow-400" /> : '-'}</TableCell>
-
-                      <TableCell className="text-right">
-
-                        <DropdownMenu>
-
-                          <DropdownMenuTrigger asChild>
-
-                            <Button variant="ghost" className="h-8 w-8 p-0 hover:bg-gray-200 dark:hover:bg-white/10">
-
-                              <span className="sr-only">Open menu</span>
-
-                              <MoreHorizontal className="h-4 w-4" />
-
+                  {adultPlans.map((plan: AdultPlan, index) => (
+                    <TableRow key={index} className="flex flex-col sm:table-row border-b sm:border-none">
+                      <TableCell className="sm:hidden font-bold">Title:</TableCell>
+                      <TableCell className="sm:table-cell">{plan.title}</TableCell>
+                      <TableCell className="sm:hidden font-bold">Price:</TableCell>
+                      <TableCell className="sm:table-cell">{plan.price}</TableCell>
+                      <TableCell className="sm:hidden font-bold">Term:</TableCell>
+                      <TableCell className="sm:table-cell">{plan.term}</TableCell>
+                      <TableCell className="sm:hidden font-bold">Actions:</TableCell>
+                      <TableCell className="sm:table-cell">
+                        <div className="flex items-center space-x-2">
+                            <Link href={`/admin/pricing/adult/${index}`}>
+                                <Button variant="outline" size="icon">
+                                    <Edit className="h-4 w-4" />
+                                </Button>
+                            </Link>
+                            <Button variant="destructive" size="icon">
+                              <Trash2 className="h-4 w-4" />
                             </Button>
-
-                          </DropdownMenuTrigger>
-
-                          <DropdownMenuContent align="end" className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-800 dark:text-white">
-
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-
-                            <DropdownMenuItem onClick={() => openModal(plan.id)} className="cursor-pointer hover:!bg-gray-100 dark:hover:!bg-gray-700">
-
-                              <FileEdit className="mr-2 h-4 w-4" />
-
-                              Edit
-
-                            </DropdownMenuItem>
-
-                            <DropdownMenuItem onClick={() => handleDelete(plan.id)} className="cursor-pointer text-red-500 dark:text-red-400 hover:!text-red-500 dark:hover:!text-red-400 hover:!bg-red-100 dark:hover:!bg-red-900/50">
-
-                              <Trash2 className="mr-2 h-4 w-4" />
-
-                              Delete
-
-                            </DropdownMenuItem>
-
-                          </DropdownMenuContent>
-
-                        </DropdownMenu>
-
+                        </div>
                       </TableCell>
-
                     </TableRow>
-
                   ))}
-
                 </TableBody>
-
               </Table>
-
             </div>
-
           </CardContent>
-
         </Card>
 
-  
+        {/* Add-On Plans Card */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Add-On Plans</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+               {/* MODIFICATION: Added table-fixed */}
+              <Table className="min-w-full table-fixed">
+                <TableHeader>
+                  <TableRow>
+                    {/* MODIFICATION: Added width classes */}
+                    <TableHead className="w-[40%]">Title</TableHead>
+                    <TableHead className="w-[20%]">Price</TableHead>
+                    <TableHead className="w-[25%]">Term</TableHead>
+                    <TableHead className="w-[15%]">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {addOnPlans.map((plan: AddOnPlan, index) => (
+                    <TableRow key={index} className="flex flex-col sm:table-row border-b sm:border-none">
+                      <TableCell className="sm:hidden font-bold">Title:</TableCell>
+                      <TableCell className="sm:table-cell">{plan.title}</TableCell>
+                      <TableCell className="sm:hidden font-bold">Price:</TableCell>
+                      <TableCell className="sm:table-cell">{plan.price}</TableCell>
+                      <TableCell className="sm:hidden font-bold">Term:</TableCell>
+                      <TableCell className="sm:table-cell">{plan.term}</TableCell>
+                      <TableCell className="sm:hidden font-bold">Actions:</TableCell>
+                      <TableCell className="sm:table-cell">
+                        <div className="flex items-center space-x-2">
+                            <Link href={`/admin/pricing/addon/${index}`}>
+                                <Button variant="outline" size="icon">
+                                    <Edit className="h-4 w-4" />
+                                </Button>
+                            </Link>
+                            <Button variant="destructive" size="icon">
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
 
-        <PricingModal
-
-          pricingId={selectedPricingId}
-
-          isOpen={isModalOpen}
-
-          onClose={closeModal}
-
-        />
-
-      </motion.div>
-
-    );
-
-  }
-
-  
+        {/* Kids Plans Card */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Kids Plans</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+               {/* MODIFICATION: Added table-fixed */}
+              <Table className="min-w-full table-fixed">
+                <TableHeader>
+                  <TableRow>
+                    {/* MODIFICATION: Added width classes */}
+                    <TableHead className="w-[40%]">Title</TableHead>
+                    <TableHead className="w-[20%]">Price</TableHead>
+                    <TableHead className="w-[25%]">Term</TableHead>
+                    <TableHead className="w-[15%]">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {kidsPlans.map((plan: KidsPlan, index) => (
+                    <TableRow key={index} className="flex flex-col sm:table-row border-b sm:border-none">
+                      <TableCell className="sm:hidden font-bold">Title:</TableCell>
+                      <TableCell className="sm:table-cell">{plan.title}</TableCell>
+                      <TableCell className="sm:hidden font-bold">Price:</TableCell>
+                      <TableCell className="sm:table-cell">{plan.price}</TableCell>
+                      <TableCell className="sm:hidden font-bold">Term:</TableCell>
+                      <TableCell className="sm:table-cell">{plan.term}</TableCell>
+                      <TableCell className="sm:hidden font-bold">Actions:</TableCell>
+                      <TableCell className="sm:table-cell">
+                        <div className="flex items-center space-x-2">
+                            <Link href={`/admin/pricing/kids/${index}`}>
+                                <Button variant="outline" size="icon">
+                                    <Edit className="h-4 w-4" />
+                                </Button>
+                            </Link>
+                            <Button variant="destructive" size="icon">
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}
