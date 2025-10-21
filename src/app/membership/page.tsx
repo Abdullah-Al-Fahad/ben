@@ -167,18 +167,27 @@ const PricingPage = () => {
             <div className="container mx-auto max-w-8xl px-4 py-20">
                 
                 {/* Header */}
-                <div className="flex flex-col md:flex-row justify-between md:items-center mb-8">
-                    <div>
-                        <h1 className="text-5xl lg:text-6xl font-black tracking-wider">PROGRAM PRICING</h1>
-                        <p className="text-lg text-gray-300 mt-2">Currently we have 48 Classes covering over 50 hours a week of instruction in class times.</p>
-                    </div>
-                    <button className="flex items-stretch bg-red-600  text-base hover:bg-white hover:text-red-600 transition-colors duration-300 self-start md:self-auto">
-                        <span className="pl-8 pr-6 py-5 font-bold text-xl">VIEW FULL PRICING</span>
-                        <span className="flex items-center px-4" style={{borderLeft: '2px solid rgba(0,0,0,0.2)'}}>
-                           <ArrowIcon />
-                        </span>
-                    </button>
-                </div>
+               <div className="flex flex-col md:flex-row justify-between md:items-center mb-8">
+  <div>
+    <h1 className="text-5xl lg:text-6xl font-black tracking-wider">PROGRAM PRICING</h1>
+    <p className="text-lg text-gray-300 mt-2">
+      Currently we have 48 Classes covering over 50 hours a week of instruction in class times.
+    </p>
+  </div>
+
+  <a
+    href="https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68f184a3ec261e1127d49e76_Warrior%20Price%20List%20(current%20as%20of%20Feb%202024).pdf"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="flex items-stretch bg-red-600 text-base hover:bg-white hover:text-red-600 transition-colors duration-300 self-start md:self-auto"
+  >
+    <span className="pl-8 pr-6 py-5 font-bold text-xl">VIEW FULL PRICING</span>
+    <span className="flex items-center px-4" style={{ borderLeft: '2px solid rgba(0,0,0,0.2)' }}>
+      <ArrowIcon />
+    </span>
+  </a>
+</div>
+
 
                 {/* Adults Section */}
                 <section>

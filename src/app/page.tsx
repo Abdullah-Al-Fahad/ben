@@ -393,45 +393,96 @@ const MainContent = () => {
       {/* Schedule Section */}
       {/* FIX APPLIED HERE */}
       <section id="schedule" className="py-16 sm:py-24 px-4 bg-black scroll-mt-28">
-        <div className="container mx-auto">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-            <h2 className="text-3xl sm:text-4xl font-black uppercase tracking-wider text-white">SCHEDULE</h2>
-            <button className="bg-red-600 text-white font-bold py-3 px-6 text-sm flex items-center space-x-2 hover:bg-red-700 transition-colors">
-              <span className="hidden sm:inline">PRINT SCHEDULE</span>
-              <span className="sm:hidden">PRINT</span>
-              <FaArrowRight className="transform -rotate-90 sm:rotate-0"/>
-            </button>
-          </div>
-          <div className="flex flex-wrap gap-2 mb-8 border-b-2 border-gray-800">
-            {['All', 'Kids', 'Adult', 'BJJ', 'Muay Thai'].map(filter => (
-              <button key={filter} className={`py-2 px-4 text-sm font-semibold text-gray-400 hover:text-white transition-colors border-b-2 ${filter === 'All' ? 'border-red-600 text-white' : 'border-transparent'}`}>{filter}</button>
-            ))}
-          </div>
-          <div className="flex flex-wrap gap-2 mb-8">
-            {['Full Week', 'Mon, Oct 13', 'Tue, Oct 14', 'Wed, Oct 15', 'Thu, Oct 16', 'Fri, Oct 17', 'Today: Sat, Oct 18'].map(day => (
-              <button key={day} className={`py-3 px-5 text-sm font-bold rounded-md ${day.includes('Today') ? 'bg-red-600 text-white' : 'bg-[#1a1a1a] text-gray-300 hover:bg-gray-800'}`}>
-                {day.split(':')[0]}
-              </button>
-            ))}
-          </div>
-          <div className="bg-[#1a1a1a] p-1 rounded-lg">
-            <div className="space-y-1">
-              {scheduleData['Sat, Oct 18'].map((item, index) => (
-                <div key={index} className="grid grid-cols-1 sm:grid-cols-12 gap-x-4 gap-y-2 items-center bg-[#2d2d2d] p-3 rounded-md">
-                  <div className="col-span-full sm:col-span-2 font-bold text-lg text-gray-400">{item.time}</div>
-                  <div className="col-span-full sm:col-span-6">
-                    <h4 className="font-bold text-xl text-white">{item.name}</h4>
-                    <p className="text-gray-400 text-sm">{item.level}</p>
-                  </div>
-                  <div className="col-span-full sm:col-span-4 text-left sm:text-right">
-                    <span className={`text-xs font-bold py-2 px-3 rounded-full ${item.category.includes('Muay Thai') ? 'bg-purple-900 text-purple-300' : 'bg-blue-900 text-blue-300'}`}>{item.category}</span>
-                  </div>
-                </div>
-              ))}
+  <div className="container mx-auto">
+    {/* Header section with title and print button */}
+    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+      <h2 className="text-3xl sm:text-4xl font-black uppercase tracking-wider text-white">
+        SCHEDULE
+      </h2>
+      <a
+        href="https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e43e0279ad2b357d6c0f44_schedule-june-2025%20(2)%20(1).pdf"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="bg-red-600 text-white font-bold py-3 px-6 text-sm flex items-center space-x-2 hover:bg-red-700 transition-colors rounded-md"
+      >
+        <span className="hidden sm:inline">PRINT SCHEDULE</span>
+        <span className="sm:hidden">PRINT</span>
+        <FaArrowRight className="transform -rotate-90 sm:rotate-0" />
+      </a>
+    </div>
+
+    {/* Filter buttons */}
+    <div className="flex flex-wrap gap-2 mb-8 border-b-2 border-gray-800">
+      {['All', 'Kids', 'Adult', 'BJJ', 'Muay Thai'].map(filter => (
+        <button
+          key={filter}
+          className={`py-2 px-4 text-sm font-semibold text-gray-400 hover:text-white transition-colors border-b-2 ${
+            filter === 'All'
+              ? 'border-red-600 text-white'
+              : 'border-transparent'
+          }`}
+        >
+          {filter}
+        </button>
+      ))}
+    </div>
+
+    {/* Day buttons */}
+    <div className="flex flex-wrap gap-2 mb-8">
+      {[
+        'Full Week',
+        'Mon, Oct 13',
+        'Tue, Oct 14',
+        'Wed, Oct 15',
+        'Thu, Oct 16',
+        'Fri, Oct 17',
+        'Today: Sat, Oct 18',
+      ].map(day => (
+        <button
+          key={day}
+          className={`py-3 px-5 text-sm font-bold rounded-md ${
+            day.includes('Today')
+              ? 'bg-red-600 text-white'
+              : 'bg-[#1a1a1a] text-gray-300 hover:bg-gray-800'
+          }`}
+        >
+          {day.split(':')[0]}
+        </button>
+      ))}
+    </div>
+
+    {/* Schedule content */}
+    <div className="bg-[#1a1a1a] p-1 rounded-lg">
+      <div className="space-y-1">
+        {scheduleData['Sat, Oct 18'].map((item, index) => (
+          <div
+            key={index}
+            className="grid grid-cols-1 sm:grid-cols-12 gap-x-4 gap-y-2 items-center bg-[#2d2d2d] p-3 rounded-md"
+          >
+            <div className="col-span-full sm:col-span-2 font-bold text-lg text-gray-400">
+              {item.time}
+            </div>
+            <div className="col-span-full sm:col-span-6">
+              <h4 className="font-bold text-xl text-white">{item.name}</h4>
+              <p className="text-gray-400 text-sm">{item.level}</p>
+            </div>
+            <div className="col-span-full sm:col-span-4 text-left sm:text-right">
+              <span
+                className={`text-xs font-bold py-2 px-3 rounded-full ${
+                  item.category.includes('Muay Thai')
+                    ? 'bg-purple-900 text-purple-300'
+                    : 'bg-blue-900 text-blue-300'
+                }`}
+              >
+                {item.category}
+              </span>
             </div>
           </div>
-        </div>
-      </section>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
 
       {/* Pricing Section */}
       {/* FIX APPLIED HERE */}
