@@ -95,7 +95,7 @@ const VideoSection = () => {
             playsInline
           >
             <source
-              src="https://www.dropbox.com/scl/fi/vcz6n8i01h3p43md584pn/Copy-of-promo-vid-horizontal-3.mp4?rlkey=nx9t0luzuk9x86sgwbkks3sk1&raw=1"
+              src="/123.mp4"
               type="video/mp4"
             />
             Your browser does not support the video tag.
@@ -128,7 +128,8 @@ const FeaturesSection = () => {
     </li>
   );
   return (
-    <section id="disciplines" className="bg-[#121212] text-white py-16 sm:py-24 px-4 overflow-hidden">
+    // FIX APPLIED HERE
+    <section id="disciplines" className="bg-[#121212] text-white py-16 sm:py-24 px-4 overflow-hidden scroll-mt-28">
       <div className="container mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
           <div className="flex flex-col space-y-16">
@@ -185,7 +186,8 @@ const FeaturesSection = () => {
 const CoreValuesSection = () => {
 
   return (
-    <section id="who-we-are" className="bg-black text-white py-16 sm:py-24 px-4">
+    // FIX APPLIED HERE
+    <section id="who-we-are" className="bg-black text-white py-16 sm:py-24 px-4 scroll-mt-28">
       <div className="container mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
           <div>
@@ -301,7 +303,8 @@ const MainContent = () => {
       <CoreValuesSection />
 
       {/* Coaches Section */}
-      <section id="coaches" className="bg-black">
+      {/* FIX APPLIED HERE */}
+      <section id="coaches" className="bg-black scroll-mt-28">
         <div className="relative w-full" style={{ paddingBottom: '56.25%' }}> {/* 16:9 Aspect Ratio */}
           <div
             className="absolute inset-0 bg-cover bg-top filter grayscale"
@@ -388,7 +391,8 @@ const MainContent = () => {
       </section>
 
       {/* Schedule Section */}
-      <section id="schedule" className="py-16 sm:py-24 px-4 bg-black">
+      {/* FIX APPLIED HERE */}
+      <section id="schedule" className="py-16 sm:py-24 px-4 bg-black scroll-mt-28">
         <div className="container mx-auto">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
             <h2 className="text-3xl sm:text-4xl font-black uppercase tracking-wider text-white">SCHEDULE</h2>
@@ -430,14 +434,16 @@ const MainContent = () => {
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-16 sm:py-24 px-4 bg-[#0d0d0d]">
+      {/* FIX APPLIED HERE */}
+      <section id="pricing" className="py-16 sm:py-24 px-4 bg-[#0d0d0d] scroll-mt-28">
         <div className="container mx-auto">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
             <div>
               <h2 className="text-3xl sm:text-4xl font-black mb-2 uppercase text-white">Program Pricing</h2>
               <p className="text-gray-400">Currently we have 48 Classes covering over 50 hours a week of instruction in class times.</p>
             </div>
-            <a href="#" className="bg-red-600 text-white font-bold py-3 px-6 sm:py-4 sm:px-8 text-sm flex items-center space-x-2 hover:bg-red-700 transition-colors rounded-md">
+            <a href="https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68f184a3ec261e1127d49e76_Warrior%20Price%20List%20(current%20as%20of%20Feb%202024).pdf"  target="_blank"
+  rel="noopener noreferrer" className="bg-red-600 text-white font-bold py-3 px-6 sm:py-4 sm:px-8 text-sm flex items-center space-x-2 hover:bg-red-700 transition-colors rounded-md">
               <span>VIEW FULL PRICING</span>
               <FaArrowRight />
             </a>

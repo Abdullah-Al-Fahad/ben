@@ -15,7 +15,7 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { name: "Our Gym", href: "/ourgym" },
-  { name: "Who We Are", href: "#who-we-are" },
+  { name: "Who We Are", href: "/#who-we-are" },
   {
     name: "Disciplines",
     href: "#disciplines",
