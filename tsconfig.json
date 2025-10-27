@@ -46,7 +46,8 @@
     "incremental": true,
     "types": [
       "react",
-      "react-dom"
+      "react-dom",
+      "node"
     ],
     "plugins": [
       {

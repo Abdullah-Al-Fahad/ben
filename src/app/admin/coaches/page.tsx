@@ -3,12 +3,37 @@
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { coaches } from '@/lib/coaches';
-import { Coach } from '@/lib/types';
 import { PlusCircle, Edit, Trash2 } from 'lucide-react';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
+
+interface Coach {
+  id: string;
+  name: string;
+  bio: string;
+  image: string;
+  slug: string;
+}
 
 export default function ManageCoachesPage() {
+  const [coaches, setCoaches] = useState<Coach[]>([]);
+
+  useEffect(() => {
+    const fetchCoaches = async () => {
+      const res = await fetch('/api/coaches');
+      const data = await res.json();
+      setCoaches(data);
+    };
+    fetchCoaches();
+  }, []);
+
+  const handleDelete = async (id: string) => {
+    await fetch(`/api/coaches/${id}`, {
+      method: 'DELETE',
+    });
+    setCoaches(coaches.filter((coach) => coach.id !== id));
+  };
+
   return (
     <div className="container mx-auto py-10">
       <div className="flex justify-between items-center mb-8">
@@ -36,14 +61,14 @@ export default function ManageCoachesPage() {
                         <Edit className="h-4 w-4" />
                       </Button>
                     </Link>
-                    <Button variant="destructive" size="icon">
+                    <Button variant="destructive" size="icon" onClick={() => handleDelete(coach.id)}>
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <img src={coach.imageUrl} alt={coach.name} className="w-full h-48 object-cover rounded-md mb-4" />
-                  <p className="text-sm text-gray-500">{coach.role}</p>
+                  <img src={coach.image} alt={coach.name} className="w-full h-48 object-cover rounded-md mb-4" />
+                  <p className="text-sm text-gray-500">{coach.bio}</p>
                 </CardContent>
               </Card>
             ))}

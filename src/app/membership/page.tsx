@@ -19,126 +19,38 @@ const ArrowIcon = () => (
 
 
 // --- DATA --- //
-const adultPlansData = [
-    {
-        title: 'MUAY THAI ONLY',
-        description: 'Includes all open drill sessions, kickboxing, muay thai, and clinch adult classes, charged monthly.',
-        price: '119.99',
-        term: 'Per Month for 6 Months',
-        monthly: 'or $139.99 monthly',
-        features: [
-            { text: 'Access Fitness Equipment', included: true },
-            { text: 'Access to Open Gym', included: true },
-            { text: 'Access 6 Days / Week', included: true },
-            { text: 'Style Specific Group Classes', included: true },
-            { text: 'Access All Available Classes', included: false },
-            { text: 'Recovery Room', included: false },
-            { text: 'Included Private Lessons', included: false },
-        ]
-    },
-    {
-        title: 'JIU JITSU ONLY',
-        description: 'Includes all Brazilian Jiu-Jitsu (Gi and No-Gi), open drill times, and clinch classes.',
-        price: '119.99',
-        term: 'Per Month for 6 Months',
-        monthly: 'or $139.99 monthly',
-        features: [
-            { text: 'Access Fitness Equipment', included: true },
-            { text: 'Access to Open Gym', included: true },
-            { text: 'Access 6 Days / Week', included: true },
-            { text: 'Style Specific Group Classes', included: true },
-            { text: 'Access All Available Classes', included: false },
-            { text: 'Recovery Room', included: false },
-            { text: 'Included Private Lessons', included: false },
-        ]
-    },
-    {
-        title: 'ALL INCLUSIVE',
-        description: 'Includes all of our adult classes across each discipline.',
-        price: '139.99',
-        term: 'Per Month for 6 Months',
-        monthly: 'or $169.99 monthly',
-        features: [
-            { text: 'Access Fitness Equipment', included: true },
-            { text: 'Access to Open Gym', included: true },
-            { text: 'Access 6 Days / Week', included: true },
-            { text: 'All Group Classes', included: true },
-            { text: 'Access All Available Classes', included: true },
-            { text: 'Recovery Room', included: false },
-            { text: 'Included Private Lessons', included: false },
-        ]
-    },
-    {
-        title: 'PREMIER**',
-        description: 'Includes all of our adult classes across each discipline, one private lesson per month, and recovery room access.',
-        price: '199.99',
-        term: 'Per Month for 6 Months',
-        monthly: 'or $229.99 monthly',
-        features: [
-            { text: 'Access Fitness Equipment', included: true },
-            { text: 'Access to Open Gym', included: true },
-            { text: 'Access 6 Days / Week', included: true },
-            { text: 'All Group Classes', included: true },
-            { text: 'Access All Available Classes', included: true },
-            { text: 'Recovery Room', included: true },
-            { text: 'One Private Lesson per Month', included: true },
-        ]
-    }
-];
 
-const addOnPlansData = [
-    {
-        title: 'WAR COLLEGE',
-        description: 'FREE with the purchase of any 6 month membership. Access to our custom online curriculum. Complete with drills to practice at home, weekly updates, mindset training, and more. This is a contract add-on.',
-        price: '24.99',
-        term: 'Monthly',
-        note: 'FREE with the purchase of any 6 month membership.',
-        moreInfo: true
-    },
-    {
-        title: 'RECOVERY ROOM',
-        description: 'Access to recovery room, shower, sauna, and lockers. This is a contract add-on.',
-        price: '14.99',
-        term: 'Monthly'
-    }
-];
 
-const kidsPlansData = [
-    { title: 'MUAY THAI ONLY', price: '99.99', term: 'Per Month for 6 Months', monthly: 'or $109.99 monthly' },
-    { title: 'JIU JITSU ONLY', price: '99.99', term: 'Per Month for 6 Months', monthly: 'or $109.99 monthly' },
-    { title: 'ALL INCLUSIVE', price: '119.99', term: 'Per Month for 6 Months', monthly: 'or $129.99 monthly' }
-];
+
 
 
 // --- REUSABLE COMPONENTS --- //
 const PricingCard = ({ plan }) => (
     <div className="p-8">
-        <h3 className="text-3xl font-black tracking-[0.1em]">{plan.title}</h3>
+        <h3 className="text-3xl font-black tracking-[0.1em]">{plan.name}</h3>
         <p className="text-gray-400 mt-4 mb-6 min-h-[110px]">{plan.description}</p>
         <ul className="space-y-3 mb-8">
-            {plan.features.map(feature => (
-                <li key={feature.text} className={`flex items-center gap-x-3 ${feature.included ? 'text-gray-300' : 'text-gray-600'}`}>
-                    {feature.included ? <CheckIcon /> : <CrossIcon />}
-                    <span>{feature.text}</span>
+            {plan.features.split(',').map(feature => (
+                <li key={feature} className={`flex items-center gap-x-3 text-gray-300`}>
+                    <CheckIcon />
+                    <span>{feature}</span>
                 </li>
             ))}
         </ul>
         <div className="text-5xl font-black">${plan.price}</div>
-        <p className="mt-2 text-gray-300">{plan.term}</p>
-        <p className="text-gray-500">{plan.monthly}</p>
+        <p className="mt-2 text-gray-300">Per Month for 6 Months</p>
+        <p className="text-gray-500">or ${plan.price + 20} monthly</p>
     </div>
 );
 
 const AddOnCard = ({ plan }) => (
     <div className="p-8 h-full flex flex-col">
-        <h3 className="text-3xl font-black tracking-[0.1em]">{plan.title}</h3>
+        <h3 className="text-3xl font-black tracking-[0.1em]">{plan.name}</h3>
         <p className="text-gray-400 mt-4 mb-6">{plan.description}</p>
-        {plan.moreInfo && <a href="#" className="text-gray-300 underline mb-6">More info</a>}
         <div className="mt-auto">
             <div className="text-5xl font-black">${plan.price}</div>
             <div className="flex items-center gap-x-4">
-                <p className="mt-2 text-gray-300">{plan.term}</p>
-                {plan.note && <p className="text-gray-500">{plan.note}</p>}
+                <p className="mt-2 text-gray-300">Monthly</p>
             </div>
         </div>
     </div>
@@ -162,6 +74,27 @@ const SectionBanner = ({ title }) => (
 
 // --- MAIN PAGE COMPONENT --- //
 const PricingPage = () => {
+    const [adultPlansData, setAdultPlansData] = React.useState([]);
+    const [addOnPlansData, setAddOnPlansData] = React.useState([]);
+    const [kidsPlansData, setKidsPlansData] = React.useState([]);
+
+    React.useEffect(() => {
+        const fetchPricing = async () => {
+            try {
+                const pricingResponse = await fetch('/api/pricing');
+                const pricingData = await pricingResponse.json();
+                setAdultPlansData(pricingData.filter(p => p.type === 'adult'));
+                setKidsPlansData(pricingData.filter(p => p.type === 'kids'));
+
+                const addonResponse = await fetch('/api/addon');
+                const addonData = await addonResponse.json();
+                setAddOnPlansData(addonData);
+            } catch (error) {
+                console.error("Failed to fetch pricing data:", error);
+            }
+        };
+        fetchPricing();
+    }, []);
     return (
         <div className="bg-[#121212] text-white">
             <div className="container mx-auto max-w-8xl px-4 py-20">

@@ -1,25 +1,53 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { programs } from '@/lib/programsData';
-import { Program } from '@/lib/types';
+
+interface Program {
+  id: string;
+  name: string;
+  description: string;
+  image: string;
+}
 
 export default function EditProgramPage() {
   const params = useParams();
   const { id } = params;
   const [program, setProgram] = useState<Program | null>(null);
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [image, setImage] = useState('');
+  const router = useRouter();
 
   useEffect(() => {
     if (id) {
-      const programData = programs.find((p) => p.id === (id as string));
-      setProgram(programData || null);
+      const fetchProgram = async () => {
+        const res = await fetch(`/api/programs/${id}`);
+        const data = await res.json();
+        setProgram(data);
+        setName(data.name);
+        setDescription(data.description);
+        setImage(data.image);
+      };
+      fetchProgram();
     }
   }, [id]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await fetch(`/api/programs/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ name, description, image }),
+    });
+    router.push('/admin/programs');
+  };
 
   if (!program) {
     return <div>Loading...</div>;
@@ -32,41 +60,18 @@ export default function EditProgramPage() {
           <CardTitle>Edit Program: {program.name}</CardTitle>
         </CardHeader>
         <CardContent className="p-4 sm:p-6">
-          <form className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="heroImageUrl" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Hero Image URL</label>
-              <Input id="heroImageUrl" defaultValue={program.imageUrl} />
-            </div>
-            <div>
-              <label htmlFor="heroTitle" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Hero Title</label>
-              <Input id="heroTitle" defaultValue={program.name} />
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Name</label>
+              <Input id="name" value={name} onChange={(e) => setName(e.target.value)} />
             </div>
             <div>
               <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
-              <Textarea id="description" defaultValue={program.description} />
+              <Textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} />
             </div>
             <div>
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white">Subsections</h3>
-              <div className="space-y-4 mt-2">
-                <div>
-                  <label htmlFor="streetTitle" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Street Title</label>
-                  <Input id="streetTitle" defaultValue="STREET" />
-                  <label htmlFor="streetDescription" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mt-2">Street Description</label>
-                  <Textarea id="streetDescription" defaultValue="Training is grounded in real-world applicability. While rules exist in sport and training for safety, our focus is on adaptability beyond any one ruleset, preparing students for practical scenarios." />
-                </div>
-                <div>
-                  <label htmlFor="sportTitle" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Sport Title</label>
-                  <Input id="sportTitle" defaultValue="SPORT" />
-                  <label htmlFor="sportDescription" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mt-2">Sport Description</label>
-                  <Textarea id="sportDescription" defaultValue="Competition provides structure and feedback. Whether in controlled drilling or live events, improvement takes priority over temporary outcomes, ensuring lasting growth." />
-                </div>
-                <div>
-                  <label htmlFor="artTitle" className="block text-sm font--medium text-gray-700 dark:text-gray-300">Art Title</label>
-                  <Input id="artTitle" defaultValue="ART" />
-                  <label htmlFor="artDescription" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mt-2">Art Description</label>
-                  <Textarea id="artDescription" defaultValue="At its heart, Muay Thai is a journey. Students train not only for performance but for the joy of practice, the pursuit of truth in technique, and the challenge of self-discovery." />
-                </div>
-              </div>
+              <label htmlFor="image" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Image URL</label>
+              <Input id="image" value={image} onChange={(e) => setImage(e.target.value)} />
             </div>
             <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
               <Button type="submit">Save Changes</Button>

@@ -3,12 +3,36 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { schedule } from '@/lib/scheduleData';
-import { ScheduleEvent } from '@/lib/types';
 import { PlusCircle, Edit, Trash2 } from 'lucide-react';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
+
+interface Schedule {
+  id: string;
+  day: string;
+  time: string;
+  program: string;
+}
 
 export default function ManageSchedulePage() {
+  const [schedules, setSchedules] = useState<Schedule[]>([]);
+
+  useEffect(() => {
+    const fetchSchedules = async () => {
+      const res = await fetch('/api/schedule');
+      const data = await res.json();
+      setSchedules(data);
+    };
+    fetchSchedules();
+  }, []);
+
+  const handleDelete = async (id: string) => {
+    await fetch(`/api/schedule/${id}`, {
+      method: 'DELETE',
+    });
+    setSchedules(schedules.filter((schedule) => schedule.id !== id));
+  };
+
   return (
     <div className="container mx-auto py-10">
               <div className="flex justify-between items-center mb-8">
@@ -30,36 +54,26 @@ export default function ManageSchedulePage() {
             <Table className="min-w-full">
               <TableHeader>
                 <TableRow>
+                  <TableHead>Day</TableHead>
                   <TableHead>Time</TableHead>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Title</TableHead>
-                  <TableHead>Level</TableHead>
-                  <TableHead>Category</TableHead>
+                  <TableHead>Program</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {schedule.map((event: ScheduleEvent, index) => (
-                  <TableRow key={index} className="flex flex-col sm:table-row border-b sm:border-none">
-                    <TableCell className="sm:hidden font-bold">Time:</TableCell>
-                    <TableCell className="sm:table-cell">{event.time}</TableCell>
-                    <TableCell className="sm:hidden font-bold">Date:</TableCell>
-                    <TableCell className="sm:table-cell">2025-10-21</TableCell>
-                    <TableCell className="sm:hidden font-bold">Title:</TableCell>
-                    <TableCell className="sm:table-cell">{event.title}</TableCell>
-                    <TableCell className="sm:hidden font-bold">Level:</TableCell>
-                    <TableCell className="sm:table-cell">{event.level}</TableCell>
-                    <TableCell className="sm:hidden font-bold">Category:</TableCell>
-                    <TableCell className="sm:table-cell">{event.category}</TableCell>
-                    <TableCell className="sm:hidden font-bold">Actions:</TableCell>
-                    <TableCell className="sm:table-cell">
+                {schedules.map((schedule: Schedule) => (
+                  <TableRow key={schedule.id}>
+                    <TableCell>{schedule.day}</TableCell>
+                    <TableCell>{schedule.time}</TableCell>
+                    <TableCell>{schedule.program}</TableCell>
+                    <TableCell>
                       <div className="flex items-center space-x-2">
-                          <Link href={`/admin/schedule/${index}`}>
+                          <Link href={`/admin/schedule/${schedule.id}`}>
                               <Button variant="outline" size="icon">
                                   <Edit className="h-4 w-4" />
                               </Button>
                           </Link>
-                        <Button variant="destructive" size="icon">
+                        <Button variant="destructive" size="icon" onClick={() => handleDelete(schedule.id)}>
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>

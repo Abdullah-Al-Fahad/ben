@@ -7,42 +7,25 @@ import { ValueBlock } from '@/components/Landing/LandingCard';
 interface Coach {
     slug: string;
     name: string;
-    specialties: string[];
-    imageUrl: string;
+    bio: string;
+    image: string;
 }
 
-interface CoachDetailsData { [key: string]: CoachDetail; }
-
 const CoachesPage = () => {
-  const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
-  const [allCoachDetails, setAllCoachDetails] = useState<CoachDetailsData>({});
   const [coachesData, setCoachesData] = useState<Coach[]>([]);
 
   useEffect(() => {
     const fetchCoaches = async () => {
         try {
-            const response = await fetch('/coachDetails.json');
-            const data: CoachDetailsData = await response.json();
-            setAllCoachDetails(data);
-            const coachesList = Object.keys(data).map(slug => ({
-                slug,
-                name: data[slug].name,
-                specialties: data[slug].specialties,
-                imageUrl: data[slug].imageUrl,
-            }));
-            setCoachesData(coachesList);
+            const response = await fetch('/api/coaches');
+            const data: Coach[] = await response.json();
+            setCoachesData(data);
         } catch (error) {
-            console.error("Failed to fetch coach details:", error);
+            console.error("Failed to fetch coaches:", error);
         }
     };
     fetchCoaches();
   }, []);
-
-  const selectedCoachDetails = selectedSlug ? allCoachDetails[selectedSlug] : null;
-  
-  const handleCoachClick = (slug: string) => {
-    setSelectedSlug(slug);
-  };
 
   return (
     <div className="bg-black text-white font-sans">
@@ -102,13 +85,11 @@ const CoachesPage = () => {
           {coachesData.map(coach => (
             <motion.div 
               key={coach.slug} 
-              layoutId={coach.slug}
-              onClick={() => handleCoachClick(coach.slug)}
               className="group relative rounded-lg cursor-pointer"
             >
               <div className="relative h-80 bg-black rounded-lg overflow-hidden">
                 <motion.img 
-                  src={coach.imageUrl} 
+                  src={coach.image} 
                   alt={coach.name} 
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 group-hover:brightness-75"
                 />
@@ -124,11 +105,9 @@ const CoachesPage = () => {
                         {coach.name}
                     </motion.h3>
                     <div className="flex flex-wrap gap-2">
-                        {coach.specialties.map(spec => (
-                            <span key={spec} className="bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full">
-                                {spec}
-                            </span>
-                        ))}
+                        <span className="bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full">
+                            {coach.bio}
+                        </span>
                     </div>
                 </div>
               </div>
@@ -136,15 +115,6 @@ const CoachesPage = () => {
           ))}
         </div>
       </main>
-      <AnimatePresence>
-        {selectedSlug && selectedCoachDetails && (
-          <AnimatedCoachModal 
-            slug={selectedSlug} 
-            coach={selectedCoachDetails} 
-            onClose={() => setSelectedSlug(null)} 
-          />
-        )}
-      </AnimatePresence>
     </div>
   );
 };

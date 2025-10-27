@@ -3,12 +3,41 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { adultPlans, addOnPlans, kidsPlans } from '@/lib/pricingData';
-import { AdultPlan, AddOnPlan, KidsPlan } from '@/lib/types';
 import { PlusCircle, Edit, Trash2 } from 'lucide-react';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
+
+interface Pricing {
+  id: string;
+  name: string;
+  price: number;
+  features: string;
+  type: string;
+}
 
 export default function ManagePricingPage() {
+  const [pricing, setPricing] = useState<Pricing[]>([]);
+
+  useEffect(() => {
+    const fetchPricing = async () => {
+      const res = await fetch('/api/pricing');
+      const data = await res.json();
+      setPricing(data);
+    };
+    fetchPricing();
+  }, []);
+
+  const handleDelete = async (id: string) => {
+    await fetch(`/api/pricing/${id}`, {
+      method: 'DELETE',
+    });
+    setPricing(pricing.filter((p) => p.id !== id));
+  };
+
+  const adultPlans = pricing.filter((p) => p.type === 'adult');
+  const addOnPlans = pricing.filter((p) => p.type === 'addon');
+  const kidsPlans = pricing.filter((p) => p.type === 'kids');
+
   return (
     <div className="container mx-auto py-10">
       <div className="flex justify-between items-center mb-8">
@@ -40,35 +69,27 @@ export default function ManagePricingPage() {
           </CardHeader>
           <CardContent>
             <div className="overflow-x-auto">
-              {/* MODIFICATION: Added table-fixed */}
               <Table className="min-w-full table-fixed">
                 <TableHeader>
                   <TableRow>
-                    {/* MODIFICATION: Added width classes */}
                     <TableHead className="w-[40%]">Title</TableHead>
                     <TableHead className="w-[20%]">Price</TableHead>
-                    <TableHead className="w-[25%]">Term</TableHead>
                     <TableHead className="w-[15%]">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {adultPlans.map((plan: AdultPlan, index) => (
-                    <TableRow key={index} className="flex flex-col sm:table-row border-b sm:border-none">
-                      <TableCell className="sm:hidden font-bold">Title:</TableCell>
-                      <TableCell className="sm:table-cell">{plan.title}</TableCell>
-                      <TableCell className="sm:hidden font-bold">Price:</TableCell>
-                      <TableCell className="sm:table-cell">{plan.price}</TableCell>
-                      <TableCell className="sm:hidden font-bold">Term:</TableCell>
-                      <TableCell className="sm:table-cell">{plan.term}</TableCell>
-                      <TableCell className="sm:hidden font-bold">Actions:</TableCell>
-                      <TableCell className="sm:table-cell">
+                  {adultPlans.map((plan: Pricing) => (
+                    <TableRow key={plan.id}>
+                      <TableCell>{plan.name}</TableCell>
+                      <TableCell>{plan.price}</TableCell>
+                      <TableCell>
                         <div className="flex items-center space-x-2">
-                            <Link href={`/admin/pricing/adult/${index}`}>
+                            <Link href={`/admin/pricing/adult/${plan.id}`}>
                                 <Button variant="outline" size="icon">
                                     <Edit className="h-4 w-4" />
                                 </Button>
                             </Link>
-                            <Button variant="destructive" size="icon">
+                            <Button variant="destructive" size="icon" onClick={() => handleDelete(plan.id)}>
                               <Trash2 className="h-4 w-4" />
                             </Button>
                         </div>
@@ -88,35 +109,27 @@ export default function ManagePricingPage() {
           </CardHeader>
           <CardContent>
             <div className="overflow-x-auto">
-               {/* MODIFICATION: Added table-fixed */}
               <Table className="min-w-full table-fixed">
                 <TableHeader>
                   <TableRow>
-                    {/* MODIFICATION: Added width classes */}
                     <TableHead className="w-[40%]">Title</TableHead>
                     <TableHead className="w-[20%]">Price</TableHead>
-                    <TableHead className="w-[25%]">Term</TableHead>
                     <TableHead className="w-[15%]">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {addOnPlans.map((plan: AddOnPlan, index) => (
-                    <TableRow key={index} className="flex flex-col sm:table-row border-b sm:border-none">
-                      <TableCell className="sm:hidden font-bold">Title:</TableCell>
-                      <TableCell className="sm:table-cell">{plan.title}</TableCell>
-                      <TableCell className="sm:hidden font-bold">Price:</TableCell>
-                      <TableCell className="sm:table-cell">{plan.price}</TableCell>
-                      <TableCell className="sm:hidden font-bold">Term:</TableCell>
-                      <TableCell className="sm:table-cell">{plan.term}</TableCell>
-                      <TableCell className="sm:hidden font-bold">Actions:</TableCell>
-                      <TableCell className="sm:table-cell">
+                  {addOnPlans.map((plan: Pricing) => (
+                    <TableRow key={plan.id}>
+                      <TableCell>{plan.name}</TableCell>
+                      <TableCell>{plan.price}</TableCell>
+                      <TableCell>
                         <div className="flex items-center space-x-2">
-                            <Link href={`/admin/pricing/addon/${index}`}>
+                            <Link href={`/admin/pricing/addon/${plan.id}`}>
                                 <Button variant="outline" size="icon">
                                     <Edit className="h-4 w-4" />
                                 </Button>
                             </Link>
-                            <Button variant="destructive" size="icon">
+                            <Button variant="destructive" size="icon" onClick={() => handleDelete(plan.id)}>
                               <Trash2 className="h-4 w-4" />
                             </Button>
                         </div>
@@ -136,35 +149,27 @@ export default function ManagePricingPage() {
           </CardHeader>
           <CardContent>
             <div className="overflow-x-auto">
-               {/* MODIFICATION: Added table-fixed */}
               <Table className="min-w-full table-fixed">
                 <TableHeader>
                   <TableRow>
-                    {/* MODIFICATION: Added width classes */}
                     <TableHead className="w-[40%]">Title</TableHead>
                     <TableHead className="w-[20%]">Price</TableHead>
-                    <TableHead className="w-[25%]">Term</TableHead>
                     <TableHead className="w-[15%]">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {kidsPlans.map((plan: KidsPlan, index) => (
-                    <TableRow key={index} className="flex flex-col sm:table-row border-b sm:border-none">
-                      <TableCell className="sm:hidden font-bold">Title:</TableCell>
-                      <TableCell className="sm:table-cell">{plan.title}</TableCell>
-                      <TableCell className="sm:hidden font-bold">Price:</TableCell>
-                      <TableCell className="sm:table-cell">{plan.price}</TableCell>
-                      <TableCell className="sm:hidden font-bold">Term:</TableCell>
-                      <TableCell className="sm:table-cell">{plan.term}</TableCell>
-                      <TableCell className="sm:hidden font-bold">Actions:</TableCell>
-                      <TableCell className="sm:table-cell">
+                  {kidsPlans.map((plan: Pricing) => (
+                    <TableRow key={plan.id}>
+                      <TableCell>{plan.name}</TableCell>
+                      <TableCell>{plan.price}</TableCell>
+                      <TableCell>
                         <div className="flex items-center space-x-2">
-                            <Link href={`/admin/pricing/kids/${index}`}>
+                            <Link href={`/admin/pricing/kids/${plan.id}`}>
                                 <Button variant="outline" size="icon">
                                     <Edit className="h-4 w-4" />
                                 </Button>
                             </Link>
-                            <Button variant="destructive" size="icon">
+                            <Button variant="destructive" size="icon" onClick={() => handleDelete(plan.id)}>
                               <Trash2 className="h-4 w-4" />
                             </Button>
                         </div>

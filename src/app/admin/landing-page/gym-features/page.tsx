@@ -5,8 +5,93 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+
+interface Discipline {
+  name: string;
+  href: string;
+}
 
 export default function EditGymFeaturesSectionPage() {
+  const [disciplines, setDisciplines] = useState<Discipline[]>([]);
+  const [gymFeatures, setGymFeatures] = useState<string[]>([]);
+  const [description, setDescription] = useState('');
+  const [subtitle, setSubtitle] = useState('');
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchFeaturesData = async () => {
+      try {
+        const response = await fetch('/api/landing-page/features');
+        if (response.ok) {
+          const data = await response.json();
+          const content = JSON.parse(data.content);
+          setDisciplines(content.disciplines || []);
+          setGymFeatures(content.gymFeatures || []);
+          setDescription(content.description || '');
+          setSubtitle(content.subtitle || '');
+        }
+      } catch (error) {
+        console.error('Failed to fetch features section data:', error);
+      }
+    };
+    fetchFeaturesData();
+  }, []);
+
+  const handleDisciplineChange = (index: number, field: keyof Discipline, value: string) => {
+    const newDisciplines = [...disciplines];
+    newDisciplines[index][field] = value;
+    setDisciplines(newDisciplines);
+  };
+
+  const handleAddDiscipline = () => {
+    setDisciplines([...disciplines, { name: '', href: '' }]);
+  };
+
+  const handleRemoveDiscipline = (index: number) => {
+    const newDisciplines = disciplines.filter((_, i) => i !== index);
+    setDisciplines(newDisciplines);
+  };
+  
+  const handleFeatureChange = (index: number, value: string) => {
+    const newFeatures = [...gymFeatures];
+    newFeatures[index] = value;
+    setGymFeatures(newFeatures);
+  };
+
+  const handleAddFeature = () => {
+    setGymFeatures([...gymFeatures, '']);
+  };
+
+  const handleRemoveFeature = (index: number) => {
+    const newFeatures = gymFeatures.filter((_, i) => i !== index);
+    setGymFeatures(newFeatures);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const response = await fetch('/api/landing-page/features', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          content: JSON.stringify({ disciplines, gymFeatures, description, subtitle }),
+        }),
+      });
+
+      if (response.ok) {
+        router.push('/admin/landing-page');
+      } else {
+        console.error('Failed to save data');
+      }
+    } catch (error) {
+      console.error('Failed to save data:', error);
+    }
+  };
+
   return (
     <div className="container mx-auto py-10">
       <Card>
@@ -14,43 +99,53 @@ export default function EditGymFeaturesSectionPage() {
           <CardTitle>Edit GYM FEATURES section</CardTitle>
         </CardHeader>
         <CardContent>
-          <form className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <h3 className="text-lg font-medium">Disciplines</h3>
+              {disciplines.map((discipline, index) => (
+                <div key={index} className="flex items-center space-x-2 mt-2">
+                  <Input
+                    placeholder="Name"
+                    value={discipline.name}
+                    onChange={(e) => handleDisciplineChange(index, 'name', e.target.value)}
+                  />
+                  <Input
+                    placeholder="Href"
+                    value={discipline.href}
+                    onChange={(e) => handleDisciplineChange(index, 'href', e.target.value)}
+                  />
+                  <Button type="button" variant="destructive" onClick={() => handleRemoveDiscipline(index)}>Remove</Button>
+                </div>
+              ))}
+              <Button type="button" onClick={handleAddDiscipline} className="mt-2">Add Discipline</Button>
+            </div>
 
             <div>
               <h3 className="text-lg font-medium">Gym Features</h3>
-              <div className="space-y-2 mt-2">
-                <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
-                  <Input defaultValue="Access to Open Gym" />
+              {gymFeatures.map((feature, index) => (
+                <div key={index} className="flex items-center space-x-2 mt-2">
+                  <Input
+                    value={feature}
+                    onChange={(e) => handleFeatureChange(index, e.target.value)}
+                  />
+                  <Button type="button" variant="destructive" onClick={() => handleRemoveFeature(index)}>Remove</Button>
                 </div>
-                <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
-                  <Input defaultValue="Recovery and Wellness Facilities" />
-                </div>
-                 <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
-                  <Input defaultValue="Open 6 Days / Week" />
-                </div>
-                 <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
-                  <Input defaultValue="12 Trainers" />
-                </div>
-                 <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
-                  <Input defaultValue="23 World Medals" />
-                </div>
-                 <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
-                  <Input defaultValue="1478 Happy Clients" />
-                </div>
-              </div>
+              ))}
+              <Button type="button" onClick={handleAddFeature} className="mt-2">Add Feature</Button>
             </div>
+            
             <div>
               <label htmlFor="gymFeaturesDescription" className="block text-sm font-medium">Description</label>
-              <Textarea id="gymFeaturesDescription" defaultValue="We are students, athletes, and builders of our team. Warrior Fitness Center is home to a diverse and dedicated community united by our shared pursuit of growth through martial arts. Our training blends Brazillian Jiu-Jitsu, Muay Thai, Wrestling, Judo, and MMA to foster personal development, confidence, and discipline in an atmosphere that feels like family.\nOur coaching staff reflects the diversity of our community, each bringing a wealth of experience from different walks of life. This variety isn’t just a point of pride; it’s a strength that enriches our students’ learning. With coaches who’ve lived through high-level competition, military service, and personal transformation, we offer perspectives that go beyond the technical and into the mental, emotional, and strategic dimensions of martial arts.\nWhether you’re just starting your journey or looking to sharpen your edge, you’ll find guidance, accountability, and support here. We are a team that trains, learns, and grows together—while pushing each other toward the next accomplishment in life." />
+              <Textarea id="gymFeaturesDescription" value={description} onChange={(e) => setDescription(e.target.value)} />
             </div>
              <div>
               <label htmlFor="gymFeaturesSubtitle" className="block text-sm font-medium">Subtitle</label>
-              <Input id="gymFeaturesSubtitle" defaultValue="We are a family, and we are a team." />
+              <Input id="gymFeaturesSubtitle" value={subtitle} onChange={(e) => setSubtitle(e.target.value)} />
             </div>
-            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+            <div className="flex space-x-4">
               <Button type="submit">Save Changes</Button>
               <Link href="/admin/landing-page">
-                <Button variant="outline">Cancel</Button>
+                <Button variant="outline" type="button">Cancel</Button>
               </Link>
             </div>
           </form>

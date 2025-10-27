@@ -1,0 +1,81 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Coach {
+  id           String   @id @default(cuid())
+  name         String
+  bio          String
+  image        String
+  slug         String   @unique
+  specialties  String?
+  achievements String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Program {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  image       String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Schedule {
+  id          String   @id @default(cuid())
+  day         String
+  time        String
+  program     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Pricing {
+  id          String   @id @default(cuid())
+  name        String
+  price       Int
+  features    String
+  type        String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Addon {
+  id          String   @id @default(cuid())
+  name        String
+  price       Int
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Discipline {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  heroImage   String
+  heroTitle   String
+  description String
+  sections    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model LandingPageSection {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

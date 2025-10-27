@@ -8,46 +8,21 @@ const DownloadIcon = () => (
 );
 
 
-const scheduleData = [
-    { time: '5:00-6:00', days: ['M', 'W', 'F'], title: 'Kickboxing', level: 'Beginner', category: 'Muay Thai Adult', categoryType: 'muay-thai-adult' },
-    { time: '6:00-7:15', days: ['M', 'W'], title: 'Adult Gi BJJ', level: 'All Levels', category: 'BJJ Adult', categoryType: 'bjj-adult' },
-    { time: '6:00-7:15', days: ['F'], title: 'Adult No-Gi BJJ', level: 'All Levels', category: 'BJJ Adult', categoryType: 'bjj-adult' },
-    { time: '9:00-10:00', days: ['S'], title: 'Muay Thai', level: 'All Levels', category: 'Muay Thai Adult', categoryType: 'muay-thai-adult' },
-    { time: '10:00-11:00', days: ['S'], title: 'BJJ Fundamentals', level: 'Adults and Children', category: 'BJJ Adult', categoryType: 'bjj-adult' },
-    { time: '10:00-11:00', days: ['S'], title: 'Kids Muay Thai', level: 'All Ages, All Levels', category: 'Muay Thai Kids', categoryType: 'muay-thai-kids' },
-    { time: '11:00-12:00', days: ['S'], title: 'Fighter Practice', level: 'MMA / Muay Thai', category: 'All-Inclusive', categoryType: 'all-inclusive' },
-    { time: '11:00-13:00', days: ['S'], title: 'No-Gi Open Mat', level: 'All Levels', category: 'BJJ Adult', categoryType: 'bjj-adult' },
-    { time: '12:00-13:00', days: ['M', 'T', 'W', 'Th', 'F'], title: 'Adult No-Gi BJJ', level: 'All Levels', category: 'BJJ Adult', categoryType: 'bjj-adult' },
-    { time: '16:00-17:00', days: ['M', 'W'], title: 'Adult Gi BJJ', level: 'All Levels', category: 'BJJ Adult', categoryType: 'bjj-adult' },
-    { time: '16:00-18:00', days: ['F'], title: 'Adult No-Gi BJJ', level: 'All Levels', category: 'BJJ Adult', categoryType: 'bjj-adult' },
-    { time: '16:30-17:30', days: ['M', 'W'], title: 'Kids Gi BJJ', level: 'Advanced Class', category: 'BJJ Kids', categoryType: 'bjj-kids' },
-    { time: '16:30-17:30', days: ['T', 'Th'], title: 'Fighter Practice', level: 'MMA / Muay Thai', category: 'All-Inclusive', categoryType: 'all-inclusive' },
-    { time: '17:00-17:30', days: ['M', 'W'], title: 'Kids Gi BJJ', level: 'Ages 3-6', category: 'BJJ Kids', categoryType: 'bjj-kids' },
-    { time: '17:00-17:30', days: ['F'], title: 'Kids No-Gi BJJ', level: 'Ages 3-6', category: 'BJJ Kids', categoryType: 'bjj-kids' },
-    { time: '17:30-18:30', days: ['M', 'W'], title: 'Kids Gi BJJ', level: 'Ages 7+', category: 'BJJ Kids', categoryType: 'bjj-kids' },
-    { time: '17:30-18:30', days: ['M', 'T', 'W', 'Th', 'F'], title: 'Kickboxing', level: 'Beginner**', category: 'Muay Thai Adult', categoryType: 'muay-thai-adult' },
-    { time: '17:30-18:30', days: ['T', 'Th'], title: 'Kids Muay Thai', level: 'Beginners - All Ages', category: 'Muay Thai Kids', categoryType: 'muay-thai-kids' },
-    { time: '17:30-18:30', days: ['F'], title: 'Kids No-Gi BJJ', level: 'Ages 7+', category: 'BJJ Kids', categoryType: 'bjj-kids' },
-    { time: '18:30-19:30', days: ['M', 'W'], title: 'Kickboxing', level: 'Beginner**', category: 'Muay Thai Adult', categoryType: 'muay-thai-adult' },
-    { time: '18:30-19:30', days: ['T', 'Th'], title: 'Kids Muay Thai', level: 'Intermediate / Adv - All Ages', category: 'Muay Thai Kids', categoryType: 'muay-thai-kids' },
-    { time: '18:30-19:30', days: ['F'], title: 'Muay Thai', level: 'All Levels**', category: 'Muay Thai Adult', categoryType: 'muay-thai-adult' },
-    { time: '18:30-20:30', days: ['M', 'T'], title: 'Adult Gi BJJ', level: 'All Levels', category: 'BJJ Adult', categoryType: 'bjj-adult' },
-    { time: '18:30-20:30', days: ['W', 'F'], title: 'Adult No-Gi BJJ', level: 'All Levels', category: 'BJJ Adult', categoryType: 'bjj-adult' },
-    { time: '19:30-20:30', days: ['M', 'W'], title: 'Muay Thai', level: 'Fundamentals', category: 'Muay Thai Adult', categoryType: 'muay-thai-adult' },
-    { time: '19:30-20:30', days: ['T', 'Th'], title: 'Muay Thai', level: 'Advanced / Intermediate', category: 'Muay Thai Adult', categoryType: 'muay-thai-adult' },
-    { time: '20:00-21:30', days: ['M', 'W'], title: 'Fighter Practice', level: 'MMA / Muay Thai', category: 'All-Inclusive', categoryType: 'all-inclusive' },
-];
-
-const categoryStyles = {
-    'muay-thai-adult': 'bg-[#6a617a]',
-    'bjj-adult': 'bg-[#6c6861]',
-    'muay-thai-kids': 'bg-[#5b6e67]',
-    'all-inclusive': 'bg-[#7a6161]',
-    'bjj-kids': 'bg-[#5f697a]',
-};
-
-
 const SchedulePage = () => {
+    const [scheduleData, setScheduleData] = useState([]);
+
+    useEffect(() => {
+        const fetchSchedule = async () => {
+            try {
+                const response = await fetch('/api/schedule');
+                const data = await response.json();
+                setScheduleData(data);
+            } catch (error) {
+                console.error("Failed to fetch schedule:", error);
+            }
+        };
+        fetchSchedule();
+    }, []);
     const topFilters = ['All', 'Kids', 'Adult', 'BJJ', 'Muay Thai'];
     const dayFilters = ['Full Week', 'Mon, Oct 20', 'Tue, Oct 21', 'Wed, Oct 22', 'Thu, Oct 23', 'Fri, Oct 24', 'Sat, Oct 25'];
 
@@ -91,21 +66,19 @@ const SchedulePage = () => {
                                 <div className="w-20 sm:w-28 flex-shrink-0">
                                     <div className="font-bold text-base sm:text-lg">{item.time}</div>
                                     <div className="flex flex-wrap gap-1 mt-1.5">
-                                        {item.days.map((day) => (
-                                            <span key={day} className="bg-[#4a4a4a] text-gray-200 text-xs font-bold w-5 h-5 flex items-center justify-center">
-                                                {day}
-                                            </span>
-                                        ))}
+                                        <span className="bg-[#4a4a4a] text-gray-200 text-xs font-bold w-5 h-5 flex items-center justify-center">
+                                            {item.day}
+                                        </span>
                                     </div>
                                 </div>
                                 <div>
-                                    <h3 className="text-lg sm:text-xl font-bold">{item.title}</h3>
-                                    <p className="text-gray-400 text-sm">{item.level}</p>
+                                    <h3 className="text-lg sm:text-xl font-bold">{item.program}</h3>
+                                    <p className="text-gray-400 text-sm">All Levels</p>
                                 </div>
                            </div>
                             <div className="flex-shrink-0 ml-4">
-                                <span className={`px-3 py-2 text-xs font-semibold rounded-md ${categoryStyles[item.categoryType]}`}>
-                                    {item.category}
+                                <span className={`px-3 py-2 text-xs font-semibold rounded-md bg-[#6a617a]`}>
+                                    {item.program}
                                 </span>
                             </div>
                         </div>

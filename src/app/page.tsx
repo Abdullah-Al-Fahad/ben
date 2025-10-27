@@ -10,6 +10,14 @@ import { ValueBlock } from "@/components/Landing/LandingCard";
 import { motion, AnimatePresence } from 'framer-motion';
 import { AnimatedCoachModal, CoachDetail } from '@/components/AnimatedCoachModal';
 
+interface Coach {
+    id: string;
+    slug: string;
+    name: string;
+    specialties: string[];
+    image: string;
+}
+
 //=================================================================
 //  HELPER COMPONENTS & DATA
 //=================================================================
@@ -20,32 +28,8 @@ const PricingFeature = ({ text, included = true }) => (
   </li>
 );
 
-const scheduleData = {
-  'Sat, Oct 18': [
-    { time: '9:00-10:00', name: 'Muay Thai', level: 'All Levels', category: 'Muay Thai Adult' },
-    { time: '10:00-11:00', name: 'BJJ Fundamentals', level: 'Adults and Children', category: 'BJJ Adult' },
-    { time: '10:00-11:00', name: 'Kids Muay Thai', level: 'All Ages, All Levels', category: 'Muay Thai Kids' },
-    { time: '11:00-12:00', name: 'Fighter Practice', level: 'MMA / Muay Thai', category: 'All-Inclusive' },
-    { time: '11:00-13:00', name: 'No-Gi Open Mat', level: 'All Levels', category: 'BJJ Adult' },
-  ]
-};
-
-interface Coach {
-    slug: string;
-    name: string;
-    specialties: string[];
-    imageUrl: string;
-}
-
-interface CoachDetailsData { [key: string]: CoachDetail; }
-
-
-
-//=================================================================
-//  SECTION COMPONENTS
-//=================================================================
-
-const IntroSection = () => {
+const IntroSection = ({ data }) => {
+  if (!data) return null;
   return (
     <section className="relative bg-black text-white overflow-hidden">
       <div className="absolute inset-0 z-0">
@@ -62,14 +46,14 @@ const IntroSection = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="flex flex-col justify-center">
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black uppercase leading-tight">
-              Join our world class mma training programs for all levels - from <span className="text-red-600">beginners</span> to <span className="text-red-600">pros.</span>
+              {data.title}
             </h2>
             <p className="mt-8 text-gray-300 leading-relaxed max-w-lg">
-              Our gym has had both a local and a national presence since its founding in 2011, <strong className="text-white">however its roots go much deeper.</strong> Our Team has been training and competing across the world in multiple combat sports to bring you the best instruction available. We are athletes, hobbyists, competitors, students and professionals. We strive to learn and grow while pushing others around us to do the same. We are people who always are working to improve ourselves and our community.
+              {data.description}
             </p>
             <div className="mt-12">
               <h3 className="text-2xl font-bold uppercase tracking-wide">
-                We are a family, and we are a team.
+                {data.subtitle}
               </h3>
               <div className="w-48 h-1.5 bg-red-600 mt-2"></div>
             </div>
@@ -106,7 +90,8 @@ const VideoSection = () => {
   );
 };
 
-const FeaturesSection = () => {
+const FeaturesSection = ({ data }) => {
+  if (!data) return null;
   const SectionTitle = ({ title }) => (
     <div>
       <h2 className="text-3xl font-black uppercase tracking-wider">{title}</h2>
@@ -128,7 +113,6 @@ const FeaturesSection = () => {
     </li>
   );
   return (
-    // FIX APPLIED HERE
     <section id="disciplines" className="bg-[#121212] text-white py-16 sm:py-24 px-4 overflow-hidden scroll-mt-28">
       <div className="container mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
@@ -136,21 +120,13 @@ const FeaturesSection = () => {
             <div>
               <SectionTitle title="Disciplines" />
               <ul className="mt-8 space-y-4">
-                <DisciplineLink href="/disciplines/jutsu">Brazillian Jiu-Jitsu</DisciplineLink>
-                <DisciplineLink href="/disciplines/mua-thai">Muay Thai</DisciplineLink>
-                <DisciplineLink href="/disciplines/mma">Mixed Martial Arts</DisciplineLink>
-                <DisciplineLink href="/disciplines/fitness">Fitness</DisciplineLink>
+                {data.disciplines.map(d => <DisciplineLink key={d.name} href={d.href}>{d.name}</DisciplineLink>)}
               </ul>
             </div>
             <div>
               <SectionTitle title="Gym Features" />
               <ul className="mt-8 space-y-4">
-                <GymFeature icon={<FaDumbbell />} text="Access to Open Gym" />
-                <GymFeature icon={<FaBatteryFull />} text="Recovery and Wellness Facilities" />
-                <GymFeature icon={<FaCalendarAlt />} text="Open 6 Days / Week" />
-                <GymFeature icon={<FaUserFriends />} text="12 Trainers" />
-                <GymFeature icon={<FaMedal />} text="23 World Medals" />
-                <GymFeature icon={<FaSmile />} text="1478 Happy Clients" />
+                {data.gymFeatures.map((f, i) => <GymFeature key={i} icon={<FaDumbbell />} text={f} />)}
               </ul>
             </div>
           </div>
@@ -161,18 +137,10 @@ const FeaturesSection = () => {
               className="hidden lg:block absolute bottom-0 right-0 w-[80%] h-auto opacity-10 pointer-events-none -mr-24"
             />
             <div className="relative z-10 space-y-6 text-gray-300 leading-relaxed">
-              <p>
-                We are students, athletes, and builders of our team. <strong className="text-white">Warrior Fitness Center</strong> is home to a diverse and dedicated community united by our shared pursuit of growth through martial arts. Our training blends Brazillian Jiu-Jitsu, Muay Thai, Wrestling, Judo, and MMA to foster personal development, confidence, and discipline in an atmosphere that feels like family.
-              </p>
-              <p>
-                Our coaching staff reflects the diversity of our community, each bringing a wealth of experience from different walks of life. This variety isn’t just a point of pride; it’s a strength that enriches our students’ learning. With coaches who’ve lived through high-level competition, military service, and personal transformation, we offer perspectives that go beyond the technical and into the mental, emotional, and strategic dimensions of martial arts.
-              </p>
-              <p>
-                Whether you’re just starting your journey or looking to sharpen your edge, you’ll find guidance, accountability, and support here. We are a team that trains, learns, and grows together—while pushing each other toward the next accomplishment in life.
-              </p>
+              <p>{data.description}</p>
               <div className="pt-8">
                 <h3 className="text-2xl font-bold uppercase tracking-wider text-white">
-                  We are a family, and we are a team.
+                  {data.subtitle}
                 </h3>
               </div>
             </div>
@@ -183,45 +151,21 @@ const FeaturesSection = () => {
   );
 };
 
-const CoreValuesSection = () => {
-
+const CoreValuesSection = ({ data }) => {
+  if (!data) return null;
   return (
-    // FIX APPLIED HERE
     <section id="who-we-are" className="bg-black text-white py-16 sm:py-24 px-4 scroll-mt-28">
       <div className="container mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
           <div>
-            <h2 className="text-4xl sm:text-5xl font-black mb-4 uppercase">Are We Right For You</h2>
+            <h2 className="text-4xl sm:text-5xl font-black mb-4 uppercase">{data.title}</h2>
             <div className="w-44 h-1.5 bg-red-600 mb-12"></div>
             <div className="space-y-6 text-white-400 leading-relaxed max-w-xl">
-              <p>
-                At Warrior, we recognize that every student walks through our doors with a unique set of goals, motivations, and reasons for training. Some come to compete, some to get in shape, some for self-defense, and others to find structure or community. We believe wholeheartedly that these goals don’t need to be the same for us to support one another. In fact, it’s the diversity of those goals—and the shared commitment to growth—that makes our community strong.
-              </p>
-              <p>
-                We approach training with a mindset rooted in collaboration, not transaction. It’s not about what you get in return—it’s about how we all grow stronger by investing in each other. When one person levels up, we all benefit. When one person struggles, we all step in.
-              </p>
+              <p>{data.description}</p>
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-
-            <ValueBlock title="Realism">
-              We train for real life. The foundation of our practice is self-defense and practical application—not gamesmanship.
-            </ValueBlock>
-            <ValueBlock title="Growth Mindset">
-              We believe that who you are today doesn’t define who you can become.
-            </ValueBlock>
-            <ValueBlock title="Respect">
-              Even when it’s not obvious, respect is always present.
-            </ValueBlock>
-            <ValueBlock title="Safety">
-              Training is only sustainable when we take care of each other.
-            </ValueBlock>
-            <ValueBlock title="Diversity">
-              We embrace different styles, and perspectives.
-            </ValueBlock>
-            <ValueBlock title="Cohesion">
-              We are individuals, but we train as one team.
-            </ValueBlock>
+            {data.values.map(v => <ValueBlock key={v.title} title={v.title}>{v.description}</ValueBlock>)}
           </div>
         </div>
       </div>
@@ -229,39 +173,80 @@ const CoreValuesSection = () => {
   );
 };
 
-
-//=================================================================
-//  MAIN CONTENT COMPONENT
-//=================================================================
 const MainContent = () => {
-  const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
-  const [allCoachDetails, setAllCoachDetails] = useState<CoachDetailsData>({});
+  const [intro, setIntro] = useState<any>(null);
+  const [features, setFeatures] = useState<any>(null);
+  const [coreValues, setCoreValues] = useState<any>(null);
   const [coachesData, setCoachesData] = useState<Coach[]>([]);
+  const [scheduleData, setScheduleData] = useState<any>({});
+  const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
+  const [selectedCoachDetails, setSelectedCoachDetails] = useState<CoachDetail | null>(null);
+
+  useEffect(() => {
+    const fetchLandingPage = async () => {
+      try {
+        const response = await fetch('/api/landing-page');
+        const data = await response.json();
+        const introSection = data.find(s => s.name === 'intro');
+        const featuresSection = data.find(s => s.name === 'features');
+        const coreValuesSection = data.find(s => s.name === 'core-values');
+        if (introSection) setIntro(JSON.parse(introSection.content));
+        if (featuresSection) setFeatures(JSON.parse(featuresSection.content));
+        if (coreValuesSection) setCoreValues(JSON.parse(coreValuesSection.content));
+      } catch (error) {
+        console.error("Failed to fetch landing page data:", error);
+      }
+    };
+    fetchLandingPage();
+  }, []);
 
   useEffect(() => {
     const fetchCoaches = async () => {
         try {
-            const response = await fetch('/coachDetails.json');
-            const data: CoachDetailsData = await response.json();
-            setAllCoachDetails(data);
-            const coachesList = Object.keys(data).map(slug => ({
-                slug,
-                name: data[slug].name,
-                specialties: data[slug].specialties,
-                imageUrl: data[slug].imageUrl,
+            const response = await fetch('/api/coaches');
+            const data = await response.json();
+            const formattedCoaches = data.map(coach => ({
+                ...coach,
+                specialties: coach.specialties ? coach.specialties.split(',') : [],
             }));
-            setCoachesData(coachesList);
+            setCoachesData(formattedCoaches);
         } catch (error) {
-            console.error("Failed to fetch coach details:", error);
+            console.error("Failed to fetch coaches:", error);
         }
     };
     fetchCoaches();
   }, []);
 
-  const selectedCoachDetails = selectedSlug ? allCoachDetails[selectedSlug] : null;
-  
-  const handleCoachClick = (slug: string) => {
-    setSelectedSlug(slug);
+  useEffect(() => {
+    const fetchSchedule = async () => {
+        try {
+            const response = await fetch('/api/schedule');
+            const data = await response.json();
+            const scheduleByDay = data.reduce((acc, item) => {
+              const day = item.day;
+              if (!acc[day]) {
+                acc[day] = [];
+              }
+              acc[day].push(item);
+              return acc;
+            }, {});
+            setScheduleData(scheduleByDay);
+        } catch (error) {
+            console.error("Failed to fetch schedule:", error);
+        }
+    };
+    fetchSchedule();
+  }, []);
+
+  const handleCoachClick = async (id: string, slug: string) => {
+    try {
+        const response = await fetch(`/api/coaches/${id}`);
+        const data: CoachDetail = await response.json();
+        setSelectedCoachDetails(data);
+        setSelectedSlug(slug);
+    } catch (error) {
+        console.error("Failed to fetch coach details:", error);
+    }
   };
 
   return (
@@ -297,13 +282,12 @@ const MainContent = () => {
         </div>
       </section>
 
-      <IntroSection />
+      <IntroSection data={intro} />
       <VideoSection />
-      <FeaturesSection />
-      <CoreValuesSection />
+      <FeaturesSection data={features} />
+      <CoreValuesSection data={coreValues} />
 
       {/* Coaches Section */}
-      {/* FIX APPLIED HERE */}
       <section id="coaches" className="bg-black scroll-mt-28">
         <div className="relative w-full" style={{ paddingBottom: '56.25%' }}> {/* 16:9 Aspect Ratio */}
           <div
@@ -357,12 +341,12 @@ const MainContent = () => {
               <motion.div 
                 key={coach.slug} 
                 layoutId={coach.slug}
-                onClick={() => handleCoachClick(coach.slug)}
+                onClick={() => handleCoachClick(coach.id, coach.slug)}
                 className="group relative rounded-lg cursor-pointer"
               >
                 <div className="relative h-80 bg-black rounded-lg overflow-hidden">
                   <motion.img 
-                    src={coach.imageUrl} 
+                    src={coach.image} 
                     alt={coach.name} 
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 group-hover:brightness-75"
                   />
@@ -391,7 +375,6 @@ const MainContent = () => {
       </section>
 
       {/* Schedule Section */}
-      {/* FIX APPLIED HERE */}
       <section id="schedule" className="py-16 sm:py-24 px-4 bg-black scroll-mt-28">
   <div className="container mx-auto">
     {/* Header section with title and print button */}
@@ -454,7 +437,7 @@ const MainContent = () => {
     {/* Schedule content */}
     <div className="bg-[#1a1a1a] p-1 rounded-lg">
       <div className="space-y-1">
-        {scheduleData['Sat, Oct 18'].map((item, index) => (
+        {scheduleData[Object.keys(scheduleData)[0]]?.map((item, index) => (
           <div
             key={index}
             className="grid grid-cols-1 sm:grid-cols-12 gap-x-4 gap-y-2 items-center bg-[#2d2d2d] p-3 rounded-md"
@@ -463,18 +446,14 @@ const MainContent = () => {
               {item.time}
             </div>
             <div className="col-span-full sm:col-span-6">
-              <h4 className="font-bold text-xl text-white">{item.name}</h4>
-              <p className="text-gray-400 text-sm">{item.level}</p>
+              <h4 className="font-bold text-xl text-white">{item.program}</h4>
+              <p className="text-gray-400 text-sm">All Levels</p>
             </div>
             <div className="col-span-full sm:col-span-4 text-left sm:text-right">
               <span
-                className={`text-xs font-bold py-2 px-3 rounded-full ${
-                  item.category.includes('Muay Thai')
-                    ? 'bg-purple-900 text-purple-300'
-                    : 'bg-blue-900 text-blue-300'
-                }`}
+                className={`text-xs font-bold py-2 px-3 rounded-full bg-purple-900 text-purple-300`}
               >
-                {item.category}
+                {item.program}
               </span>
             </div>
           </div>
@@ -485,7 +464,6 @@ const MainContent = () => {
 </section>
 
       {/* Pricing Section */}
-      {/* FIX APPLIED HERE */}
       <section id="pricing" className="py-16 sm:py-24 px-4 bg-[#0d0d0d] scroll-mt-28">
         <div className="container mx-auto">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
@@ -628,7 +606,7 @@ const MainContent = () => {
       </AnimatePresence>
     </main>
   );
-}
+};
 
 //=================================================================
 //  FINAL EXPORTED PAGE

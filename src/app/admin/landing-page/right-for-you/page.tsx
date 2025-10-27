@@ -5,8 +5,76 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+
+interface Value {
+  title: string;
+  description: string;
+}
 
 export default function EditRightForYouSectionPage() {
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [values, setValues] = useState<Value[]>([]);
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('/api/landing-page/core-values');
+        if (response.ok) {
+          const data = await response.json();
+          const content = JSON.parse(data.content);
+          setTitle(content.title || '');
+          setDescription(content.description || '');
+          setValues(content.values || []);
+        }
+      } catch (error) {
+        console.error('Failed to fetch section data:', error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const handleValueChange = (index: number, field: keyof Value, value: string) => {
+    const newValues = [...values];
+    newValues[index][field] = value;
+    setValues(newValues);
+  };
+
+  const handleAddValue = () => {
+    setValues([...values, { title: '', description: '' }]);
+  };
+
+  const handleRemoveValue = (index: number) => {
+    const newValues = values.filter((_, i) => i !== index);
+    setValues(newValues);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const response = await fetch('/api/landing-page/core-values', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          content: JSON.stringify({ title, description, values }),
+        }),
+      });
+
+      if (response.ok) {
+        router.push('/admin/landing-page');
+      } else {
+        console.error('Failed to save data');
+      }
+    } catch (error) {
+      console.error('Failed to save data:', error);
+    }
+  };
+
   return (
     <div className="container mx-auto py-10">
       <Card>
@@ -14,49 +82,38 @@ export default function EditRightForYouSectionPage() {
           <CardTitle>Edit Are we right for you section</CardTitle>
         </CardHeader>
         <CardContent>
-          <form className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="rightForYouTitle" className="block text-sm font-medium">Title</label>
-              <Input id="rightForYouTitle" defaultValue="Are We Right For You" />
+              <Input id="rightForYouTitle" value={title} onChange={(e) => setTitle(e.target.value)} />
             </div>
             <div>
               <label htmlFor="rightForYouDescription" className="block text-sm font-medium">Description</label>
-              <Textarea id="rightForYouDescription" defaultValue="At Warrior, we recognize that every student walks through our doors with a unique set of goals, motivations, and reasons for training. Some come to compete, some to get in shape, some for self-defense, and others to find structure or community. We believe wholeheartedly that these goals don’t need to be the same for us to support one another. In fact, it’s the diversity of those goals—and the shared commitment to growth—that makes our community strong.
-We approach training with a mindset rooted in collaboration, not transaction. It’s not about what you get in return—it’s about how we all grow stronger by investing in each other. When one person levels up, we all benefit. When one person struggles, we all step in." />
+              <Textarea id="rightForYouDescription" value={description} onChange={(e) => setDescription(e.target.value)} />
             </div>
             <div>
               <h3 className="text-lg font-medium">Value Blocks</h3>
-              <div className="space-y-2 mt-2">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  <Input defaultValue="Realism" />
-                  <Textarea defaultValue="We train for real life. The foundation of our practice is self-defense and practical application—not gamesmanship." />
+              {values.map((value, index) => (
+                <div key={index} className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
+                  <Input
+                    placeholder="Title"
+                    value={value.title}
+                    onChange={(e) => handleValueChange(index, 'title', e.target.value)}
+                  />
+                  <Textarea
+                    placeholder="Description"
+                    value={value.description}
+                    onChange={(e) => handleValueChange(index, 'description', e.target.value)}
+                  />
+                   <Button type="button" variant="destructive" onClick={() => handleRemoveValue(index)}>Remove</Button>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  <Input defaultValue="Growth Mindset" />
-                  <Textarea defaultValue="We believe that who you are today doesn’t define who you can become." />
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  <Input defaultValue="Respect" />
-                  <Textarea defaultValue="Even when it’s not obvious, respect is always present." />
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  <Input defaultValue="Safety" />
-                  <Textarea defaultValue="Training is only sustainable when we take care of each other." />
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  <Input defaultValue="Diversity" />
-                  <Textarea defaultValue="We embrace different styles, and perspectives." />
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  <Input defaultValue="Cohesion" />
-                  <Textarea defaultValue="We are individuals, but we train as one team." />
-                </div>
-              </div>
+              ))}
+               <Button type="button" onClick={handleAddValue} className="mt-2">Add Value</Button>
             </div>
-            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+            <div className="flex space-x-4">
               <Button type="submit">Save Changes</Button>
               <Link href="/admin/landing-page">
-                <Button variant="outline">Cancel</Button>
+                <Button variant="outline" type="button">Cancel</Button>
               </Link>
             </div>
           </form>
