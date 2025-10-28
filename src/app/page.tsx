@@ -38,6 +38,7 @@ const HeroSection = ({ data }) => {
   if (!data) return null;
   return (
     <section className="relative h-[calc(100vh-100px)] w-full overflow-hidden">
+      {/* The video background remains the same */}
       <video
         autoPlay
         loop
@@ -46,25 +47,30 @@ const HeroSection = ({ data }) => {
         className="absolute top-0 left-0 w-full h-full object-cover filter grayscale"
         src="https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e43e0279ad2b357d6c0f43_homepageclipwarrior-transcode.mp4"
       />
+
+      {/* This container still creates the "transparent" text effect */}
       <div className="relative h-full mix-blend-screen flex flex-col justify-center items-center text-center">
         <div className="absolute w-full top-0 text-start">
-          <div className="bg-white ">
+          <div className="bg-white">
             <h1 className="text-6xl md:text-[16vw] lg:text-[12vw] font-clashDisplay font-black uppercase leading-tight md:leading-none text-black p-4">
               {data.heroText}
             </h1>
           </div>
         </div>
-        <Image
-          src="https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e43e0279ad2b357d6c0f16_warrioricon.svg"
-          alt="Warrior Logo"
-          width={1920}
-          height={1080}
-          className="hidden lg:block absolute top-48 right-20 transform -translate-y-[5%] translate-x-[15%] w-[35%] h-auto"
-        />
         <div className="hidden sm:block absolute bottom-10 left-4 sm:left-10 z-20 text-sm uppercase tracking-[0.5em] text-white">
           S C R O L L
         </div>
       </div>
+
+      {/* The icon is now outside the mix-blend-screen container */}
+      <Image
+        src="https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e43e0279ad2b357d6c0f16_warrioricon.svg"
+        alt="Warrior Logo"
+        width={1920}
+        height={1080}
+        // Positioning is adjusted to be relative to the main section
+        className="hidden lg:block absolute top-48 right-20 transform -translate-y-[5%] translate-x-[15%] w-[35%] h-auto"
+      />
     </section>
   );
 };
