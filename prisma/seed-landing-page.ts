@@ -3,11 +3,11 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
-  await prisma.landingPageSection.createMany({
-    data: [
+  const sections = [
       {
-        name: 'intro',
+        name: 'intro-hero',
         content: JSON.stringify({
+          heroText: 'Train to Win',
           title: `Join our world class mma training programs for all levels - from beginners to pros.`,
           description: `Our gym has had both a local and a national presence since its founding in 2011, however its roots go much deeper. Our Team has been training and competing across the world in multiple combat sports to bring you the best instruction available. We are athletes, hobbyists, competitors, students and professionals. We strive to learn and grow while pushing others around us to do the same. We are people who always are working to improve ourselves and our community.`,
           subtitle: `We are a family, and we are a team.`,
@@ -54,8 +54,15 @@ We approach training with a mindset rooted in collaboration, not transaction. It
           ],
         }),
       },
-    ],
-  });
+    ];
+
+    for (const section of sections) {
+        await prisma.landingPageSection.upsert({
+            where: { name: section.name },
+            update: { content: section.content },
+            create: { name: section.name, content: section.content },
+        });
+    }
 }
 
 main()

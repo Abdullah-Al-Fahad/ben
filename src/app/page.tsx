@@ -10,6 +10,9 @@ import { ValueBlock } from "@/components/Landing/LandingCard";
 import { motion, AnimatePresence } from 'framer-motion';
 import { AnimatedCoachModal, CoachDetail } from '@/components/AnimatedCoachModal';
 
+//=================================================================
+// INTERFACES & TYPES
+//=================================================================
 interface Coach {
     id: string;
     slug: string;
@@ -19,7 +22,7 @@ interface Coach {
 }
 
 //=================================================================
-//  HELPER COMPONENTS & DATA
+//  HELPER COMPONENTS
 //=================================================================
 const PricingFeature = ({ text, included = true }) => (
   <li className={`flex items-center space-x-3 ${included ? 'text-gray-300' : 'text-gray-600 line-through'}`}>
@@ -28,7 +31,45 @@ const PricingFeature = ({ text, included = true }) => (
   </li>
 );
 
-const IntroSection = ({ data }) => {
+//=================================================================
+//  SECTION COMPONENTS
+//=================================================================
+const HeroSection = ({ data }) => {
+  if (!data) return null;
+  return (
+    <section className="relative h-[calc(100vh-100px)] w-full overflow-hidden">
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="absolute top-0 left-0 w-full h-full object-cover filter grayscale"
+        src="https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e43e0279ad2b357d6c0f43_homepageclipwarrior-transcode.mp4"
+      />
+      <div className="relative h-full mix-blend-screen flex flex-col justify-center items-center text-center">
+        <div className="absolute w-full top-0 text-start">
+          <div className="bg-white ">
+            <h1 className="text-6xl md:text-[16vw] lg:text-[12vw] font-clashDisplay font-black uppercase leading-tight md:leading-none text-black p-4">
+              {data.heroText}
+            </h1>
+          </div>
+        </div>
+        <Image
+          src="https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e43e0279ad2b357d6c0f16_warrioricon.svg"
+          alt="Warrior Logo"
+          width={1920}
+          height={1080}
+          className="hidden lg:block absolute top-48 right-20 transform -translate-y-[5%] translate-x-[15%] w-[35%] h-auto"
+        />
+        <div className="hidden sm:block absolute bottom-10 left-4 sm:left-10 z-20 text-sm uppercase tracking-[0.5em] text-white">
+          S C R O L L
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const SecondHeroSection = ({ data }) => {
   if (!data) return null;
   return (
     <section className="relative bg-black text-white overflow-hidden">
@@ -173,116 +214,27 @@ const CoreValuesSection = ({ data }) => {
   );
 };
 
-const MainContent = () => {
-  const [intro, setIntro] = useState<any>(null);
-  const [features, setFeatures] = useState<any>(null);
-  const [coreValues, setCoreValues] = useState<any>(null);
-  const [coachesData, setCoachesData] = useState<Coach[]>([]);
-  const [scheduleData, setScheduleData] = useState<any>({});
-  const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
-  const [selectedCoachDetails, setSelectedCoachDetails] = useState<CoachDetail | null>(null);
 
-  useEffect(() => {
-    const fetchLandingPage = async () => {
-      try {
-        const response = await fetch('/api/landing-page');
-        const data = await response.json();
-        const introSection = data.find(s => s.name === 'intro');
-        const featuresSection = data.find(s => s.name === 'features');
-        const coreValuesSection = data.find(s => s.name === 'core-values');
-        if (introSection) setIntro(JSON.parse(introSection.content));
-        if (featuresSection) setFeatures(JSON.parse(featuresSection.content));
-        if (coreValuesSection) setCoreValues(JSON.parse(coreValuesSection.content));
-      } catch (error) {
-        console.error("Failed to fetch landing page data:", error);
-      }
-    };
-    fetchLandingPage();
-  }, []);
-
-  useEffect(() => {
-    const fetchCoaches = async () => {
-        try {
-            const response = await fetch('/api/coaches');
-            const data = await response.json();
-            const formattedCoaches = data.map(coach => ({
-                ...coach,
-                specialties: coach.specialties ? coach.specialties.split(',') : [],
-            }));
-            setCoachesData(formattedCoaches);
-        } catch (error) {
-            console.error("Failed to fetch coaches:", error);
-        }
-    };
-    fetchCoaches();
-  }, []);
-
-  useEffect(() => {
-    const fetchSchedule = async () => {
-        try {
-            const response = await fetch('/api/schedule');
-            const data = await response.json();
-            const scheduleByDay = data.reduce((acc, item) => {
-              const day = item.day;
-              if (!acc[day]) {
-                acc[day] = [];
-              }
-              acc[day].push(item);
-              return acc;
-            }, {});
-            setScheduleData(scheduleByDay);
-        } catch (error) {
-            console.error("Failed to fetch schedule:", error);
-        }
-    };
-    fetchSchedule();
-  }, []);
-
-  const handleCoachClick = async (id: string, slug: string) => {
-    try {
-        const response = await fetch(`/api/coaches/${id}`);
-        const data: CoachDetail = await response.json();
-        setSelectedCoachDetails(data);
-        setSelectedSlug(slug);
-    } catch (error) {
-        console.error("Failed to fetch coach details:", error);
-    }
-  };
-
+//=================================================================
+//  MAIN CONTENT COMPONENT
+//=================================================================
+const MainContent = ({
+  heroData,
+  secondHeroData,
+  features,
+  coreValues,
+  coachesData,
+  scheduleData,
+  selectedSlug,
+  selectedCoachDetails,
+  handleCoachClick,
+  setSelectedSlug
+}) => {
+  // FIX: Added explicit return and wrapped content in a <main> tag
   return (
     <main>
-      {/* HERO SECTION */}
-      <section className="relative h-[calc(100vh-100px)] w-full overflow-hidden">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute top-0 left-0 w-full h-full object-cover filter grayscale"
-          src="https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e43e0279ad2b357d6c0f43_homepageclipwarrior-transcode.mp4"
-        />
-        <div className="relative h-full mix-blend-screen flex flex-col justify-center items-center text-center">
-          <div className="absolute w-full top-0 text-start">
-            <div className="bg-white ">
-              <h1 className="text-6xl md:text-[16vw] lg:text-[12vw] font-clashDisplay font-black uppercase leading-tight md:leading-none text-black p-4">
-                Train like a<br />Champion
-              </h1>
-            </div>
-          </div>
-        </div>
-        <Image
-          src="https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e43e0279ad2b357d6c0f16_warrioricon.svg"
-          alt="Warrior Logo"
-          width={1920}
-          height={1080}
-          className="hidden lg:block absolute top-48 right-20 transform -translate-y-[5%] translate-x-[15%] w-[35%] h-auto"
-        />
-        <div className="hidden sm:block absolute bottom-10 left-4 sm:left-10 z-20 text-sm uppercase tracking-[0.5em] text-white">
-          S C R O L L
-        </div>
-      </section>
-
-      <IntroSection data={intro} />
+      <HeroSection data={heroData} />
+      <SecondHeroSection data={secondHeroData} />
       <VideoSection />
       <FeaturesSection data={features} />
       <CoreValuesSection data={coreValues} />
@@ -332,8 +284,6 @@ const MainContent = () => {
                   </div>
                 )
               }
-
-
             </div>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
@@ -376,92 +326,92 @@ const MainContent = () => {
 
       {/* Schedule Section */}
       <section id="schedule" className="py-16 sm:py-24 px-4 bg-black scroll-mt-28">
-  <div className="container mx-auto">
-    {/* Header section with title and print button */}
-    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-      <h2 className="text-3xl sm:text-4xl font-black uppercase tracking-wider text-white">
-        SCHEDULE
-      </h2>
-      <a
-        href="https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e43e0279ad2b357d6c0f44_schedule-june-2025%20(2)%20(1).pdf"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="bg-red-600 text-white font-bold py-3 px-6 text-sm flex items-center space-x-2 hover:bg-red-700 transition-colors rounded-md"
-      >
-        <span className="hidden sm:inline">PRINT SCHEDULE</span>
-        <span className="sm:hidden">PRINT</span>
-        <FaArrowRight className="transform -rotate-90 sm:rotate-0" />
-      </a>
-    </div>
+        <div className="container mx-auto">
+          {/* Header section with title and print button */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+            <h2 className="text-3xl sm:text-4xl font-black uppercase tracking-wider text-white">
+              SCHEDULE
+            </h2>
+            <a
+              href="https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e43e0279ad2b357d6c0f44_schedule-june-2025%20(2)%20(1).pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-red-600 text-white font-bold py-3 px-6 text-sm flex items-center space-x-2 hover:bg-red-700 transition-colors rounded-md"
+            >
+              <span className="hidden sm:inline">PRINT SCHEDULE</span>
+              <span className="sm:hidden">PRINT</span>
+              <FaArrowRight className="transform -rotate-90 sm:rotate-0" />
+            </a>
+          </div>
 
-    {/* Filter buttons */}
-    <div className="flex flex-wrap gap-2 mb-8 border-b-2 border-gray-800">
-      {['All', 'Kids', 'Adult', 'BJJ', 'Muay Thai'].map(filter => (
-        <button
-          key={filter}
-          className={`py-2 px-4 text-sm font-semibold text-gray-400 hover:text-white transition-colors border-b-2 ${
-            filter === 'All'
-              ? 'border-red-600 text-white'
-              : 'border-transparent'
-          }`}
-        >
-          {filter}
-        </button>
-      ))}
-    </div>
-
-    {/* Day buttons */}
-    <div className="flex flex-wrap gap-2 mb-8">
-      {[
-        'Full Week',
-        'Mon, Oct 13',
-        'Tue, Oct 14',
-        'Wed, Oct 15',
-        'Thu, Oct 16',
-        'Fri, Oct 17',
-        'Today: Sat, Oct 18',
-      ].map(day => (
-        <button
-          key={day}
-          className={`py-3 px-5 text-sm font-bold rounded-md ${
-            day.includes('Today')
-              ? 'bg-red-600 text-white'
-              : 'bg-[#1a1a1a] text-gray-300 hover:bg-gray-800'
-          }`}
-        >
-          {day.split(':')[0]}
-        </button>
-      ))}
-    </div>
-
-    {/* Schedule content */}
-    <div className="bg-[#1a1a1a] p-1 rounded-lg">
-      <div className="space-y-1">
-        {scheduleData[Object.keys(scheduleData)[0]]?.map((item, index) => (
-          <div
-            key={index}
-            className="grid grid-cols-1 sm:grid-cols-12 gap-x-4 gap-y-2 items-center bg-[#2d2d2d] p-3 rounded-md"
-          >
-            <div className="col-span-full sm:col-span-2 font-bold text-lg text-gray-400">
-              {item.time}
-            </div>
-            <div className="col-span-full sm:col-span-6">
-              <h4 className="font-bold text-xl text-white">{item.program}</h4>
-              <p className="text-gray-400 text-sm">All Levels</p>
-            </div>
-            <div className="col-span-full sm:col-span-4 text-left sm:text-right">
-              <span
-                className={`text-xs font-bold py-2 px-3 rounded-full bg-purple-900 text-purple-300`}
+          {/* Filter buttons */}
+          <div className="flex flex-wrap gap-2 mb-8 border-b-2 border-gray-800">
+            {['All', 'Kids', 'Adult', 'BJJ', 'Muay Thai'].map(filter => (
+              <button
+                key={filter}
+                className={`py-2 px-4 text-sm font-semibold text-gray-400 hover:text-white transition-colors border-b-2 ${
+                  filter === 'All'
+                    ? 'border-red-600 text-white'
+                    : 'border-transparent'
+                }`}
               >
-                {item.program}
-              </span>
+                {filter}
+              </button>
+            ))}
+          </div>
+
+          {/* Day buttons */}
+          <div className="flex flex-wrap gap-2 mb-8">
+            {[
+              'Full Week',
+              'Mon, Oct 13',
+              'Tue, Oct 14',
+              'Wed, Oct 15',
+              'Thu, Oct 16',
+              'Fri, Oct 17',
+              'Today: Sat, Oct 18',
+            ].map(day => (
+              <button
+                key={day}
+                className={`py-3 px-5 text-sm font-bold rounded-md ${
+                  day.includes('Today')
+                    ? 'bg-red-600 text-white'
+                    : 'bg-[#1a1a1a] text-gray-300 hover:bg-gray-800'
+                }`}
+              >
+                {day.split(':')[0]}
+              </button>
+            ))}
+          </div>
+
+          {/* Schedule content */}
+          <div className="bg-[#1a1a1a] p-1 rounded-lg">
+            <div className="space-y-1">
+              {scheduleData[Object.keys(scheduleData)[0]]?.map((item, index) => (
+                <div
+                  key={index}
+                  className="grid grid-cols-1 sm:grid-cols-12 gap-x-4 gap-y-2 items-center bg-[#2d2d2d] p-3 rounded-md"
+                >
+                  <div className="col-span-full sm:col-span-2 font-bold text-lg text-gray-400">
+                    {item.time}
+                  </div>
+                  <div className="col-span-full sm:col-span-6">
+                    <h4 className="font-bold text-xl text-white">{item.program}</h4>
+                    <p className="text-gray-400 text-sm">All Levels</p>
+                  </div>
+                  <div className="col-span-full sm:col-span-4 text-left sm:text-right">
+                    <span
+                      className={`text-xs font-bold py-2 px-3 rounded-full bg-purple-900 text-purple-300`}
+                    >
+                      {item.program}
+                    </span>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-        ))}
-      </div>
-    </div>
-  </div>
-</section>
+        </div>
+      </section>
 
       {/* Pricing Section */}
       <section id="pricing" className="py-16 sm:py-24 px-4 bg-[#0d0d0d] scroll-mt-28">
@@ -482,7 +432,6 @@ const MainContent = () => {
           <div className="mb-12">
             <div className="inline-block bg-red-600 text-white py-3 px-12 text-lg font-bold mb-6">ADULTS</div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {/* Pricing cards are already responsive with grid-cols-1 default */}
               <div className="bg-black p-8 border border-gray-800 flex flex-col justify-between rounded-lg">
                 <div>
                   <h3 className="text-2xl font-bold mb-2 text-white">MUAY THAI ONLY</h3>
@@ -595,6 +544,7 @@ const MainContent = () => {
           </a>
         </div>
       </section>
+      
       <AnimatePresence>
         {selectedSlug && selectedCoachDetails && (
           <AnimatedCoachModal 
@@ -608,13 +558,114 @@ const MainContent = () => {
   );
 };
 
+
 //=================================================================
 //  FINAL EXPORTED PAGE
 //=================================================================
 export default function Home() {
+  // --- ADDED: State management for the modal ---
+  const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
+  const [selectedCoachDetails, setSelectedCoachDetails] = useState<CoachDetail | null>(null);
+
+  // --- ADDED: Placeholder data ---
+    const [heroData, setHeroData] = useState({ heroText: "Train To Win" });
+  useEffect(() => {
+    const fetchHeroData = async () => {
+      try {
+        const response = await fetch('/api/landing-page/intro-hero');
+        if (response.ok) {
+          const data = await response.json();
+          setHeroData(JSON.parse(data.content));
+        }
+      } catch (error) {
+        console.error('Failed to fetch hero data:', error);
+      }
+    };
+    fetchHeroData();
+  }, []);
+  const [secondHeroData, setSecondHeroData] = useState({
+    title: "FORGE YOUR INNER WARRIOR",
+    description: "Our mission is to empower individuals through authentic martial arts training, fostering discipline, resilience, and community. We are dedicated to providing a safe, supportive, and challenging environment where students of all ages and skill levels can achieve their personal best, both on and off the mats.",
+    subtitle: "Join the Warrior Community"
+  });
+
+  useEffect(() => {
+    const fetchSecondHeroData = async () => {
+      try {
+        const response = await fetch('/api/landing-page/second-hero');
+        if (response.ok) {
+          const data = await response.json();
+          setSecondHeroData(JSON.parse(data.content));
+        }
+      } catch (error) {
+        console.error('Failed to fetch second hero data:', error);
+      }
+    };
+    fetchSecondHeroData();
+  }, []);
+  const features = {
+      disciplines: [
+          { name: "Brazilian Jiu-Jitsu", href: "/bjj" },
+          { name: "Muay Thai", href: "/muay-thai" },
+          { name: "Kids Martial Arts", href: "/kids" },
+      ],
+      gymFeatures: ["24/7 Access", "Experienced Coaches", "Full-size Boxing Ring", "Weight Room", "Recovery Zone"],
+      description: "Our curriculum is designed to be comprehensive and accessible, catering to everyone from beginners to seasoned competitors. We believe in building a strong foundation of fundamental techniques while encouraging creative expression and personal growth.",
+      subtitle: "More than just a gym, we are a community."
+  };
+  const coreValues = {
+      title: "Our Core Values",
+      description: "We are more than a gym; we are a community united by a passion for martial arts and a commitment to personal excellence. Our core values guide every class, every interaction, and every step of our journey together.",
+      values: [
+          { title: "Discipline", description: "Cultivating focus, dedication, and self-control." },
+          { title: "Respect", description: "Honoring our coaches, training partners, and ourselves." },
+          { title: "Integrity", description: "Upholding honesty and strong moral principles." },
+          { title: "Community", description: "Building a supportive and inclusive family of martial artists." },
+      ]
+  };
+  const coachesData: Coach[] = [
+      { id: '1', slug: 'john-doe', name: 'John Doe', specialties: ['BJJ', 'Wrestling'], image: '/path/to/john.jpg' },
+      { id: '2', slug: 'jane-smith', name: 'Jane Smith', specialties: ['Muay Thai'], image: '/path/to/jane.jpg' },
+      { id: '3', slug: 'mike-chen', name: 'Mike Chen', specialties: ['Kids MMA'], image: '/path/to/mike.jpg' },
+      { id: '4', slug: 'sara-connor', name: 'Sara Connor', specialties: ['BJJ'], image: '/path/to/sara.jpg' },
+      { id: '5', slug: 'james-lee', name: 'James Lee', specialties: ['Muay Thai', 'Boxing'], image: '/path/to/james.jpg' },
+  ];
+  const scheduleData = {
+    "Monday": [
+      { time: "06:00 AM", program: "Morning BJJ" },
+      { time: "12:00 PM", program: "Lunch Muay Thai" },
+      { time: "05:00 PM", program: "Kids Jiu-Jitsu" },
+    ]
+  };
+  const allCoachDetails = {
+    'john-doe': { name: 'John Doe', bio: 'Detailed bio for John Doe...', image: '/path/to/john.jpg' },
+    'jane-smith': { name: 'Jane Smith', bio: 'Detailed bio for Jane Smith...', image: '/path/to/jane.jpg' },
+    // Add other coaches here
+  };
+
+  // --- ADDED: Click handler function ---
+  const handleCoachClick = (coachId: string, coachSlug: string) => {
+    const details = allCoachDetails[coachSlug];
+    if (details) {
+      setSelectedCoachDetails(details);
+      setSelectedSlug(coachSlug);
+    }
+  };
+
   return (
     <>
-      <MainContent />
+      <MainContent
+        heroData={heroData}
+        secondHeroData={secondHeroData}
+        features={features}
+        coreValues={coreValues}
+        coachesData={coachesData}
+        scheduleData={scheduleData}
+        selectedSlug={selectedSlug}
+        selectedCoachDetails={selectedCoachDetails}
+        handleCoachClick={handleCoachClick}
+        setSelectedSlug={setSelectedSlug}
+      />
     </>
   );
 }
