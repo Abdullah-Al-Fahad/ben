@@ -8,6 +8,7 @@ async function main() {
         name: 'intro-hero',
         content: JSON.stringify({
           heroText: 'Train to Win',
+          videoUrl: 'https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e43e0279ad2b357d6c0f43_homepageclipwarrior-transcode.mp4',
           title: `Join our world class mma training programs for all levels - from beginners to pros.`,
           description: `Our gym has had both a local and a national presence since its founding in 2011, however its roots go much deeper. Our Team has been training and competing across the world in multiple combat sports to bring you the best instruction available. We are athletes, hobbyists, competitors, students and professionals. We strive to learn and grow while pushing others around us to do the same. We are people who always are working to improve ourselves and our community.`,
           subtitle: `We are a family, and we are a team.`,

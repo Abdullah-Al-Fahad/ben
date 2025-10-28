@@ -45,7 +45,7 @@ const HeroSection = ({ data }) => {
         muted
         playsInline
         className="absolute top-0 left-0 w-full h-full object-cover filter grayscale"
-        src="https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e43e0279ad2b357d6c0f43_homepageclipwarrior-transcode.mp4"
+        src={data.videoUrl}
       />
 
       {/* This container still creates the "transparent" text effect */}
@@ -574,7 +574,7 @@ export default function Home() {
   const [selectedCoachDetails, setSelectedCoachDetails] = useState<CoachDetail | null>(null);
 
   // --- ADDED: Placeholder data ---
-    const [heroData, setHeroData] = useState({ heroText: "Train To Win" });
+  const [heroData, setHeroData] = useState({ heroText: "Train To Win", videoUrl: "https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e43e0279ad2b357d6c0f43_homepageclipwarrior-transcode.mp4" });
   useEffect(() => {
     const fetchHeroData = async () => {
       try {
@@ -589,6 +589,7 @@ export default function Home() {
     };
     fetchHeroData();
   }, []);
+
   const [secondHeroData, setSecondHeroData] = useState({
     title: "FORGE YOUR INNER WARRIOR",
     description: "Our mission is to empower individuals through authentic martial arts training, fostering discipline, resilience, and community. We are dedicated to providing a safe, supportive, and challenging environment where students of all ages and skill levels can achieve their personal best, both on and off the mats.",
