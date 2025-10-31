@@ -22,7 +22,7 @@ interface Coach {
 }
 
 //=================================================================
-//  HELPER COMPONENTS
+//  HELPER COMPONENTS & ANIMATION VARIANTS
 //=================================================================
 const PricingFeature = ({ text, included = true }) => (
   <li className={`flex items-center space-x-3 ${included ? 'text-gray-300' : 'text-gray-600 line-through'}`}>
@@ -30,6 +30,20 @@ const PricingFeature = ({ text, included = true }) => (
     <span>{text}</span>
   </li>
 );
+
+// Animation variants for text elements
+const textVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: "easeOut"
+    }
+  }
+};
+
 
 //=================================================================
 //  SECTION COMPONENTS
@@ -92,18 +106,41 @@ const SecondHeroSection = ({ data }) => {
       <div className="container mx-auto relative z-10 py-16 sm:py-24 px-4 sm:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="flex flex-col justify-center">
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black uppercase leading-tight">
+            {/* Animated Title */}
+            <motion.h2 
+              className="text-4xl sm:text-5xl lg:text-6xl font-black uppercase leading-tight"
+              variants={textVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.5 }}
+            >
               {data.title}
-            </h2>
-            <p className="mt-8 text-gray-300 leading-relaxed max-w-lg">
+            </motion.h2>
+            {/* Animated Description */}
+            <motion.p 
+              className="mt-8 text-gray-300 leading-relaxed max-w-lg"
+              variants={textVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.5 }}
+              transition={{ delay: 0.2 }}
+            >
               {data.description}
-            </p>
-            <div className="mt-12">
+            </motion.p>
+            {/* Animated Subtitle */}
+            <motion.div 
+              className="mt-12"
+              variants={textVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.5 }}
+              transition={{ delay: 0.4 }}
+            >
               <h3 className="text-2xl font-bold uppercase tracking-wide">
                 {data.subtitle}
               </h3>
               <div className="w-48 h-1.5 bg-red-600 mt-2"></div>
-            </div>
+            </motion.div>
           </div>
           <div></div>
         </div>
@@ -140,25 +177,39 @@ const VideoSection = () => {
 const FeaturesSection = ({ data }) => {
   if (!data) return null;
   const SectionTitle = ({ title }) => (
-    <div>
+    <motion.div
+        variants={textVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.5 }}
+    >
       <h2 className="text-3xl font-black uppercase tracking-wider">{title}</h2>
       <div className="w-24 h-1.5 bg-red-600 mt-2"></div>
-    </div>
+    </motion.div>
   );
   const DisciplineLink = ({ href, children }) => (
-    <li>
+    <motion.li variants={textVariants}>
       <Link href={href} className="flex items-center justify-between text-lg text-gray-300 hover:text-white transition-colors group max-w-xs">
         <h4 className="text-xl">{children}</h4>
         <FaChevronRight className="text-red-500 opacity-75 group-hover:opacity-100 group-hover:translate-x-1 transition-transform" />
       </Link>
-    </li>
+    </motion.li>
   );
   const GymFeature = ({ icon, text }) => (
-    <li className="flex items-center space-x-4 text-lg text-gray-300">
+    <motion.li className="flex items-center space-x-4 text-lg text-gray-300" variants={textVariants}>
       <div className="w-6 text-center">{icon}</div>
       <span>{text}</span>
-    </li>
+    </motion.li>
   );
+  
+  const listContainerVariants = {
+    visible: {
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
   return (
     <section id="disciplines" className="bg-[#121212] text-white py-16 sm:py-24 px-4 overflow-hidden scroll-mt-28">
       <div className="container mx-auto">
@@ -166,15 +217,27 @@ const FeaturesSection = ({ data }) => {
           <div className="flex flex-col space-y-16">
             <div>
               <SectionTitle title="Disciplines" />
-              <ul className="mt-8 space-y-4">
+              <motion.ul 
+                className="mt-8 space-y-4"
+                variants={listContainerVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.2 }}
+              >
                 {data.disciplines.map(d => <DisciplineLink key={d.name} href={d.href}>{d.name}</DisciplineLink>)}
-              </ul>
+              </motion.ul>
             </div>
             <div>
               <SectionTitle title="Gym Features" />
-              <ul className="mt-8 space-y-4">
+              <motion.ul 
+                className="mt-8 space-y-4"
+                variants={listContainerVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.2 }}
+              >
                 {data.gymFeatures.map((f, i) => <GymFeature key={i} icon={<FaDumbbell />} text={f} />)}
-              </ul>
+              </motion.ul>
             </div>
           </div>
           <div className="relative">
@@ -184,12 +247,26 @@ const FeaturesSection = ({ data }) => {
               className="hidden lg:block absolute bottom-0 right-0 w-[80%] h-auto opacity-10 pointer-events-none -mr-24"
             />
             <div className="relative z-10 space-y-6 text-gray-300 leading-relaxed">
-              <p>{data.description}</p>
-              <div className="pt-8">
+              <motion.p 
+                variants={textVariants} 
+                initial="hidden" 
+                whileInView="visible" 
+                viewport={{ once: true, amount: 0.5 }}
+              >
+                {data.description}
+              </motion.p>
+              <motion.div 
+                className="pt-8" 
+                variants={textVariants} 
+                initial="hidden" 
+                whileInView="visible" 
+                viewport={{ once: true, amount: 0.5 }}
+                transition={{ delay: 0.2 }}
+              >
                 <h3 className="text-2xl font-bold uppercase tracking-wider text-white">
                   {data.subtitle}
                 </h3>
-              </div>
+              </motion.div>
             </div>
           </div>
         </div>
@@ -200,20 +277,60 @@ const FeaturesSection = ({ data }) => {
 
 const CoreValuesSection = ({ data }) => {
   if (!data) return null;
+  
+  const gridContainerVariants = {
+    visible: {
+      transition: {
+        staggerChildren: 0.2
+      }
+    }
+  };
+
   return (
     <section id="who-we-are" className="bg-black text-white py-16 sm:py-24 px-4 scroll-mt-28">
       <div className="container mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
           <div>
-            <h2 className="text-4xl sm:text-5xl font-black mb-4 uppercase">{data.title}</h2>
-            <div className="w-44 h-1.5 bg-red-600 mb-12"></div>
-            <div className="space-y-6 text-white-400 leading-relaxed max-w-xl">
+            <motion.h2 
+              className="text-4xl sm:text-5xl font-black mb-4 uppercase"
+              variants={textVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.5 }}
+            >
+              {data.title}
+            </motion.h2>
+            <motion.div 
+              className="w-44 h-1.5 bg-red-600 mb-12"
+              initial={{ width: 0 }}
+              whileInView={{ width: '11rem' }}
+              viewport={{ once: true, amount: 0.5 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+            ></motion.div>
+            <motion.div 
+              className="space-y-6 text-white-400 leading-relaxed max-w-xl"
+              variants={textVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.5 }}
+              transition={{ delay: 0.5 }}
+            >
               <p>{data.description}</p>
-            </div>
+            </motion.div>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-            {data.values.map(v => <ValueBlock key={v.title} title={v.title}>{v.description}</ValueBlock>)}
-          </div>
+          <motion.div 
+            className="grid grid-cols-1 sm:grid-cols-2 gap-8"
+            variants={gridContainerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+          >
+            {data.values.map(v => 
+              <motion.div key={v.title} variants={textVariants}>
+                  <ValueBlock title={v.title}>{v.description}</ValueBlock>
+              </motion.div>
+            )}
+          </motion.div>
         </div>
       </div>
     </section>
@@ -260,14 +377,40 @@ const MainContent = ({
         <div className="container mx-auto px-4 py-16 sm:py-24">
           <div className="flex flex-col md:flex-row justify-between items-stretch gap-12 mb-16">
             <div className="w-full md:w-1/2 space-y-4 text-gray-300">
-              <h2 className="text-5xl md:text-7xl font-black mb-12 uppercase text-white border-b-[6px] border-b-red-600 w-fit">Our Coaches</h2>
-              <div className="max-w-[550px] space-y-8 text-justify">
-                <p className="font-semibold text-white text-xl font-exo">With years of experience both in coaching and competing, you will not find a more well rounded and professional coaching team to help you achieve your goals.</p>
-                <p className="text-gray-400 text-xl">Our coaching is rooted in purpose and clarity: to help students reach personal and professional goals through structured, meaningful training. We focus on developing a conceptual framework for understanding physical conflict—skills that extend beyond the mat into real life.</p>
-                <p className="text-gray-400 text-xl">We teach and train through three interconnected lenses. This multi-faceted approach lets us coach with intention and adaptability, honoring the individual journey of each student.</p>
-              </div>
+              <motion.h2 
+                className="text-5xl md:text-7xl font-black mb-12 uppercase text-white border-b-[6px] border-b-red-600 w-fit"
+                variants={textVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.5 }}
+              >
+                Our Coaches
+              </motion.h2>
+              <motion.div 
+                className="max-w-[550px] space-y-8 text-justify"
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ staggerChildren: 0.2, delayChildren: 0.3 }}
+              >
+                <motion.p className="font-semibold text-white text-xl font-exo" variants={textVariants}>
+                  With years of experience both in coaching and competing, you will not find a more well rounded and professional coaching team to help you achieve your goals.
+                </motion.p>
+                <motion.p className="text-gray-400 text-xl" variants={textVariants}>
+                  Our coaching is rooted in purpose and clarity: to help students reach personal and professional goals through structured, meaningful training. We focus on developing a conceptual framework for understanding physical conflict—skills that extend beyond the mat into real life.
+                </motion.p>
+                <motion.p className="text-gray-400 text-xl" variants={textVariants}>
+                  We teach and train through three interconnected lenses. This multi-faceted approach lets us coach with intention and adaptability, honoring the individual journey of each student.
+                </motion.p>
+              </motion.div>
             </div>
-            <div className="w-full md:w-1/2 flex flex-col gap-4">
+            <motion.div 
+              className="w-full md:w-1/2 flex flex-col gap-4"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ staggerChildren: 0.2 }}
+            >
 
               {
                 [{
@@ -283,14 +426,14 @@ const MainContent = ({
                   subtitle: "Martial arts is also a path of self-discovery. Through the joy of training, we strive to uncover personal truth and embrace continuous improvement.",
                 },].map((item, index) =>
 
-                  <div key={index} className="w-full">
+                  <motion.div key={index} className="w-full" variants={textVariants}>
                     <ValueBlock title={item.title}>
                       {item.subtitle}
                     </ValueBlock>
-                  </div>
+                  </motion.div>
                 )
               }
-            </div>
+            </motion.div>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
             {coachesData.map(coach => (
@@ -574,7 +717,7 @@ export default function Home() {
   const [selectedCoachDetails, setSelectedCoachDetails] = useState<CoachDetail | null>(null);
 
   // --- ADDED: Placeholder data ---
-  const [heroData, setHeroData] = useState({ heroText: "Train To Win", videoUrl: "https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e43e0279ad2b357d6c0f43_homepageclipwarrior-transcode.mp4" });
+  const [heroData, setHeroData] = useState(null);
   useEffect(() => {
     const fetchHeroData = async () => {
       try {

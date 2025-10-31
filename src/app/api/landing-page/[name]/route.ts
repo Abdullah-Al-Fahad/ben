@@ -5,7 +5,7 @@ export async function GET(
   request: Request,
   { params }: { params: { name: string } }
 ) {
-  const { name } = params;
+  const name = params.name;
   const section = await prisma.landingPageSection.findUnique({
     where: { name },
   });
@@ -21,7 +21,7 @@ export async function PUT(
   request: Request,
   { params }: { params: { name: string } }
 ) {
-  const { name } = params;
+  const name = params.name;
   const { content } = await request.json();
 
   const updatedSection = await prisma.landingPageSection.update({

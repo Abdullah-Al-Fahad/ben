@@ -12,7 +12,8 @@
     "seed:mma": "ts-node prisma/seed-mma.ts",
     "seed:fitness": "ts-node prisma/seed-fitness.ts",
     "seed:landing-page": "ts-node prisma/seed-landing-page.ts",
-    "seed:coaches": "ts-node prisma/seed-coaches.ts"
+    "seed:coaches": "ts-node prisma/seed-coaches.ts",
+    "seed:intro-hero": "ts-node prisma/seed-intro-hero.ts"
   },
   "dependencies": {
     "@fontsource/poppins": "^5.2.7",
@@ -35,6 +36,7 @@
     "jspdf": "^3.0.3",
     "lucide-react": "^0.545.0",
     "next": "15.5.4",
+    "next-themes": "^0.4.6",
     "react": "19.1.0",
     "react-day-picker": "^9.11.1",
     "react-dom": "19.1.0",
