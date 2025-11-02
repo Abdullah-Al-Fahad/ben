@@ -95,7 +95,7 @@ const SecondHeroSection = ({ data }) => {
     <section className="relative bg-black text-white overflow-hidden">
       <div className="absolute inset-0 z-0">
         <Image
-          src="https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e95350c431166c54c51460_warrior_01.jpg"
+          src={data.imageUrl}
           alt="MMA fighters grappling in a gym"
           width={1920}
           height={1080}
@@ -150,24 +150,34 @@ const SecondHeroSection = ({ data }) => {
 };
 
 const VideoSection = () => {
+  const [videoUrl, setVideoUrl] = useState('');
+
+  useEffect(() => {
+    fetch('/api/video')
+      .then((res) => res.json())
+      .then((data) => setVideoUrl(data.url));
+  }, []);
+
   return (
     <section className="bg-black py-12 sm:py-16 px-4">
       <div className="container mx-auto">
         <div className="relative h-0 pb-[56.25%]">
-          <video
-            className="absolute top-0 left-0 w-full h-full rounded-2xl md:rounded-[3rem]"
-            controls={false}
-            autoPlay
-            muted
-            loop
-            playsInline
-          >
-            <source
-              src="/123.mp4"
-              type="video/mp4"
-            />
-            Your browser does not support the video tag.
-          </video>
+          {videoUrl && (
+            <video
+              className="absolute top-0 left-0 w-full h-full rounded-2xl md:rounded-[3rem]"
+              controls={false}
+              autoPlay
+              muted
+              loop
+              playsInline
+            >
+              <source
+                src={videoUrl}
+                type="video/mp4"
+              />
+              Your browser does not support the video tag.
+            </video>
+          )}
         </div>
       </div>
     </section>
@@ -177,37 +187,34 @@ const VideoSection = () => {
 const FeaturesSection = ({ data }) => {
   if (!data) return null;
   const SectionTitle = ({ title }) => (
-    <motion.div
-        variants={textVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.5 }}
-    >
+    <div>
       <h2 className="text-3xl font-black uppercase tracking-wider">{title}</h2>
       <div className="w-24 h-1.5 bg-red-600 mt-2"></div>
-    </motion.div>
+    </div>
   );
   const DisciplineLink = ({ href, children }) => (
-    <motion.li variants={textVariants}>
+    <li>
       <Link href={href} className="flex items-center justify-between text-lg text-gray-300 hover:text-white transition-colors group max-w-xs">
         <h4 className="text-xl">{children}</h4>
         <FaChevronRight className="text-red-500 opacity-75 group-hover:opacity-100 group-hover:translate-x-1 transition-transform" />
       </Link>
-    </motion.li>
+    </li>
   );
   const GymFeature = ({ icon, text }) => (
-    <motion.li className="flex items-center space-x-4 text-lg text-gray-300" variants={textVariants}>
-      <div className="w-6 text-center">{icon}</div>
+    <li className="flex items-center space-x-4 text-lg text-gray-300">
+      <div className="w-6 text-center">{iconComponents[icon] || <FaDumbbell />}</div>
       <span>{text}</span>
-    </motion.li>
+    </li>
   );
-  
-  const listContainerVariants = {
-    visible: {
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
+
+  // Map icon names to actual React components
+  const iconComponents = {
+    FaDumbbell: <FaDumbbell />,
+    FaBatteryFull: <FaBatteryFull />,
+    FaCalendarAlt: <FaCalendarAlt />,
+    FaUserFriends: <FaUserFriends />,
+    FaMedal: <FaMedal />,
+    FaSmile: <FaSmile />,
   };
 
   return (
@@ -217,27 +224,15 @@ const FeaturesSection = ({ data }) => {
           <div className="flex flex-col space-y-16">
             <div>
               <SectionTitle title="Disciplines" />
-              <motion.ul 
-                className="mt-8 space-y-4"
-                variants={listContainerVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, amount: 0.2 }}
-              >
+              <ul className="mt-8 space-y-4">
                 {data.disciplines.map(d => <DisciplineLink key={d.name} href={d.href}>{d.name}</DisciplineLink>)}
-              </motion.ul>
+              </ul>
             </div>
             <div>
               <SectionTitle title="Gym Features" />
-              <motion.ul 
-                className="mt-8 space-y-4"
-                variants={listContainerVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, amount: 0.2 }}
-              >
-                {data.gymFeatures.map((f, i) => <GymFeature key={i} icon={<FaDumbbell />} text={f} />)}
-              </motion.ul>
+              <ul className="mt-8 space-y-4">
+                {data.gymFeatures.map((f, i) => <GymFeature key={i} icon={f.icon} text={f.text} />)}
+              </ul>
             </div>
           </div>
           <div className="relative">
@@ -247,26 +242,14 @@ const FeaturesSection = ({ data }) => {
               className="hidden lg:block absolute bottom-0 right-0 w-[80%] h-auto opacity-10 pointer-events-none -mr-24"
             />
             <div className="relative z-10 space-y-6 text-gray-300 leading-relaxed">
-              <motion.p 
-                variants={textVariants} 
-                initial="hidden" 
-                whileInView="visible" 
-                viewport={{ once: true, amount: 0.5 }}
-              >
+              <p>
                 {data.description}
-              </motion.p>
-              <motion.div 
-                className="pt-8" 
-                variants={textVariants} 
-                initial="hidden" 
-                whileInView="visible" 
-                viewport={{ once: true, amount: 0.5 }}
-                transition={{ delay: 0.2 }}
-              >
+              </p>
+              <div className="pt-8">
                 <h3 className="text-2xl font-bold uppercase tracking-wider text-white">
                   {data.subtitle}
                 </h3>
-              </motion.div>
+              </div>
             </div>
           </div>
         </div>
@@ -733,11 +716,7 @@ export default function Home() {
     fetchHeroData();
   }, []);
 
-  const [secondHeroData, setSecondHeroData] = useState({
-    title: "FORGE YOUR INNER WARRIOR",
-    description: "Our mission is to empower individuals through authentic martial arts training, fostering discipline, resilience, and community. We are dedicated to providing a safe, supportive, and challenging environment where students of all ages and skill levels can achieve their personal best, both on and off the mats.",
-    subtitle: "Join the Warrior Community"
-  });
+  const [secondHeroData, setSecondHeroData] = useState(null);
 
   useEffect(() => {
     const fetchSecondHeroData = async () => {
@@ -745,7 +724,7 @@ export default function Home() {
         const response = await fetch('/api/landing-page/second-hero');
         if (response.ok) {
           const data = await response.json();
-          setSecondHeroData(JSON.parse(data.content));
+          setSecondHeroData(data);
         }
       } catch (error) {
         console.error('Failed to fetch second hero data:', error);
@@ -753,16 +732,7 @@ export default function Home() {
     };
     fetchSecondHeroData();
   }, []);
-  const features = {
-      disciplines: [
-          { name: "Brazilian Jiu-Jitsu", href: "/bjj" },
-          { name: "Muay Thai", href: "/muay-thai" },
-          { name: "Kids Martial Arts", href: "/kids" },
-      ],
-      gymFeatures: ["24/7 Access", "Experienced Coaches", "Full-size Boxing Ring", "Weight Room", "Recovery Zone"],
-      description: "Our curriculum is designed to be comprehensive and accessible, catering to everyone from beginners to seasoned competitors. We believe in building a strong foundation of fundamental techniques while encouraging creative expression and personal growth.",
-      subtitle: "More than just a gym, we are a community."
-  };
+
   const coreValues = {
       title: "Our Core Values",
       description: "We are more than a gym; we are a community united by a passion for martial arts and a commitment to personal excellence. Our core values guide every class, every interaction, and every step of our journey together.",
@@ -802,12 +772,35 @@ export default function Home() {
     }
   };
 
+  const [featuresData, setFeaturesData] = useState(null); // New state for features
+
+  useEffect(() => {
+    const fetchFeaturesData = async () => {
+      try {
+        const [disciplinesRes, gymFeaturesRes, descriptionRes] = await Promise.all([
+          fetch('/api/landing-page/features/disciplines'),
+          fetch('/api/landing-page/features/gym-features'),
+          fetch('/api/landing-page/features/description'),
+        ]);
+
+        const disciplines = await disciplinesRes.json();
+        const gymFeatures = await gymFeaturesRes.json();
+        const { description, subtitle } = await descriptionRes.json();
+
+        setFeaturesData({ disciplines, gymFeatures, description, subtitle });
+      } catch (error) {
+        console.error('Failed to fetch features data:', error);
+      }
+    };
+    fetchFeaturesData();
+  }, []);
+
   return (
     <>
       <MainContent
         heroData={heroData}
         secondHeroData={secondHeroData}
-        features={features}
+        features={featuresData} // Pass featuresData here
         coreValues={coreValues}
         coachesData={coachesData}
         scheduleData={scheduleData}

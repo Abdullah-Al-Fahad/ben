@@ -1,15 +1,9 @@
-
 'use client';
 
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-export default function EditSecondHeroSectionPage() {
+export default function EditSecondHero() {
   const [title, setTitle] = useState('');
   const [subtitle, setSubtitle] = useState('');
   const [description, setDescription] = useState('');
@@ -22,14 +16,13 @@ export default function EditSecondHeroSectionPage() {
         const response = await fetch('/api/landing-page/second-hero');
         if (response.ok) {
           const data = await response.json();
-          const content = JSON.parse(data.content);
-          setTitle(content.title);
-          setSubtitle(content.subtitle);
-          setDescription(content.description);
-          setImageUrl(content.imageUrl);
+          setTitle(data.title);
+          setSubtitle(data.subtitle);
+          setDescription(data.description);
+          setImageUrl(data.imageUrl);
         }
       } catch (error) {
-        console.error('Failed to fetch second hero section data:', error);
+        console.error('Failed to fetch second hero data:', error);
       }
     };
     fetchSecondHeroData();
@@ -43,55 +36,76 @@ export default function EditSecondHeroSectionPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          content: JSON.stringify({ title, subtitle, description, imageUrl }),
-        }),
+        body: JSON.stringify({ title, subtitle, description, imageUrl }),
       });
-
       if (response.ok) {
         router.push('/admin/landing-page');
       } else {
-        console.error('Failed to save data');
+        console.error('Failed to update second hero data');
       }
     } catch (error) {
-      console.error('Failed to save data:', error);
+      console.error('Failed to update second hero data:', error);
     }
   };
 
   return (
-    <div className="container mx-auto py-10">
-      <Card>
-        <CardHeader>
-          <CardTitle>Edit Second Hero Section</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
-
-            <div>
-              <label htmlFor="secondHeroImageUrl" className="block text-sm font-medium">Image URL</label>
-              <Input id="secondHeroImageUrl" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} />
-            </div>
-            <div>
-              <label htmlFor="secondHeroTitle" className="block text-sm font-medium">Title</label>
-              <Input id="secondHeroTitle" value={title} onChange={(e) => setTitle(e.target.value)} />
-            </div>
-            <div>
-              <label htmlFor="secondHeroSubtitle" className="block text-sm font-medium">Subtitle</label>
-              <Input id="secondHeroSubtitle" value={subtitle} onChange={(e) => setSubtitle(e.target.value)} />
-            </div>
-            <div>
-              <label htmlFor="secondHeroDescription" className="block text-sm font-medium">Description</label>
-              <Textarea id="secondHeroDescription" value={description} onChange={(e) => setDescription(e.target.value)} />
-            </div>
-            <div className="flex space-x-4">
-              <Button type="submit">Save Changes</Button>
-              <Link href="/admin/landing-page">
-                <Button variant="outline" type="button">Cancel</Button>
-              </Link>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
+    <div className="container mx-auto p-4 bg-gray-100">
+      <h1 className="text-2xl font-bold mb-4 text-gray-800">Edit Second Hero</h1>
+      <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md">
+        <div className="mb-4">
+          <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+            Title
+          </label>
+          <input
+            type="text"
+            id="title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-black bg-white"
+          />
+        </div>
+        <div className="mb-4">
+          <label htmlFor="subtitle" className="block text-sm font-medium text-gray-700">
+            Subtitle
+          </label>
+          <input
+            type="text"
+            id="subtitle"
+            value={subtitle}
+            onChange={(e) => setSubtitle(e.target.value)}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-black bg-white"
+          />
+        </div>
+        <div className="mb-4">
+          <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+            Description
+          </label>
+          <textarea
+            id="description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-black bg-white"
+          />
+        </div>
+        <div className="mb-4">
+          <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700">
+            Image URL
+          </label>
+          <input
+            type="text"
+            id="imageUrl"
+            value={imageUrl}
+            onChange={(e) => setImageUrl(e.target.value)}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-black bg-white"
+          />
+        </div>
+        <button
+          type="submit"
+          className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
+          Save
+        </button>
+      </form>
     </div>
   );
 }

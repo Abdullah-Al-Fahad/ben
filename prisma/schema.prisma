@@ -79,3 +79,34 @@ model LandingPageSection {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model SecondHero {
+  id          String   @id @default(cuid())
+  title       String
+  subtitle    String
+  description String
+  imageUrl    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Video {
+  id  Int    @id @default(autoincrement())
+  url String
+}
+
+model FeatureDiscipline {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  href      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model GymFeature {
+  id        String   @id @default(cuid())
+  icon      String
+  text      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
