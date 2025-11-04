@@ -308,7 +308,7 @@ const CoreValuesSection = ({ data }) => {
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
           >
-            {data.values.map(v => 
+            {data.values && data.values.map(v => 
               <motion.div key={v.title} variants={textVariants}>
                   <ValueBlock title={v.title}>{v.description}</ValueBlock>
               </motion.div>
@@ -329,6 +329,7 @@ const MainContent = ({
   secondHeroData,
   features,
   coreValues,
+  coachesSectionData,
   coachesData,
   scheduleData,
   selectedSlug,
@@ -346,115 +347,100 @@ const MainContent = ({
       <CoreValuesSection data={coreValues} />
 
       {/* Coaches Section */}
-      <section id="coaches" className="bg-black scroll-mt-28">
-        <div className="relative w-full" style={{ paddingBottom: '56.25%' }}> {/* 16:9 Aspect Ratio */}
-          <div
-            className="absolute inset-0 bg-cover bg-top filter grayscale"
-            style={{
-              backgroundImage: "url('https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e43e0279ad2b357d6c0f26_67f85e7e1dfe540942d24018_489283717_1143059611166111_4972771042462498311_n.jpg')"
-            }}
-          >
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
-          </div> 
-        </div>
-        <div className="container mx-auto px-4 py-16 sm:py-24">
-          <div className="flex flex-col md:flex-row justify-between items-stretch gap-12 mb-16">
-            <div className="w-full md:w-1/2 space-y-4 text-gray-300">
-              <motion.h2 
-                className="text-5xl md:text-7xl font-black mb-12 uppercase text-white border-b-[6px] border-b-red-600 w-fit"
-                variants={textVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, amount: 0.5 }}
-              >
-                Our Coaches
-              </motion.h2>
+      {coachesSectionData && (
+        <section id="coaches" className="bg-black scroll-mt-28">
+          <div className="relative w-full" style={{ paddingBottom: '56.25%' }}> {/* 16:9 Aspect Ratio */}
+            <div
+              className="absolute inset-0 bg-cover bg-top filter grayscale"
+              style={{
+                backgroundImage: `url(${coachesSectionData.backgroundImage})`
+              }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+            </div> 
+          </div>
+          <div className="container mx-auto px-4 py-16 sm:py-24">
+            <div className="flex flex-col md:flex-row justify-between items-stretch gap-12 mb-16">
+              <div className="w-full md:w-1/2 space-y-4 text-gray-300">
+                <motion.h2 
+                  className="text-5xl md:text-7xl font-black mb-12 uppercase text-white border-b-[6px] border-b-red-600 w-fit"
+                  variants={textVariants}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, amount: 0.5 }}
+                >
+                  {coachesSectionData.title}
+                </motion.h2>
+                <motion.div 
+                  className="max-w-[550px] space-y-8 text-justify"
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, amount: 0.3 }}
+                  transition={{ staggerChildren: 0.2, delayChildren: 0.3 }}
+                >
+                  <motion.p className="font-semibold text-white text-xl font-exo" variants={textVariants}>
+                    {coachesSectionData.description}
+                  </motion.p>
+                </motion.div>
+              </div>
               <motion.div 
-                className="max-w-[550px] space-y-8 text-justify"
+                className="w-full md:w-1/2 flex flex-col gap-4"
                 initial="hidden"
                 whileInView="visible"
-                viewport={{ once: true, amount: 0.3 }}
-                transition={{ staggerChildren: 0.2, delayChildren: 0.3 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ staggerChildren: 0.2 }}
               >
-                <motion.p className="font-semibold text-white text-xl font-exo" variants={textVariants}>
-                  With years of experience both in coaching and competing, you will not find a more well rounded and professional coaching team to help you achieve your goals.
-                </motion.p>
-                <motion.p className="text-gray-400 text-xl" variants={textVariants}>
-                  Our coaching is rooted in purpose and clarity: to help students reach personal and professional goals through structured, meaningful training. We focus on developing a conceptual framework for understanding physical conflict—skills that extend beyond the mat into real life.
-                </motion.p>
-                <motion.p className="text-gray-400 text-xl" variants={textVariants}>
-                  We teach and train through three interconnected lenses. This multi-faceted approach lets us coach with intention and adaptability, honoring the individual journey of each student.
-                </motion.p>
+
+                {
+                  coachesSectionData.lenses.map((item, index) =>
+
+                    <motion.div key={index} className="w-full" variants={textVariants}>
+                      <ValueBlock title={item.title}>
+                        {item.subtitle}
+                      </ValueBlock>
+                    </motion.div>
+                  )
+                }
               </motion.div>
             </div>
-            <motion.div 
-              className="w-full md:w-1/2 flex flex-col gap-4"
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ staggerChildren: 0.2 }}
-            >
-
-              {
-                [{
-                  title: "STREET",
-                  subtitle: `Training should be grounded in real-life efficacy. We prioritize practical applicability over sport-specific rulesets or "gaming" the system.`,
-                },
-                {
-                  title: "SPORT",
-                  subtitle: "Sport offers structure, feedback, and challenge. Competing isn't the only goal—growth is. From drilling to tournaments, every layer is an opportunity to refine your skills.",
-                },
-                {
-                  title: "ART",
-                  subtitle: "Martial arts is also a path of self-discovery. Through the joy of training, we strive to uncover personal truth and embrace continuous improvement.",
-                },].map((item, index) =>
-
-                  <motion.div key={index} className="w-full" variants={textVariants}>
-                    <ValueBlock title={item.title}>
-                      {item.subtitle}
-                    </ValueBlock>
-                  </motion.div>
-                )
-              }
-            </motion.div>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-            {coachesData.map(coach => (
-              <motion.div 
-                key={coach.slug} 
-                layoutId={coach.slug}
-                onClick={() => handleCoachClick(coach.id, coach.slug)}
-                className="group relative rounded-lg cursor-pointer"
-              >
-                <div className="relative h-80 bg-black rounded-lg overflow-hidden">
-                  <motion.img 
-                    src={coach.image} 
-                    alt={coach.name} 
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 group-hover:brightness-75"
-                  />
-                  
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/ to-transparent"></div>
-                  
-                  <div className="absolute bottom-0 left-0 h-1 w-0 bg-red-600 transition-all duration-500 group-hover:w-full"></div>
-                  
-                  <div className="absolute bottom-0 left-0 w-full p-4">
-                      <motion.h3 className="font-black text-lg text-white uppercase tracking-wider mb-2">
-                          {coach.name}
-                      </motion.h3>
-                      <div className="flex flex-wrap gap-2">
-                          {coach.specialties.map(spec => (
-                              <span key={spec} className="bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full">
-                                  {spec}
-                              </span>
-                          ))}
-                      </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+              {coachesData.map(coach => (
+                <motion.div 
+                  key={coach.slug} 
+                  layoutId={coach.slug}
+                  onClick={() => handleCoachClick(coach.id, coach.slug)}
+                  className="group relative rounded-lg cursor-pointer"
+                >
+                  <div className="relative h-80 bg-black rounded-lg overflow-hidden">
+                    <motion.img 
+                      src={coach.image} 
+                      alt={coach.name} 
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 group-hover:brightness-75"
+                    />
+                    
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/ to-transparent"></div>
+                    
+                    <div className="absolute bottom-0 left-0 h-1 w-0 bg-red-600 transition-all duration-500 group-hover:w-full"></div>
+                    
+                    <div className="absolute bottom-0 left-0 w-full p-4">
+                        <motion.h3 className="font-black text-lg text-white uppercase tracking-wider mb-2">
+                            {coach.name}
+                        </motion.h3>
+                        <div className="flex flex-wrap gap-2">
+                            {coach.specialties.map(spec => (
+                                <span key={spec} className="bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full">
+                                    {spec}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
                   </div>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Schedule Section */}
       <section id="schedule" className="py-16 sm:py-24 px-4 bg-black scroll-mt-28">
@@ -733,16 +719,20 @@ export default function Home() {
     fetchSecondHeroData();
   }, []);
 
-  const coreValues = {
-      title: "Our Core Values",
-      description: "We are more than a gym; we are a community united by a passion for martial arts and a commitment to personal excellence. Our core values guide every class, every interaction, and every step of our journey together.",
-      values: [
-          { title: "Discipline", description: "Cultivating focus, dedication, and self-control." },
-          { title: "Respect", description: "Honoring our coaches, training partners, and ourselves." },
-          { title: "Integrity", description: "Upholding honesty and strong moral principles." },
-          { title: "Community", description: "Building a supportive and inclusive family of martial artists." },
-      ]
-  };
+  const [coreValuesData, setCoreValuesData] = useState(null); // New state for core values
+
+  useEffect(() => {
+    const fetchCoreValuesData = async () => {
+      try {
+        const res = await fetch('/api/landing-page/core-values');
+        const data = await res.json();
+        setCoreValuesData(data);
+      } catch (error) {
+        console.error('Failed to fetch core values data:', error);
+      }
+    };
+    fetchCoreValuesData();
+  }, []);
   const coachesData: Coach[] = [
       { id: '1', slug: 'john-doe', name: 'John Doe', specialties: ['BJJ', 'Wrestling'], image: '/path/to/john.jpg' },
       { id: '2', slug: 'jane-smith', name: 'Jane Smith', specialties: ['Muay Thai'], image: '/path/to/jane.jpg' },
@@ -795,13 +785,29 @@ export default function Home() {
     fetchFeaturesData();
   }, []);
 
+  const [coachesSectionData, setCoachesSectionData] = useState(null);
+
+  useEffect(() => {
+    const fetchCoachesSectionData = async () => {
+      try {
+        const res = await fetch('/api/landing-page/coaches');
+        const data = await res.json();
+        setCoachesSectionData(data);
+      } catch (error) {
+        console.error('Failed to fetch coaches section data:', error);
+      }
+    };
+    fetchCoachesSectionData();
+  }, []);
+
   return (
     <>
       <MainContent
         heroData={heroData}
         secondHeroData={secondHeroData}
-        features={featuresData} // Pass featuresData here
-        coreValues={coreValues}
+        features={featuresData}
+        coreValues={coreValuesData}
+        coachesSectionData={coachesSectionData}
         coachesData={coachesData}
         scheduleData={scheduleData}
         selectedSlug={selectedSlug}

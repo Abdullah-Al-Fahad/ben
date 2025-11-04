@@ -8,13 +8,16 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "seed": "ts-node prisma/seed.ts && ts-node prisma/seed-features.ts",
+    "seed": "ts-node prisma/seed.ts",
     "seed:jutsu": "ts-node prisma/seed-jutsu.ts",
     "seed:mma": "ts-node prisma/seed-mma.ts",
     "seed:fitness": "ts-node prisma/seed-fitness.ts",
     "seed:landing-page": "ts-node prisma/seed-landing-page.ts",
     "seed:coaches": "ts-node prisma/seed-coaches.ts",
-    "seed:intro-hero": "ts-node prisma/seed-intro-hero.ts"
+    "seed:intro-hero": "ts-node prisma/seed-intro-hero.ts",
+    "seed:features": "ts-node prisma/seed-features.ts",
+    "seed:core-values": "ts-node prisma/seed-core-values.ts",
+    "seed:all": "npm run seed && npm run seed:jutsu && npm run seed:mma && npm run seed:fitness && npm run seed:landing-page && npm run seed:coaches && npm run seed:intro-hero && npm run seed:features && npm run seed:core-values"
   },
   "dependencies": {
     "@fontsource/poppins": "^5.2.7",
