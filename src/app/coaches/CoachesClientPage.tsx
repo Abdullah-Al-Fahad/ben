@@ -5,7 +5,7 @@ import { AnimatedCoachModal, CoachDetail } from '@/components/AnimatedCoachModal
 import { ValueBlock } from '@/components/Landing/LandingCard';
 
 interface Coach {
-    slug: string;
+    id: string;
     name: string;
     specialties: string[];
     imageUrl: string;
@@ -45,13 +45,13 @@ const textVariants = {
 };
 
 const CoachesClientPage: React.FC<CoachesClientPageProps> = ({ coachesData, allCoachDetails, coachesSectionData }) => {
-    const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
+    const [selectedId, setSelectedId] = useState<string | null>(null);
 
-    const handleCoachClick = (slug: string) => {
-        setSelectedSlug(slug);
+    const handleCoachClick = (id: string) => {
+        setSelectedId(id);
     };
 
-    const selectedCoachDetails = selectedSlug ? allCoachDetails[selectedSlug] : null;
+    const selectedCoachDetails = selectedId ? allCoachDetails[selectedId] : null;
 
   return (
     <div className="bg-black text-white font-sans">
@@ -96,9 +96,9 @@ const CoachesClientPage: React.FC<CoachesClientPageProps> = ({ coachesData, allC
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mt-24">
           {coachesData.map(coach => (
             <motion.div 
-              key={coach.slug} 
-              layoutId={coach.slug}
-              onClick={() => handleCoachClick(coach.slug)}
+              key={coach.id} 
+              layoutId={coach.id}
+              onClick={() => handleCoachClick(coach.id)}
               className="group relative rounded-lg cursor-pointer"
             >
               <div className="relative h-80 bg-black rounded-lg overflow-hidden">
@@ -132,11 +132,11 @@ const CoachesClientPage: React.FC<CoachesClientPageProps> = ({ coachesData, allC
         </div>
       </main>
       <AnimatePresence>
-        {selectedSlug && selectedCoachDetails && (
+        {selectedId && selectedCoachDetails && (
           <AnimatedCoachModal 
-            slug={selectedSlug} 
+            id={selectedId} 
             coach={selectedCoachDetails} 
-            onClose={() => setSelectedSlug(null)} 
+            onClose={() => setSelectedId(null)} 
           />
         )}
       </AnimatePresence>

@@ -4,7 +4,7 @@ import { ValueBlock } from '@/components/Landing/LandingCard';
 import CoachesClientPage from './CoachesClientPage'; // New client component
 
 interface Coach {
-    slug: string;
+    id: string;
     name: string;
     specialties: string[];
     imageUrl: string;
@@ -18,9 +18,9 @@ const CoachesPage = async () => {
 
   const allCoachDetails: CoachDetailsData = {};
   await Promise.all(coachesData.map(async (coach) => {
-    const coachDetailResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/coaches/${coach.slug}`, { cache: 'no-store' });
+    const coachDetailResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/coaches/${coach.id}`, { cache: 'no-store' });
     const coachDetail: CoachDetail = await coachDetailResponse.json();
-    allCoachDetails[coach.slug] = coachDetail;
+    allCoachDetails[coach.id] = coachDetail;
   }));
 
   const coachesSectionResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/landing-page/coaches`, { cache: 'no-store' });
