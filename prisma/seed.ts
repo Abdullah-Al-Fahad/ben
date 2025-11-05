@@ -1,10 +1,16 @@
 import { PrismaClient } from '@prisma/client';
+import * as fs from 'fs';
+import * as path from 'path';
+import { fileURLToPath } from 'url';
 
 const prisma = new PrismaClient();
 
 async function main() {
-  const disciplines = await prisma.discipline.findMany();
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
 
+  // Seed Disciplines
+  const disciplines = await prisma.discipline.findMany();
   if (disciplines.length === 0) {
     await prisma.discipline.create({
       data: {
@@ -33,12 +39,34 @@ We are an official affiliate of Classic Muay Thai, led by coach Tyler Wombles. T
     });
   }
 
+  // Seed Video
   const video = await prisma.video.findFirst();
 
   if (!video) {
     await prisma.video.create({
       data: {
         url: '/123.mp4',
+      },
+    });
+  }
+
+  // Seed Coaches
+  const coachDetailsPath = path.join(__dirname, '../public/coachDetails.json');
+  const coachDetailsRaw = fs.readFileSync(coachDetailsPath, 'utf-8');
+  const coachDetails: { [key: string]: any } = JSON.parse(coachDetailsRaw);
+
+  await prisma.coach.deleteMany(); // Clear existing coaches
+
+  for (const slug in coachDetails) {
+    const coach = coachDetails[slug];
+    await prisma.coach.create({
+      data: {
+        slug: slug,
+        name: coach.name,
+        image: coach.imageUrl,
+        specialties: coach.specialties.join(','),
+        achievements: coach.achievements.join(','),
+        bio: coach.bio.join('\n'), // Join bio array with newline characters
       },
     });
   }

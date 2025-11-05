@@ -14,11 +14,10 @@ import { AnimatedCoachModal, CoachDetail } from '@/components/AnimatedCoachModal
 // INTERFACES & TYPES
 //=================================================================
 interface Coach {
-    id: string;
     slug: string;
     name: string;
     specialties: string[];
-    image: string;
+    imageUrl: string;
 }
 
 //=================================================================
@@ -408,12 +407,12 @@ const MainContent = ({
                 <motion.div 
                   key={coach.slug} 
                   layoutId={coach.slug}
-                  onClick={() => handleCoachClick(coach.id, coach.slug)}
+                  onClick={() => handleCoachClick(coach.slug)}
                   className="group relative rounded-lg cursor-pointer"
                 >
                   <div className="relative h-80 bg-black rounded-lg overflow-hidden">
                     <motion.img 
-                      src={coach.image} 
+                      src={coach.imageUrl} 
                       alt={coach.name} 
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 group-hover:brightness-75"
                     />
@@ -733,13 +732,38 @@ export default function Home() {
     };
     fetchCoreValuesData();
   }, []);
-  const coachesData: Coach[] = [
-      { id: '1', slug: 'john-doe', name: 'John Doe', specialties: ['BJJ', 'Wrestling'], image: '/path/to/john.jpg' },
-      { id: '2', slug: 'jane-smith', name: 'Jane Smith', specialties: ['Muay Thai'], image: '/path/to/jane.jpg' },
-      { id: '3', slug: 'mike-chen', name: 'Mike Chen', specialties: ['Kids MMA'], image: '/path/to/mike.jpg' },
-      { id: '4', slug: 'sara-connor', name: 'Sara Connor', specialties: ['BJJ'], image: '/path/to/sara.jpg' },
-      { id: '5', slug: 'james-lee', name: 'James Lee', specialties: ['Muay Thai', 'Boxing'], image: '/path/to/james.jpg' },
-  ];
+  const [coachesData, setCoachesData] = useState<Coach[]>([]);
+  const [allCoachDetails, setAllCoachDetails] = useState<{[key: string]: CoachDetail}>({});
+
+  useEffect(() => {
+    const fetchCoaches = async () => {
+      try {
+        const coachesResponse = await fetch('/api/coaches');
+        if (!coachesResponse.ok) {
+          throw new Error('Failed to fetch coaches');
+        }
+        const coaches: Coach[] = await coachesResponse.json();
+        setCoachesData(coaches);
+
+        const details: {[key: string]: CoachDetail} = {};
+        await Promise.all(coaches.map(async (coach) => {
+          const coachDetailResponse = await fetch(`/api/coaches/${coach.slug}`);
+          if (!coachDetailResponse.ok) {
+            console.error(`Failed to fetch details for coach: ${coach.slug}`);
+            return;
+          }
+          const coachDetail: CoachDetail = await coachDetailResponse.json();
+          details[coach.slug] = coachDetail;
+        }));
+        setAllCoachDetails(details);
+      } catch (error) {
+        console.error('Error fetching coaches data:', error);
+      }
+    };
+
+    fetchCoaches();
+  }, []);
+
   const scheduleData = {
     "Monday": [
       { time: "06:00 AM", program: "Morning BJJ" },
@@ -747,14 +771,10 @@ export default function Home() {
       { time: "05:00 PM", program: "Kids Jiu-Jitsu" },
     ]
   };
-  const allCoachDetails = {
-    'john-doe': { name: 'John Doe', bio: 'Detailed bio for John Doe...', image: '/path/to/john.jpg' },
-    'jane-smith': { name: 'Jane Smith', bio: 'Detailed bio for Jane Smith...', image: '/path/to/jane.jpg' },
-    // Add other coaches here
-  };
+
 
   // --- ADDED: Click handler function ---
-  const handleCoachClick = (coachId: string, coachSlug: string) => {
+  const handleCoachClick = (coachSlug: string) => {
     const details = allCoachDetails[coachSlug];
     if (details) {
       setSelectedCoachDetails(details);

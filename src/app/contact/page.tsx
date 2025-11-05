@@ -9,6 +9,18 @@ interface ContactDetail {
   href?: string;
 }
 
+const iconMap: { [key: string]: ReactNode } = {
+  location: (
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+  ),
+  phone: (
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+  ),
+  email: (
+     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+  )
+};
+
 export default function ContactPage() {
   const [isVisible, setIsVisible] = useState(false);
   const [formData, setFormData] = useState({
@@ -19,41 +31,52 @@ export default function ContactPage() {
     isNotSpam: false,
   });
   const [formStatus, setFormStatus] = useState('');
+  const [contactPageData, setContactPageData] = useState<any>(null);
 
   useEffect(() => {
     setIsVisible(true);
+    const fetchContactData = async () => {
+      try {
+        // Assuming an endpoint at /api/landing-page/contact
+        const response = await fetch('/api/landing-page/contact');
+        if (response.ok) {
+          const data = await response.json();
+          setContactPageData(data);
+        } else {
+          // Fallback to some default data if API fails
+          setContactPageData(getFallbackContactData());
+        }
+      } catch (error) {
+        console.error('Failed to fetch contact page data:', error);
+        setContactPageData(getFallbackContactData());
+      }
+    };
+    fetchContactData();
   }, []);
-  
-  const contactDetails: ContactDetail[] = [
-    {
-      icon: (
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-      ),
-      title: "Location",
-      value: "123 Warrior Way, Strengthville, ST 90210",
+
+  // Fallback data function
+  const getFallbackContactData = () => ({
+    hero: {
+      backgroundImage: 'https://images.unsplash.com/photo-1554284126-aa88f22d8b74?w=1200&h=600&fit=crop',
+      title: "Get In Touch",
+      subtitle: "We're here to answer your questions. Reach out and start your warrior journey today."
     },
-    {
-      icon: (
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-      ),
-      title: "Phone",
-      value: "(123) 456-7890",
-      href: "tel:123-456-7890",
-    },
-    {
-      icon: (
-         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-      ),
-      title: "Email",
-      value: "contact@cowarrior.gym",
-      href: "mailto:contact@cowarrior.gym",
-    }
-  ];
+    contactDetails: [
+      { icon: 'location', title: "Location", value: "123 Warrior Way, Strengthville, ST 90210" },
+      { icon: 'phone', title: "Phone", value: "(123) 456-7890", href: "tel:123-456-7890" },
+      { icon: 'email', title: "Email", value: "contact@cowarrior.gym", href: "mailto:contact@cowarrior.gym" }
+    ],
+    businessHours: [
+      { day: 'Monday - Friday', hours: '5:00 AM - 10:00 PM' },
+      { day: 'Saturday', hours: '7:00 AM - 8:00 PM' },
+      { day: 'Sunday', hours: '8:00 AM - 6:00 PM' }
+    ],
+    mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3305.719696952932!2d-118.4940029847847!3d34.05112898060609!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c2a4d4a8f9d153%3A0x454d8a07c1b8a53e!2sSanta%20Monica%20Pier!5e0!3m2!1sen!2sus!4v1617297378736!5m2!1sen!2sus'
+  });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
     const isCheckbox = type === 'checkbox';
-    // Annoying trick to get the checked status from a checkbox
     const checkedValue = (e.target as HTMLInputElement).checked;
 
     setFormData(prev => ({ 
@@ -69,12 +92,15 @@ export default function ContactPage() {
         setFormStatus('Please confirm you are not a robot.');
         return;
     }
-    // Simulated submission
     setTimeout(() => {
       setFormStatus(`Message sent! We'll get back to you shortly, ${formData.name}.`);
       setFormData({ name: '', email: '', subject: '', message: '', isNotSpam: false });
     }, 1500);
   };
+
+  if (!contactPageData) {
+    return <div>Loading...</div>; // Or a proper loading spinner
+  }
 
   return (
     <main className="relative flex min-h-screen flex-col bg-neutral-950 text-white overflow-hidden">
@@ -113,16 +139,16 @@ export default function ContactPage() {
       <section className="relative h-[60vh] flex items-center justify-center text-center overflow-hidden">
         <div 
           className="absolute inset-0 bg-cover bg-center bg-fixed" 
-          style={{ backgroundImage: `url(https://images.unsplash.com/photo-1554284126-aa88f22d8b74?w=1200&h=600&fit=crop)` }}
+          style={{ backgroundImage: `url(${contactPageData.hero.backgroundImage})` }}
         >
           <div className="absolute inset-0 bg-black/75"></div>
         </div>
         <div className={`relative z-10 container mx-auto px-8 ${isVisible ? 'animate-fade-in-up' : ''}`}>
           <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tight">
-            Get In <span className="gradient-text">Touch</span>
+            {contactPageData.hero.title.split(' Touch')[0]} <span className="gradient-text">Touch</span>
           </h1>
           <p className="mt-6 text-xl text-neutral-300 max-w-3xl mx-auto">
-            We're here to answer your questions. Reach out and start your warrior journey today.
+            {contactPageData.hero.subtitle}
           </p>
         </div>
       </section>
@@ -137,11 +163,11 @@ export default function ContactPage() {
                 <div>
                     <h2 className="text-4xl font-black uppercase mb-6 gradient-text">Contact Info</h2>
                     <div className="space-y-6">
-                        {contactDetails.map((detail, index) => (
+                        {contactPageData.contactDetails.map((detail: any, index: number) => (
                             <div key={index} className="flex items-start gap-4">
                                 <div className="bg-neutral-800 p-3 rounded-full">
                                     <svg className="w-6 h-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        {detail.icon}
+                                        {iconMap[detail.icon]}
                                     </svg>
                                 </div>
                                 <div>
@@ -156,9 +182,11 @@ export default function ContactPage() {
                 <div>
                     <h2 className="text-4xl font-black uppercase mb-6 gradient-text">Business Hours</h2>
                     <ul className="text-neutral-300 space-y-3">
-                        <li className="flex justify-between border-b border-neutral-800 pb-2"><span>Monday - Friday</span> <strong>5:00 AM - 10:00 PM</strong></li>
-                        <li className="flex justify-between border-b border-neutral-800 pb-2"><span>Saturday</span> <strong>7:00 AM - 8:00 PM</strong></li>
-                        <li className="flex justify-between border-b border-neutral-800 pb-2"><span>Sunday</span> <strong>8:00 AM - 6:00 PM</strong></li>
+                        {contactPageData.businessHours.map((item: any, index: number) => (
+                            <li key={index} className="flex justify-between border-b border-neutral-800 pb-2">
+                                <span>{item.day}</span> <strong>{item.hours}</strong>
+                            </li>
+                        ))}
                     </ul>
                 </div>
             </div>
@@ -199,9 +227,8 @@ export default function ContactPage() {
 
       {/* Google Maps Section */}
       <section className="w-full h-[60vh] bg-black map-container">
-        {/* In a real app, you'd replace the src with your actual Google Maps embed link */}
         <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3305.719696952932!2d-118.4940029847847!3d34.05112898060609!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c2a4d4a8f9d153%3A0x454d8a07c1b8a53e!2sSanta%20Monica%20Pier!5e0!3m2!1sen!2sus!4v1617297378736!5m2!1sen!2sus"
+            src={contactPageData.mapUrl}
             width="100%"
             height="100%"
             style={{ border: 0 }}

@@ -8,11 +8,11 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 interface Coach {
-  id: string;
-  name: string;
-  bio: string;
-  image: string;
   slug: string;
+  name: string;
+  specialties: string[];
+  imageUrl: string;
+  bio: string;
 }
 
 export default function ManageCoachesPage() {
@@ -27,11 +27,11 @@ export default function ManageCoachesPage() {
     fetchCoaches();
   }, []);
 
-  const handleDelete = async (id: string) => {
-    await fetch(`/api/coaches/${id}`, {
+  const handleDelete = async (slug: string) => {
+    await fetch(`/api/coaches/${slug}`, {
       method: 'DELETE',
     });
-    setCoaches(coaches.filter((coach) => coach.id !== id));
+    setCoaches(coaches.filter((coach) => coach.slug !== slug));
   };
 
   return (
@@ -52,23 +52,30 @@ export default function ManageCoachesPage() {
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {coaches.map((coach: Coach) => (
-              <Card key={coach.id}>
+              <Card key={coach.slug}>
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle>{coach.name}</CardTitle>
                   <div className="flex items-center space-x-2">
-                    <Link href={`/admin/coaches/${coach.id}`}>
+                    <Link href={`/admin/coaches/${coach.slug}`}>
                       <Button variant="outline" size="icon">
                         <Edit className="h-4 w-4" />
                       </Button>
                     </Link>
-                    <Button variant="destructive" size="icon" onClick={() => handleDelete(coach.id)}>
+                    <Button variant="destructive" size="icon" onClick={() => handleDelete(coach.slug)}>
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <img src={coach.image} alt={coach.name} className="w-full h-48 object-cover rounded-md mb-4" />
+                  <img src={coach.imageUrl} alt={coach.name} className="w-full h-48 object-cover rounded-md mb-4" />
                   <p className="text-sm text-gray-500">{coach.bio}</p>
+                  <div className="flex flex-wrap gap-2 mt-4">
+                    {coach.specialties.map(spec => (
+                        <span key={spec} className="bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full">
+                            {spec}
+                        </span>
+                    ))}
+                  </div>
                 </CardContent>
               </Card>
             ))}
