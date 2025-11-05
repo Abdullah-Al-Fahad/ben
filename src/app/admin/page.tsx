@@ -21,6 +21,7 @@ export default function AdminDashboard() {
   const managementSections = [
     { href: '/admin/coaches', title: 'Manage Coaches', description: 'Add, edit, or remove coaches.', icon: Users },
     { href: '/admin/programs', title: 'Manage Programs', description: 'Define and organize training programs.', icon: Swords },
+    { href: '/admin/disciplines', title: 'Manage Disciplines', description: 'Add, edit, or remove disciplines.', icon: Swords },
     { href: '/admin/schedule', title: 'Manage Schedule', description: 'Update class schedules and events.', icon: Calendar },
     { href: '/admin/pricing', title: 'Manage Pricing', description: 'Set and adjust membership pricing.', icon: DollarSign },
     { href: '/admin/landing-page', title: 'Landing Page', description: 'Edit all sections of the landing page.', icon: Component },
