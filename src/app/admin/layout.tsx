@@ -32,6 +32,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
     { href: '/admin/programs', label: 'Programs', icon: Swords },
     { href: '/admin/schedule', label: 'Schedule', icon: Calendar },
     { href: '/admin/pricing', label: 'Pricing', icon: DollarSign },
+    { href: '/admin/ourgym', label: 'Our Gym', icon: Component },
    
   ];
 

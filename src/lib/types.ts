@@ -175,6 +175,15 @@ export interface MembershipPage {
   };
   inquiryForm: {
     title: string;
-    description: string;
-  };
-}
+    
+        description: string;
+      };
+    }
+    
+    export interface OurGym {
+      id: number;
+      title: string;
+      content: string;
+      imageUrl: string;
+    }
+    

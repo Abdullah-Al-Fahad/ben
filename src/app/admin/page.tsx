@@ -25,6 +25,7 @@ export default function AdminDashboard() {
     { href: '/admin/pricing', title: 'Manage Pricing', description: 'Set and adjust membership pricing.', icon: DollarSign },
     { href: '/admin/landing-page', title: 'Landing Page', description: 'Edit all sections of the landing page.', icon: Component },
     { href: '/admin/profile', title: 'Manage Profile', description: 'Edit your profile and security settings.', icon: User },
+    { href: '/admin/ourgym', title: 'Manage Our Gym', description: 'Edit the content of the Our Gym page.', icon: Component },
   ];
 
   return (
