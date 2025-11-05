@@ -4,7 +4,7 @@ import { prisma } from '@/lib/db';
 export async function GET() {
   const coaches = await prisma.coach.findMany();
   const formattedCoaches = coaches.map(coach => ({
-    slug: coach.slug,
+    id: coach.id,
     name: coach.name,
     specialties: coach.specialties ? coach.specialties.split(',') : [],
     imageUrl: coach.image,
@@ -13,15 +13,14 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const { name, bio, image, slug, specialties, achievements } = await req.json();
+  const { name, bio, image, specialties, achievements } = await req.json();
   const newCoach = await prisma.coach.create({
     data: {
       name,
-      bio: bio.join('\n'),
+      bio,
       image,
-      slug,
-      specialties: specialties.join(','),
-      achievements: achievements.join(','),
+      specialties,
+      achievements,
     },
   });
   return NextResponse.json(newCoach, { status: 201 });

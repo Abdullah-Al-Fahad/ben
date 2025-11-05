@@ -12,7 +12,7 @@ export interface CoachDetail {
 }
 
 interface ModalProps {
-  slug: string;
+  id: string;
   coach: CoachDetail;
   onClose: () => void;
 }
@@ -43,7 +43,7 @@ const itemVariants = {
   },
 };
 
-export const AnimatedCoachModal: React.FC<ModalProps> = ({ slug, coach, onClose }) => {
+export const AnimatedCoachModal: React.FC<ModalProps> = ({ id, coach, onClose }) => {
   return (
     // Backdrop
     <motion.div
@@ -55,7 +55,7 @@ export const AnimatedCoachModal: React.FC<ModalProps> = ({ slug, coach, onClose 
       transition={{ duration: 0.4 }}
     >
       <motion.div
-        layoutId={slug}
+        layoutId={id}
         transition={cinematicTransition}
         onClick={(e) => e.stopPropagation()}
         // UPDATED: Removed `max-w-screen-2xl` to allow the modal to be full-width

@@ -16,7 +16,6 @@ model Coach {
   name         String
   bio          String
   image        String
-  slug         String   @unique
   specialties  String?
   achievements String?
   createdAt    DateTime @default(now())

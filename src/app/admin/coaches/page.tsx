@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 interface Coach {
-  slug: string;
+  id: string;
   name: string;
   specialties: string[];
   imageUrl: string;
@@ -27,11 +27,11 @@ export default function ManageCoachesPage() {
     fetchCoaches();
   }, []);
 
-  const handleDelete = async (slug: string) => {
-    await fetch(`/api/coaches/${slug}`, {
+  const handleDelete = async (id: string) => {
+    await fetch(`/api/coaches/${id}`, {
       method: 'DELETE',
     });
-    setCoaches(coaches.filter((coach) => coach.slug !== slug));
+    setCoaches(coaches.filter((coach) => coach.id !== id));
   };
 
   return (
@@ -52,16 +52,16 @@ export default function ManageCoachesPage() {
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {coaches.map((coach: Coach) => (
-              <Card key={coach.slug}>
+              <Card key={coach.id}>
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle>{coach.name}</CardTitle>
                   <div className="flex items-center space-x-2">
-                    <Link href={`/admin/coaches/${coach.slug}`}>
+                    <Link href={`/admin/coaches/${coach.id}`}>
                       <Button variant="outline" size="icon">
                         <Edit className="h-4 w-4" />
                       </Button>
                     </Link>
-                    <Button variant="destructive" size="icon" onClick={() => handleDelete(coach.slug)}>
+                    <Button variant="destructive" size="icon" onClick={() => handleDelete(coach.id)}>
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>

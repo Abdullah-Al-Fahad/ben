@@ -3,10 +3,10 @@ import { prisma } from '@/lib/db';
 
 export async function GET(
   req: Request,
-  { params }: { params: { slug: string } }
+  { params }: { params: { id: string } }
 ) {
   const coach = await prisma.coach.findUnique({
-    where: { slug: params.slug },
+    where: { id: params.id },
   });
   if (!coach) {
     return NextResponse.json({ error: 'Coach not found' }, { status: 404 });
@@ -25,16 +25,15 @@ export async function GET(
 
 export async function PUT(
   req: Request,
-  { params }: { params: { slug: string } }
+  { params }: { params: { id: string } }
 ) {
-  const { name, bio, image, slug, specialties, achievements } = await req.json();
+  const { name, bio, image, specialties, achievements } = await req.json();
   const updatedCoach = await prisma.coach.update({
-    where: { slug: params.slug },
+    where: { id: params.id },
     data: {
       name,
       bio: bio.join('\n'),
       image,
-      slug,
       specialties: specialties.join(','),
       achievements: achievements.join(','),
     },
@@ -44,10 +43,10 @@ export async function PUT(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { slug: string } }
+  { params }: { params: { id: string } }
 ) {
   await prisma.coach.delete({
-    where: { slug: params.slug },
+    where: { id: params.id },
   });
   return NextResponse.json({ message: 'Coach deleted' });
 }

@@ -9,7 +9,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 interface Coach {
-  slug: string;
+  id: string;
   name: string;
   specialties: string[];
   imageUrl: string;
@@ -21,24 +21,24 @@ export default function EditCoachPage() {
   const [coach, setCoach] = useState<Coach | null>(null);
   const params = useParams();
   const router = useRouter();
-  const { slug } = params;
+  const { id } = params;
 
   useEffect(() => {
-    if (slug) {
+    if (id) {
       const fetchCoach = async () => {
-        const res = await fetch(`/api/coaches/${slug}`);
+        const res = await fetch(`/api/coaches/${id}`);
         const data = await res.json();
         setCoach(data);
       };
       fetchCoach();
     }
-  }, [slug]);
+  }, [id]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!coach) return;
 
-    await fetch(`/api/coaches/${slug}`, {
+    await fetch(`/api/coaches/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -67,24 +67,20 @@ export default function EditCoachPage() {
               <Input id="name" value={coach.name} onChange={(e) => setCoach({ ...coach, name: e.target.value })} />
             </div>
             <div>
-              <Label htmlFor="slug">Slug</Label>
-              <Input id="slug" value={coach.slug} onChange={(e) => setCoach({ ...coach, slug: e.target.value })} />
-            </div>
-            <div>
               <Label htmlFor="imageUrl">Image URL</Label>
               <Input id="imageUrl" value={coach.imageUrl} onChange={(e) => setCoach({ ...coach, imageUrl: e.target.value })} />
             </div>
             <div>
               <Label htmlFor="bio">Bio</Label>
-              <Textarea id="bio" value={coach.bio.join('\n')} onChange={(e) => setCoach({ ...coach, bio: e.target.value.split('\n') })} />
+              <Textarea id="bio" value={(coach.bio ?? []).join('\n')} onChange={(e) => setCoach({ ...coach, bio: e.target.value.split('\n') })} />
             </div>
             <div>
               <Label htmlFor="specialties">Specialties (comma-separated)</Label>
-              <Input id="specialties" value={coach.specialties.join(',')} onChange={(e) => setCoach({ ...coach, specialties: e.target.value.split(',') })} />
+              <Input id="specialties" value={(coach.specialties ?? []).join(',')} onChange={(e) => setCoach({ ...coach, specialties: e.target.value.split(',') })} />
             </div>
             <div>
               <Label htmlFor="achievements">Achievements (comma-separated)</Label>
-              <Input id="achievements" value={coach.achievements.join(',')} onChange={(e) => setCoach({ ...coach, achievements: e.target.value.split(',') })} />
+              <Input id="achievements" value={(coach.achievements ?? []).join(',')} onChange={(e) => setCoach({ ...coach, achievements: e.target.value.split(',') })} />
             </div>
             <Button type="submit">Save Changes</Button>
           </CardContent>

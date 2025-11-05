@@ -14,7 +14,7 @@ import { AnimatedCoachModal, CoachDetail } from '@/components/AnimatedCoachModal
 // INTERFACES & TYPES
 //=================================================================
 interface Coach {
-    slug: string;
+    id: string;
     name: string;
     specialties: string[];
     imageUrl: string;
@@ -331,10 +331,10 @@ const MainContent = ({
   coachesSectionData,
   coachesData,
   scheduleData,
-  selectedSlug,
+  selectedId,
   selectedCoachDetails,
   handleCoachClick,
-  setSelectedSlug
+  setSelectedId
 }) => {
   // FIX: Added explicit return and wrapped content in a <main> tag
   return (
@@ -405,9 +405,9 @@ const MainContent = ({
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
               {coachesData.map(coach => (
                 <motion.div 
-                  key={coach.slug} 
-                  layoutId={coach.slug}
-                  onClick={() => handleCoachClick(coach.slug)}
+                  key={coach.id} 
+                  layoutId={coach.id}
+                  onClick={() => handleCoachClick(coach.id)}
                   className="group relative rounded-lg cursor-pointer"
                 >
                   <div className="relative h-80 bg-black rounded-lg overflow-hidden">
@@ -466,12 +466,9 @@ const MainContent = ({
             {['All', 'Kids', 'Adult', 'BJJ', 'Muay Thai'].map(filter => (
               <button
                 key={filter}
-                className={`py-2 px-4 text-sm font-semibold text-gray-400 hover:text-white transition-colors border-b-2 ${
-                  filter === 'All'
+                className={`py-2 px-4 text-sm font-semibold text-gray-400 hover:text-white transition-colors border-b-2 ${filter === 'All'
                     ? 'border-red-600 text-white'
-                    : 'border-transparent'
-                }`}
-              >
+                    : 'border-transparent'}`}>
                 {filter}
               </button>
             ))}
@@ -490,12 +487,9 @@ const MainContent = ({
             ].map(day => (
               <button
                 key={day}
-                className={`py-3 px-5 text-sm font-bold rounded-md ${
-                  day.includes('Today')
+                className={`py-3 px-5 text-sm font-bold rounded-md ${day.includes('Today')
                     ? 'bg-red-600 text-white'
-                    : 'bg-[#1a1a1a] text-gray-300 hover:bg-gray-800'
-                }`}
-              >
+                    : 'bg-[#1a1a1a] text-gray-300 hover:bg-gray-800'}`}>
                 {day.split(':')[0]}
               </button>
             ))}
@@ -518,8 +512,7 @@ const MainContent = ({
                   </div>
                   <div className="col-span-full sm:col-span-4 text-left sm:text-right">
                     <span
-                      className={`text-xs font-bold py-2 px-3 rounded-full bg-purple-900 text-purple-300`}
-                    >
+                      className={`text-xs font-bold py-2 px-3 rounded-full bg-purple-900 text-purple-300`}>
                       {item.program}
                     </span>
                   </div>
@@ -562,7 +555,7 @@ const MainContent = ({
                   </ul>
                 </div>
                 <div>
-                  <div className="text-4xl font-black text-white">$119.99</div>
+                  <div className="text-4xl font-black text-white">19.99</div>
                   <p className="text-xs text-gray-400">Per Month for 6 Months</p>
                 </div>
               </div>
@@ -579,7 +572,7 @@ const MainContent = ({
                   </ul>
                 </div>
                 <div>
-                  <div className="text-4xl font-black text-white">$119.99</div>
+                  <div className="text-4xl font-black text-white">19.99</div>
                   <p className="text-xs text-gray-400">Per Month for 6 Months</p>
                 </div>
               </div>
@@ -597,7 +590,7 @@ const MainContent = ({
                   </ul>
                 </div>
                 <div>
-                  <div className="text-4xl font-black text-white">$139.99</div>
+                  <div className="text-4xl font-black text-white">39.99</div>
                   <p className="text-xs text-gray-400">Per Month for 6 Months</p>
                 </div>
               </div>
@@ -615,7 +608,7 @@ const MainContent = ({
                   </ul>
                 </div>
                 <div>
-                  <div className="text-4xl font-black text-white">$199.99</div>
+                  <div className="text-4xl font-black text-white">99.99</div>
                   <p className="text-xs text-gray-400">Per Month for 6 Months</p>
                 </div>
               </div>
@@ -638,7 +631,7 @@ const MainContent = ({
               </div>
               <div className="bg-black p-8 border border-gray-800 text-center rounded-lg">
                 <h3 className="text-2xl font-bold mb-2 text-white">ALL INCLUSIVE</h3>
-                <div className="text-4xl font-black my-4 text-white">$119.99</div>
+                <div className="text-4xl font-black my-4 text-white">19.99</div>
                 <p className="text-xs text-gray-400">Per Month for 6 Months</p>
               </div>
             </div>
@@ -663,11 +656,11 @@ const MainContent = ({
       </section>
       
       <AnimatePresence>
-        {selectedSlug && selectedCoachDetails && (
+        {selectedId && selectedCoachDetails && (
           <AnimatedCoachModal 
-            slug={selectedSlug} 
+            id={selectedId} 
             coach={selectedCoachDetails} 
-            onClose={() => setSelectedSlug(null)} 
+            onClose={() => setSelectedId(null)} 
           />
         )}
       </AnimatePresence>
@@ -681,7 +674,7 @@ const MainContent = ({
 //=================================================================
 export default function Home() {
   // --- ADDED: State management for the modal ---
-  const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [selectedCoachDetails, setSelectedCoachDetails] = useState<CoachDetail | null>(null);
 
   // --- ADDED: Placeholder data ---
@@ -747,13 +740,13 @@ export default function Home() {
 
         const details: {[key: string]: CoachDetail} = {};
         await Promise.all(coaches.map(async (coach) => {
-          const coachDetailResponse = await fetch(`/api/coaches/${coach.slug}`);
+          const coachDetailResponse = await fetch(`/api/coaches/${coach.id}`);
           if (!coachDetailResponse.ok) {
-            console.error(`Failed to fetch details for coach: ${coach.slug}`);
+            console.error(`Failed to fetch details for coach: ${coach.id}`);
             return;
           }
           const coachDetail: CoachDetail = await coachDetailResponse.json();
-          details[coach.slug] = coachDetail;
+          details[coach.id] = coachDetail;
         }));
         setAllCoachDetails(details);
       } catch (error) {
@@ -774,11 +767,11 @@ export default function Home() {
 
 
   // --- ADDED: Click handler function ---
-  const handleCoachClick = (coachSlug: string) => {
-    const details = allCoachDetails[coachSlug];
+  const handleCoachClick = (coachId: string) => {
+    const details = allCoachDetails[coachId];
     if (details) {
       setSelectedCoachDetails(details);
-      setSelectedSlug(coachSlug);
+      setSelectedId(coachId);
     }
   };
 
@@ -830,10 +823,10 @@ export default function Home() {
         coachesSectionData={coachesSectionData}
         coachesData={coachesData}
         scheduleData={scheduleData}
-        selectedSlug={selectedSlug}
+        selectedId={selectedId}
         selectedCoachDetails={selectedCoachDetails}
         handleCoachClick={handleCoachClick}
-        setSelectedSlug={setSelectedSlug}
+        setSelectedId={setSelectedId}
       />
     </>
   );

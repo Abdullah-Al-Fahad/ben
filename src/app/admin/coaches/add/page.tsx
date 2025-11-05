@@ -11,9 +11,10 @@ import { useRouter } from 'next/navigation';
 
 export default function AddCoachPage() {
   const [name, setName] = useState('');
-  const [slug, setSlug] = useState('');
   const [image, setImage] = useState('');
   const [bio, setBio] = useState('');
+  const [specialties, setSpecialties] = useState('');
+  const [achievements, setAchievements] = useState('');
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -23,7 +24,7 @@ export default function AddCoachPage() {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ name, slug, image, bio }),
+      body: JSON.stringify({ name, image, bio, specialties, achievements }),
     });
     router.push('/admin/coaches');
   };
@@ -41,16 +42,20 @@ export default function AddCoachPage() {
               <Input id="name" value={name} onChange={(e) => setName(e.target.value)} />
             </div>
             <div>
-              <label htmlFor="slug" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Slug</label>
-              <Input id="slug" value={slug} onChange={(e) => setSlug(e.target.value)} />
-            </div>
-            <div>
               <label htmlFor="image" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Image URL</label>
               <Input id="image" value={image} onChange={(e) => setImage(e.target.value)} />
             </div>
             <div>
               <label htmlFor="bio" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Bio</label>
               <Textarea id="bio" value={bio} onChange={(e) => setBio(e.target.value)} />
+            </div>
+            <div>
+              <label htmlFor="specialties" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Specialties (comma-separated)</label>
+              <Input id="specialties" value={specialties} onChange={(e) => setSpecialties(e.target.value)} />
+            </div>
+            <div>
+              <label htmlFor="achievements" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Achievements (comma-separated)</label>
+              <Input id="achievements" value={achievements} onChange={(e) => setAchievements(e.target.value)} />
             </div>
             <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
               <Button type="submit">Add Coach</Button>
