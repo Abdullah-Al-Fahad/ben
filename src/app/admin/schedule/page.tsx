@@ -18,6 +18,7 @@ interface Schedule {
 
 export default function ManageSchedulePage() {
   const [schedules, setSchedules] = useState<Schedule[]>([]);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   useEffect(() => {
     const fetchSchedules = async () => {
@@ -35,18 +36,60 @@ export default function ManageSchedulePage() {
     setSchedules(schedules.filter((schedule) => schedule.id !== id));
   };
 
+  const handleFileUpload = async (fileToUpload: File) => {
+    const formData = new FormData();
+    formData.append('file', fileToUpload);
+
+    const response = await fetch('/api/schedule-pdf', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (response.ok) {
+      alert('Schedule PDF updated successfully!');
+    } else {
+      alert('Failed to upload schedule PDF.');
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setSelectedFile(file);
+      handleFileUpload(file);
+    }
+  };
+
   return (
-    <div class="container mx-auto py-10">
-              <div class="flex justify-between items-center mb-8">
-                <h1 class="text-3xl font-bold">Manage Schedule</h1>
-                <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
-                  <Link href="/admin/schedule/add">
-                    <Button>
-                      <PlusCircle class="mr-2 h-4 w-4" /> Add New Event
-                    </Button>
-                  </Link>
-                </div>
+    <div className="container mx-auto py-10">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold">Manage Schedule</h1>
+        <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+          <Link href="/admin/schedule/add">
+            <Button>
+              <PlusCircle className="mr-2 h-4 w-4" /> Add New Event
+            </Button>
+          </Link>
+        </div>
+      </div>
+      <Card className="mb-8">
+        <CardHeader>
+          <CardTitle>Schedule PDF Upload</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 gap-4">
+            <div>
+              <input id="file" name="file" type="file" accept=".pdf" onChange={handleFileChange} className="hidden" />
+              <div className="flex items-center space-x-2 mt-1">
+                <Button type="button" onClick={() => document.getElementById('file')?.click()}>
+                  Upload File
+                </Button>
+                <span className="text-gray-500">{selectedFile ? selectedFile.name : 'No file chosen'}</span>
               </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
       <Card>
         <CardHeader>
           <CardTitle>All Events</CardTitle>

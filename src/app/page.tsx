@@ -331,6 +331,7 @@ const MainContent = ({
   coachesSectionData,
   coachesData,
   scheduleData,
+  schedulePdfUrl,
   selectedId,
   selectedCoachDetails,
   handleCoachClick,
@@ -483,7 +484,7 @@ const MainContent = ({
               SCHEDULE
             </h2>
             <a
-              href="https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e43e0279ad2b357d6c0f44_schedule-june-2025%20(2)%20(1).pdf"
+              href={schedulePdfUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="bg-red-600 text-white font-bold py-3 px-6 text-sm flex items-center space-x-2 hover:bg-red-700 transition-colors rounded-md"
@@ -559,7 +560,7 @@ const MainContent = ({
               <h2 className="text-3xl sm:text-4xl font-black mb-2 uppercase text-white">Program Pricing</h2>
               <p className="text-gray-400">Currently we have 48 Classes covering over 50 hours a week of instruction in class times.</p>
             </div>
-            <a href="https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68f184a3ec261e1127d49e76_Warrior%20Price%20List%20(current%20as%20of%20Feb%202024).pdf"  target="_blank"
+            <a href={schedulePdfUrl}  target="_blank"
   rel="noopener noreferrer" className="bg-red-600 text-white font-bold py-3 px-6 sm:py-4 sm:px-8 text-sm flex items-center space-x-2 hover:bg-red-700 transition-colors rounded-md">
               <span>VIEW FULL PRICING</span>
               <FaArrowRight />
@@ -850,6 +851,23 @@ export default function Home() {
     fetchCoachesSectionData();
   }, []);
 
+  const [schedulePdfUrl, setSchedulePdfUrl] = useState('');
+
+  useEffect(() => {
+    const fetchSchedulePdfUrl = async () => {
+      try {
+        const response = await fetch('/api/schedule-pdf');
+        if (response.ok) {
+          const data = await response.json();
+          setSchedulePdfUrl(data.url);
+        }
+      } catch (error) {
+        console.error('Failed to fetch schedule PDF URL:', error);
+      }
+    };
+    fetchSchedulePdfUrl();
+  }, []);
+
   return (
     <>
       <MainContent
@@ -860,6 +878,7 @@ export default function Home() {
         coachesSectionData={coachesSectionData}
         coachesData={coachesData}
         scheduleData={scheduleData}
+        schedulePdfUrl={schedulePdfUrl}
         selectedId={selectedId}
         selectedCoachDetails={selectedCoachDetails}
         handleCoachClick={handleCoachClick}
