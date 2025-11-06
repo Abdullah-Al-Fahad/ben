@@ -12,6 +12,8 @@ interface Schedule {
   day: string;
   time: string;
   program: string;
+  level: string;
+  type: string;
 }
 
 export default function ManageSchedulePage() {
@@ -34,13 +36,13 @@ export default function ManageSchedulePage() {
   };
 
   return (
-    <div className="container mx-auto py-10">
-              <div className="flex justify-between items-center mb-8">
-                <h1 className="text-3xl font-bold">Manage Schedule</h1>
-                <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+    <div class="container mx-auto py-10">
+              <div class="flex justify-between items-center mb-8">
+                <h1 class="text-3xl font-bold">Manage Schedule</h1>
+                <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
                   <Link href="/admin/schedule/add">
                     <Button>
-                      <PlusCircle className="mr-2 h-4 w-4" /> Add New Event
+                      <PlusCircle class="mr-2 h-4 w-4" /> Add New Event
                     </Button>
                   </Link>
                 </div>
@@ -50,13 +52,15 @@ export default function ManageSchedulePage() {
           <CardTitle>All Events</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
-            <Table className="min-w-full">
+          <div class="overflow-x-auto">
+            <Table class="min-w-full">
               <TableHeader>
                 <TableRow>
                   <TableHead>Day</TableHead>
                   <TableHead>Time</TableHead>
                   <TableHead>Program</TableHead>
+                  <TableHead>Level</TableHead>
+                  <TableHead>Type</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -66,15 +70,17 @@ export default function ManageSchedulePage() {
                     <TableCell>{schedule.day}</TableCell>
                     <TableCell>{schedule.time}</TableCell>
                     <TableCell>{schedule.program}</TableCell>
+                    <TableCell>{schedule.level}</TableCell>
+                    <TableCell>{schedule.type}</TableCell>
                     <TableCell>
-                      <div className="flex items-center space-x-2">
+                      <div class="flex items-center space-x-2">
                           <Link href={`/admin/schedule/${schedule.id}`}>
                               <Button variant="outline" size="icon">
-                                  <Edit className="h-4 w-4" />
+                                  <Edit class="h-4 w-4" />
                               </Button>
                           </Link>
                         <Button variant="destructive" size="icon" onClick={() => handleDelete(schedule.id)}>
-                          <Trash2 className="h-4 w-4" />
+                          <Trash2 class="h-4 w-4" />
                         </Button>
                       </div>
                     </TableCell>

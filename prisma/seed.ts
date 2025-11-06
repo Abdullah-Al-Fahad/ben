@@ -1,15 +1,10 @@
 import { PrismaClient } from '@prisma/client';
-import * as fs from 'fs';
-import * as path from 'path';
-import { fileURLToPath } from 'url';
-import { seedDisciplines } from './seed-disciplines';
+import { main as seedSchedule } from './seed-schedule.ts';
+import { seedDisciplines } from './seed-disciplines.ts';
 
 const prisma = new PrismaClient();
 
 async function main() {
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = path.dirname(__filename);
-
   // Seed OurGym
   const ourGym = await prisma.ourGym.findFirst();
   if (!ourGym) {
@@ -22,6 +17,7 @@ async function main() {
     });
   }
 
+  await seedSchedule();
   await seedDisciplines();
 }
 

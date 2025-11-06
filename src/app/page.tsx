@@ -336,6 +336,39 @@ const MainContent = ({
   handleCoachClick,
   setSelectedId
 }) => {
+  const [activeFilter, setActiveFilter] = useState('All');
+  const [activeDay, setActiveDay] = useState('Full Week');
+
+  const groupedSchedule = scheduleData.reduce((acc, item) => {
+    const day = item.day;
+    if (!acc[day]) {
+      acc[day] = [];
+    }
+    acc[day].push(item);
+    return acc;
+  }, {});
+
+  const today = new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+
+  const days = [
+    'Full Week',
+    ...Object.keys(groupedSchedule).map(day => {
+      const date = new Date();
+      const dayIndex = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].indexOf(day.slice(0, 3));
+      date.setDate(date.getDate() - date.getDay() + dayIndex + 1);
+      const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      return `${day}, ${formattedDate}`;
+    })
+  ];
+
+  useEffect(() => {
+    const todayShort = new Date().toLocaleDateString('en-US', { weekday: 'short' });
+    const todayLong = new Date().toLocaleDateString('en-US', { weekday: 'long' });
+    const todayDay = Object.keys(groupedSchedule).find(day => day.startsWith(todayShort) || day.startsWith(todayLong));
+    if (todayDay) {
+      setActiveDay(todayDay);
+    }
+  }, [scheduleData]);
   // FIX: Added explicit return and wrapped content in a <main> tag
   return (
     <main>
@@ -466,7 +499,8 @@ const MainContent = ({
             {['All', 'Kids', 'Adult', 'BJJ', 'Muay Thai'].map(filter => (
               <button
                 key={filter}
-                className={`py-2 px-4 text-sm font-semibold text-gray-400 hover:text-white transition-colors border-b-2 ${filter === 'All'
+                onClick={() => setActiveFilter(filter)}
+                className={`py-2 px-4 text-sm font-semibold text-gray-400 hover:text-white transition-colors border-b-2 ${filter === activeFilter
                     ? 'border-red-600 text-white'
                     : 'border-transparent'}`}>
                 {filter}
@@ -476,29 +510,23 @@ const MainContent = ({
 
           {/* Day buttons */}
           <div className="flex flex-wrap gap-2 mb-8">
-            {[
-              'Full Week',
-              'Mon, Oct 13',
-              'Tue, Oct 14',
-              'Wed, Oct 15',
-              'Thu, Oct 16',
-              'Fri, Oct 17',
-              'Today: Sat, Oct 18',
-            ].map(day => (
+            {days.map(day => (
               <button
                 key={day}
-                className={`py-3 px-5 text-sm font-bold rounded-md ${day.includes('Today')
+                onClick={() => setActiveDay(day)}
+                className={`py-3 px-5 text-sm font-bold rounded-md ${day.includes(today)
                     ? 'bg-red-600 text-white'
                     : 'bg-[#1a1a1a] text-gray-300 hover:bg-gray-800'}`}>
-                {day.split(':')[0]}
-              </button>
-            ))}
+                                                {day}
+                              </button>            ))}
           </div>
 
           {/* Schedule content */}
           <div className="bg-[#1a1a1a] p-1 rounded-lg">
             <div className="space-y-1">
-              {scheduleData[Object.keys(scheduleData)[0]]?.map((item, index) => (
+              {(activeDay === 'Full Week' ? Object.values(groupedSchedule).flat() : groupedSchedule[activeDay.split(',')[0]] || [])
+                .filter(item => activeFilter === 'All' || item.type === activeFilter)
+                .map((item, index) => (
                 <div
                   key={index}
                   className="grid grid-cols-1 sm:grid-cols-12 gap-x-4 gap-y-2 items-center bg-[#2d2d2d] p-3 rounded-md"
@@ -508,12 +536,12 @@ const MainContent = ({
                   </div>
                   <div className="col-span-full sm:col-span-6">
                     <h4 className="font-bold text-xl text-white">{item.program}</h4>
-                    <p className="text-gray-400 text-sm">All Levels</p>
+                    <p className="text-gray-400 text-sm">{item.level}</p>
                   </div>
                   <div className="col-span-full sm:col-span-4 text-left sm:text-right">
                     <span
                       className={`text-xs font-bold py-2 px-3 rounded-full bg-purple-900 text-purple-300`}>
-                      {item.program}
+                      {item.type}
                     </span>
                   </div>
                 </div>
@@ -757,13 +785,22 @@ export default function Home() {
     fetchCoaches();
   }, []);
 
-  const scheduleData = {
-    "Monday": [
-      { time: "06:00 AM", program: "Morning BJJ" },
-      { time: "12:00 PM", program: "Lunch Muay Thai" },
-      { time: "05:00 PM", program: "Kids Jiu-Jitsu" },
-    ]
-  };
+  const [scheduleData, setScheduleData] = useState([]);
+
+  useEffect(() => {
+    const fetchScheduleData = async () => {
+      try {
+        const response = await fetch('/api/schedule');
+        if (response.ok) {
+          const data = await response.json();
+          setScheduleData(data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch schedule data:', error);
+      }
+    };
+    fetchScheduleData();
+  }, []);
 
 
   // --- ADDED: Click handler function ---

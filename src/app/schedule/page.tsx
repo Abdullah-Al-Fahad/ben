@@ -1,4 +1,7 @@
-import React from 'react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { format } from 'date-fns';
 
 // Using an SVG component for the icon to ensure it matches the style
 const DownloadIcon = () => (
@@ -10,6 +13,8 @@ const DownloadIcon = () => (
 
 const SchedulePage = () => {
     const [scheduleData, setScheduleData] = useState([]);
+    const [activeFilter, setActiveFilter] = useState('All');
+    const [activeDay, setActiveDay] = useState('Full Week');
 
     useEffect(() => {
         const fetchSchedule = async () => {
@@ -23,8 +28,39 @@ const SchedulePage = () => {
         };
         fetchSchedule();
     }, []);
+
+    const groupedSchedule = scheduleData.reduce((acc, item) => {
+        const day = item.day;
+        if (!acc[day]) {
+            acc[day] = [];
+        }
+        acc[day].push(item);
+        return acc;
+    }, {});
+
+    const today = new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+
+    const days = [
+        'Full Week',
+        ...Object.keys(groupedSchedule).map(day => {
+            const date = new Date();
+            const dayIndex = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(day.slice(0, 3));
+            date.setDate(date.getDate() - date.getDay() + dayIndex + 1);
+            const formattedDate = format(date, 'MMM d');
+            return `${day}, ${formattedDate}`;
+        })
+    ];
+
+    useEffect(() => {
+        const todayShort = new Date().toLocaleDateString('en-US', { weekday: 'short' });
+        const todayLong = new Date().toLocaleDateString('en-US', { weekday: 'long' });
+        const todayDay = Object.keys(groupedSchedule).find(day => day.startsWith(todayShort) || day.startsWith(todayLong));
+        if (todayDay) {
+            setActiveDay(todayDay);
+        }
+    }, [scheduleData]);
+
     const topFilters = ['All', 'Kids', 'Adult', 'BJJ', 'Muay Thai'];
-    const dayFilters = ['Full Week', 'Mon, Oct 20', 'Tue, Oct 21', 'Wed, Oct 22', 'Thu, Oct 23', 'Fri, Oct 24', 'Sat, Oct 25'];
 
     return (
         <div className="bg-[#121212] text-white min-h-screen  py-16">
@@ -45,14 +81,20 @@ const SchedulePage = () => {
                 <div className="flex flex-col text-sm font-semibold">
                     <div className="grid grid-cols-2 sm:grid-cols-5 text-center">
                         {topFilters.map((filter) => (
-                            <button key={filter} className="bg-[#2a2a2a] hover:bg-[#3a3a3a] text-gray-300 py-3 px-2 border-r border-b border-black transition-colors duration-200">
+                            <button
+                                key={filter}
+                                onClick={() => setActiveFilter(filter)}
+                                className={`py-3 px-2 border-r border-b border-black transition-colors duration-200 ${activeFilter === filter ? 'bg-red-600 text-white' : 'bg-[#2a2a2a] hover:bg-[#3a3a3a] text-gray-300'}`}>
                                 {filter}
                             </button>
                         ))}
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-7 text-center">
-                        {dayFilters.map((filter, index) => (
-                            <button key={filter} className={`${index === 0 ? 'bg-red-600 text-white' : 'bg-[#2a2a2a] hover:bg-[#3a3a3a] text-gray-300'} py-3 px-2 border-r border-black transition-colors duration-200`}>
+                        {days.map((filter, index) => (
+                            <button
+                                key={filter}
+                                onClick={() => setActiveDay(filter)}
+                                className={`py-3 px-2 border-r border-black transition-colors duration-200 ${activeDay === filter ? 'bg-red-600 text-white' : 'bg-[#2a2a2a] hover:bg-[#3a3a3a] text-gray-300'}`}>
                                 {filter}
                             </button>
                         ))}
@@ -60,25 +102,27 @@ const SchedulePage = () => {
                 </div>
 
                 <div className="bg-[#222222]">
-                    {scheduleData.map((item, index) => (
+                    {(activeDay === 'Full Week' ? Object.values(groupedSchedule).flat() : groupedSchedule[activeDay.split(',')[0]] || [])
+                        .filter(item => activeFilter === 'All' || item.type === activeFilter)
+                        .map((item, index) => (
                         <div key={index} className="flex items-center justify-between p-4 border-b border-[#333333]">
                            <div className="flex items-center gap-x-4 sm:gap-x-6">
                                 <div className="w-20 sm:w-28 flex-shrink-0">
                                     <div className="font-bold text-base sm:text-lg">{item.time}</div>
                                     <div className="flex flex-wrap gap-1 mt-1.5">
-                                        <span className="bg-[#4a4a4a] text-gray-200 text-xs font-bold w-5 h-5 flex items-center justify-center">
-                                            {item.day}
+                                        <span className="bg-[#4a4a4a] text-gray-200 text-xs font-bold px-2 py-0.5 rounded-md">
+                                            {item.day.substring(0, 3)}
                                         </span>
                                     </div>
                                 </div>
                                 <div>
                                     <h3 className="text-lg sm:text-xl font-bold">{item.program}</h3>
-                                    <p className="text-gray-400 text-sm">All Levels</p>
+                                    <p className="text-gray-400 text-sm">{item.level}</p>
                                 </div>
                            </div>
                             <div className="flex-shrink-0 ml-4">
                                 <span className={`px-3 py-2 text-xs font-semibold rounded-md bg-[#6a617a]`}>
-                                    {item.program}
+                                    {item.type}
                                 </span>
                             </div>
                         </div>

@@ -1,36 +1,48 @@
+
+
 'use client';
-
-import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { parse, format } from 'date-fns';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-
-interface Schedule {
-  id: string;
-  day: string;
-  time: string;
-  program: string;
-}
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useRouter, useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { CalendarIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 export default function EditSchedulePage() {
+  const router = useRouter();
   const params = useParams();
   const { id } = params;
-  const [schedule, setSchedule] = useState<Schedule | null>(null);
-  const [day, setDay] = useState('');
+
+  const [day, setDay] = useState<Date | undefined>(undefined);
   const [time, setTime] = useState('');
   const [program, setProgram] = useState('');
-  const router = useRouter();
+  const [level, setLevel] = useState('');
+  const [type, setType] = useState('');
 
   useEffect(() => {
     if (id) {
       const fetchSchedule = async () => {
         const res = await fetch(`/api/schedule/${id}`);
+        if (!res.ok) {
+          throw new Error('Failed to fetch schedule');
+        }
         const data = await res.json();
-        setSchedule(data);
-        setDay(data.day);
-        setTime(data.time);
+        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const dayIndex = days.indexOf(data.day);
+        const today = new Date();
+        const resultDate = new Date(today.setDate(today.getDate() - today.getDay() + dayIndex));
+        setDay(resultDate);
+        const parsedTime = parse(data.time, 'hh:mm a', new Date());
+        const time24 = format(parsedTime, 'HH:mm');
+        setTime(time24);
         setProgram(data.program);
+        setLevel(data.level);
+        setType(data.type);
       };
       fetchSchedule();
     }
@@ -38,43 +50,70 @@ export default function EditSchedulePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await fetch(`/api/schedule/${id}`, {
+    const parsedTime = parse(time, 'HH:mm', new Date());
+    const time12 = format(parsedTime, 'hh:mm a');
+    await fetch(`/api/schedule/${id}`,
+     {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ day, time, program }),
+      body: JSON.stringify({ day: day ? format(day, 'EEEE') : '', time: time12, program, level, type }),
     });
     router.push('/admin/schedule');
   };
 
-  if (!schedule) {
-    return <div>Loading...</div>;
-  }
-
   return (
-    <div className="container mx-auto py-10 px-4 sm:px-6 lg:px-8">
+    <div className="container mx-auto py-10">
       <Card>
         <CardHeader>
-          <CardTitle>Edit Event: {schedule.program}</CardTitle>
+          <CardTitle>Edit Event</CardTitle>
         </CardHeader>
-        <CardContent className="p-4 sm:p-6">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label htmlFor="day" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Day</label>
-              <Input id="day" value={day} onChange={(e) => setDay(e.target.value)} />
-            </div>
-            <div>
-              <label htmlFor="time" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Time</label>
-              <Input id="time" value={time} onChange={(e) => setTime(e.target.value)} />
-            </div>
-            <div>
-              <label htmlFor="program" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Program</label>
-              <Input id="program" value={program} onChange={(e) => setProgram(e.target.value)} />
-            </div>
-
-            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
-              <Button type="submit">Save Changes</Button>
+        <CardContent>
+          <form onSubmit={handleSubmit}>
+            <div className="grid grid-cols-1 gap-6">
+              <div>
+                <Label htmlFor="day">Day</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !day && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {day ? format(day, "PPP") : <span>Pick a day</span>}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={day}
+                      onSelect={setDay}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+              <div>
+                <Label htmlFor="time">Time</Label>
+                <Input id="time" type="time" value={time} onChange={(e) => setTime(e.target.value)} />
+              </div>
+              <div>
+                <Label htmlFor="program">Program</Label>
+                <Input id="program" value={program} onChange={(e) => setProgram(e.target.value)} />
+              </div>
+              <div>
+                <Label htmlFor="level">Level</Label>
+                <Input id="level" value={level} onChange={(e) => setLevel(e.target.value)} />
+              </div>
+              <div>
+                <Label htmlFor="type">Type</Label>
+                <Input id="type" value={type} onChange={(e) => setType(e.target.value)} />
+              </div>
+              <Button type="submit">Update Event</Button>
             </div>
           </form>
         </CardContent>

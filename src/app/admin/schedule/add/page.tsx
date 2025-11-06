@@ -1,56 +1,89 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import Link from 'next/link';
-import { useState } from 'react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { format } from 'date-fns';
+import { CalendarIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 export default function AddSchedulePage() {
-  const [day, setDay] = useState('');
+  const router = useRouter();
+  const [day, setDay] = useState<Date | undefined>(undefined);
   const [time, setTime] = useState('');
   const [program, setProgram] = useState('');
-  const router = useRouter();
+  const [level, setLevel] = useState('');
+  const [type, setType] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const time12 = new Date(`1970-01-01T${time}`).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
     await fetch('/api/schedule', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ day, time, program }),
+      body: JSON.stringify({ day: day ? format(day, 'EEEE') : '', time: time12, program, level, type }),
     });
     router.push('/admin/schedule');
   };
 
   return (
-    <div className="container mx-auto py-10 px-4 sm:px-6 lg:px-8">
+    <div className="container mx-auto py-10">
       <Card>
         <CardHeader>
           <CardTitle>Add New Event</CardTitle>
         </CardHeader>
-        <CardContent className="p-4 sm:p-6">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label htmlFor="day" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Day</label>
-              <Input id="day" value={day} onChange={(e) => setDay(e.target.value)} />
-            </div>
-            <div>
-              <label htmlFor="time" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Time</label>
-              <Input id="time" value={time} onChange={(e) => setTime(e.target.value)} />
-            </div>
-            <div>
-              <label htmlFor="program" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Program</label>
-              <Input id="program" value={program} onChange={(e) => setProgram(e.target.value)} />
-            </div>
-
-            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+        <CardContent>
+          <form onSubmit={handleSubmit}>
+            <div className="grid grid-cols-1 gap-6">
+              <div>
+                <Label htmlFor="day">Day</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !day && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {day ? format(day, "PPP") : <span>Pick a day</span>}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={day}
+                      onSelect={setDay}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+              <div>
+                <Label htmlFor="time">Time</Label>
+                <Input id="time" type="time" value={time} onChange={(e) => setTime(e.target.value)} />
+              </div>
+              <div>
+                <Label htmlFor="program">Program</Label>
+                <Input id="program" value={program} onChange={(e) => setProgram(e.target.value)} />
+              </div>
+              <div>
+                <Label htmlFor="level">Level</Label>
+                <Input id="level" value={level} onChange={(e) => setLevel(e.target.value)} />
+              </div>
+              <div>
+                <Label htmlFor="type">Type</Label>
+                <Input id="type" value={type} onChange={(e) => setType(e.target.value)} />
+              </div>
               <Button type="submit">Add Event</Button>
-              <Link href="/admin/schedule">
-                <Button variant="outline">Cancel</Button>
-              </Link>
             </div>
           </form>
         </CardContent>

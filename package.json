@@ -17,6 +17,7 @@
     "seed:intro-hero": "ts-node prisma/seed-intro-hero.ts",
     "seed:features": "ts-node prisma/seed-features.ts",
     "seed:core-values": "ts-node prisma/seed-core-values.ts",
+    "seed:schedule": "ts-node prisma/seed-schedule.ts",
     "seed:all": "npm run seed && npm run seed:jutsu && npm run seed:mma && npm run seed:fitness && npm run seed:landing-page && npm run seed:coaches && npm run seed:intro-hero && npm run seed:features && npm run seed:core-values"
   },
   "dependencies": {

@@ -36,6 +36,8 @@ model Schedule {
   day         String
   time        String
   program     String
+  level       String
+  type        String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

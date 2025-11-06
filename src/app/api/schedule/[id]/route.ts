@@ -1,41 +1,27 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/db';
+import { PrismaClient } from '@prisma/client';
 
-export async function GET(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+const prisma = new PrismaClient();
+
+export async function GET(request: Request, { params }: { params: { id: string } }) {
   const schedule = await prisma.schedule.findUnique({
     where: { id: params.id },
   });
-  if (!schedule) {
-    return NextResponse.json({ error: 'Schedule not found' }, { status: 404 });
-  }
   return NextResponse.json(schedule);
 }
 
-export async function PUT(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
-  const { day, time, program } = await req.json();
+export async function PUT(request: Request, { params }: { params: { id: string } }) {
+  const data = await request.json();
   const updatedSchedule = await prisma.schedule.update({
     where: { id: params.id },
-    data: {
-      day,
-      time,
-      program,
-    },
+    data,
   });
   return NextResponse.json(updatedSchedule);
 }
 
-export async function DELETE(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: Request, { params }: { params: { id: string } }) {
   await prisma.schedule.delete({
     where: { id: params.id },
   });
-  return NextResponse.json({ message: 'Schedule deleted' });
+  return new Response(null, { status: 204 });
 }
