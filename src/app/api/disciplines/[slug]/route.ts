@@ -21,18 +21,19 @@ export async function GET(request: Request, { params }: { params: { slug: string
 
 export async function PUT(request: Request, { params }: { params: { slug: string } }) {
   try {
-    const { slug } = params;
+    const { slug: oldSlug } = params;
     const body = await request.json();
-    const { name, imageUrl, title, description, lenses } = body;
+    const { name, slug, imageUrl, title, description, lenses } = body;
 
-    if (!name || !imageUrl || !title || !description || !lenses) {
+    if (!name || !slug || !imageUrl || !title || !description || !lenses) {
       return NextResponse.json({ message: 'Missing required fields' }, { status: 400 });
     }
 
     const updatedDiscipline = await prisma.discipline.update({
-      where: { slug },
+      where: { slug: oldSlug },
       data: {
         name,
+        slug,
         imageUrl,
         title,
         description,

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { FaInstagram, FaFacebook, FaBars, FaTimes } from "react-icons/fa";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
@@ -14,18 +14,23 @@ interface NavItem {
   dropdown?: { name: string; href: string }[];
 }
 
-const navItems: NavItem[] = [
+interface Discipline {
+  id: string;
+  name: string;
+  slug: string;
+  imageUrl: string;
+  title: string;
+  description: string;
+  lenses: string;
+}
+
+const initialNavItems: NavItem[] = [
   { name: "Our Gym", href: "/ourgym" },
   { name: "Who We Are", href: "/#who-we-are" },
   {
     name: "Disciplines",
     href: "#disciplines",
-    dropdown: [
-      { name: "The Art of Muay Thai", href: "/disciplines/mua-thai" },
-      { name: "Brazilian Jiu Jitsu (BJJ)", href: "/disciplines/jutsu" },
-      { name: "Mixed Martial Arts (MMA)", href: "/disciplines/mma" },
-      { name: "Fitness", href: "/disciplines/fitness" },
-    ],
+    dropdown: [],
   },
   { name: "Coaches", href: "/coaches" },
   { name: "Schedule", href: "/schedule" },
@@ -37,6 +42,35 @@ export default function LandingPageHeader() {
   const pathname = usePathname();
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [navItems, setNavItems] = useState<NavItem[]>(initialNavItems);
+
+  useEffect(() => {
+    const fetchDisciplines = async () => {
+      try {
+        const response = await fetch("/api/disciplines");
+        if (!response.ok) {
+          throw new Error("Failed to fetch disciplines");
+        }
+        const disciplines: Discipline[] = await response.json();
+        const disciplineDropdown = disciplines.map((d) => ({
+          name: d.name,
+          href: `/disciplines/${d.slug}`,
+        }));
+
+        setNavItems((prevItems) =>
+          prevItems.map((item) =>
+            item.name === "Disciplines"
+              ? { ...item, dropdown: disciplineDropdown }
+              : item
+          )
+        );
+      } catch (error) {
+        console.error("Error fetching disciplines:", error);
+      }
+    };
+
+    fetchDisciplines();
+  }, []);
 
   return (
     <div className="sticky top-0 z-50">
@@ -94,7 +128,7 @@ export default function LandingPageHeader() {
                     </Link>
 
                     {/* Dropdown */}
-                    {item.dropdown && isDropdownOpen && (
+                    {item.dropdown && item.dropdown.length > 0 && isDropdownOpen && (
                       <div className="absolute top-full left-0 bg-red-600 text-white whitespace-nowrap shadow-lg">
                         {item.dropdown.map((subItem) => (
                           <Link
