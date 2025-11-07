@@ -42,14 +42,16 @@ model Schedule {
   updatedAt   DateTime @updatedAt
 }
 
-model Pricing {
-  id          String   @id @default(cuid())
-  name        String
-  price       Int
-  features    String
-  type        String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+model PricingTier {
+  id          String    @id @default(cuid())
+  title       String
+  price       Float
+  duration    String
+  features    Json
+  type        String // ADULTS, KIDS
+  highlighted Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
 model Addon {

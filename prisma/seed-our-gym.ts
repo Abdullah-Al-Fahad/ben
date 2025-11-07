@@ -1,11 +1,8 @@
 import { PrismaClient } from '@prisma/client';
-import { main as seedSchedule } from './seed-schedule.ts';
-import { seedDisciplines } from './seed-disciplines.ts';
 
 const prisma = new PrismaClient();
 
 async function main() {
-  // Seed OurGym
   const ourGym = await prisma.ourGym.findFirst();
   if (!ourGym) {
     await prisma.ourGym.create({
@@ -16,9 +13,6 @@ async function main() {
       },
     });
   }
-
-  await seedSchedule();
-  await seedDisciplines();
 }
 
 main()

@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "seed": "ts-node prisma/seed.ts",
+    "seed": "npx ts-node prisma/seed-our-gym.ts && npx ts-node prisma/seed-schedule.ts && npx ts-node prisma/seed-disciplines.ts && npx ts-node prisma/seed-pricing.ts",
     "seed:jutsu": "ts-node prisma/seed-jutsu.ts",
     "seed:mma": "ts-node prisma/seed-mma.ts",
     "seed:fitness": "ts-node prisma/seed-fitness.ts",

@@ -335,7 +335,8 @@ const MainContent = ({
   selectedId,
   selectedCoachDetails,
   handleCoachClick,
-  setSelectedId
+  setSelectedId,
+  pricingTiers
 }) => {
   const [activeFilter, setActiveFilter] = useState('All');
   const [activeDay, setActiveDay] = useState('Full Week');
@@ -571,76 +572,22 @@ const MainContent = ({
           <div className="mb-12">
             <div className="inline-block bg-red-600 text-white py-3 px-12 text-lg font-bold mb-6">ADULTS</div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="bg-black p-8 border border-gray-800 flex flex-col justify-between rounded-lg">
-                <div>
-                  <h3 className="text-2xl font-bold mb-2 text-white">MUAY THAI ONLY</h3>
-                  <ul className="space-y-2 my-6 text-sm">
-                    <PricingFeature text="Access Fitness Equipment" />
-                    <PricingFeature text="Access to Open Gym" />
-                    <PricingFeature text="Access 6 Days / Week" />
-                    <PricingFeature text="Style Specific Group Classes" />
-                    <PricingFeature text="Recovery Room" included={false} />
-                    <PricingFeature text="Included Private Lessons" included={false} />
-                  </ul>
+              {pricingTiers.filter(tier => tier.type === 'ADULTS').map(tier => (
+                <div key={tier.id} className={`bg-black p-8 border ${tier.highlighted ? 'border-red-500' : 'border-gray-800'} flex flex-col justify-between rounded-lg`}>
+                  <div>
+                    <h3 className="text-2xl font-bold mb-2 text-white">{tier.title}</h3>
+                    <ul className="space-y-2 my-6 text-sm">
+                      {Array.isArray(tier.features) && tier.features.map((feature, index) => (
+                        <PricingFeature key={index} text={feature.text} included={feature.included} />
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <div className="text-4xl font-black text-white">{tier.price}</div>
+                    <p className="text-xs text-gray-400">{tier.duration}</p>
+                  </div>
                 </div>
-                <div>
-                  <div className="text-4xl font-black text-white">19.99</div>
-                  <p className="text-xs text-gray-400">Per Month for 6 Months</p>
-                </div>
-              </div>
-              <div className="bg-black p-8 border border-gray-800 flex flex-col justify-between rounded-lg">
-                <div>
-                  <h3 className="text-2xl font-bold mb-2 text-white">JIU JITSU ONLY</h3>
-                  <ul className="space-y-2 my-6 text-sm">
-                    <PricingFeature text="Access Fitness Equipment" />
-                    <PricingFeature text="Access to Open Gym" />
-                    <PricingFeature text="Access 6 Days / Week" />
-                    <PricingFeature text="Style Specific Group Classes" />
-                    <PricingFeature text="Recovery Room" included={false} />
-                    <PricingFeature text="Included Private Lessons" included={false} />
-                  </ul>
-                </div>
-                <div>
-                  <div className="text-4xl font-black text-white">19.99</div>
-                  <p className="text-xs text-gray-400">Per Month for 6 Months</p>
-                </div>
-              </div>
-              <div className="bg-black p-8 border border-gray-800 flex flex-col justify-between rounded-lg">
-                <div>
-                  <h3 className="text-2xl font-bold mb-2 text-white">ALL INCLUSIVE</h3>
-                  <ul className="space-y-2 my-6 text-sm">
-                    <PricingFeature text="Access Fitness Equipment" />
-                    <PricingFeature text="Access to Open Gym" />
-                    <PricingFeature text="Access 6 Days / Week" />
-                    <PricingFeature text="All Group Classes" />
-                    <PricingFeature text="Access All Available Classes" />
-                    <PricingFeature text="Recovery Room" included={false} />
-                    <PricingFeature text="Included Private Lessons" included={false} />
-                  </ul>
-                </div>
-                <div>
-                  <div className="text-4xl font-black text-white">39.99</div>
-                  <p className="text-xs text-gray-400">Per Month for 6 Months</p>
-                </div>
-              </div>
-              <div className="bg-black p-8 border-2 border-red-500 flex flex-col justify-between rounded-lg">
-                <div>
-                  <h3 className="text-2xl font-bold mb-2 text-white">PREMIER**</h3>
-                  <ul className="space-y-2 my-6 text-sm">
-                    <PricingFeature text="Access Fitness Equipment" />
-                    <PricingFeature text="Access to Open Gym" />
-                    <PricingFeature text="Access 6 Days / Week" />
-                    <PricingFeature text="All Group Classes" />
-                    <PricingFeature text="Access All Available Classes" />
-                    <PricingFeature text="Recovery Room" />
-                    <PricingFeature text="One Private Lesson per Month" />
-                  </ul>
-                </div>
-                <div>
-                  <div className="text-4xl font-black text-white">99.99</div>
-                  <p className="text-xs text-gray-400">Per Month for 6 Months</p>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
 
@@ -648,21 +595,13 @@ const MainContent = ({
           <div>
             <div className="inline-block bg-red-600 text-white py-3 px-12 text-lg font-bold mb-6">KIDS</div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-black p-8 border border-gray-800 text-center rounded-lg">
-                <h3 className="text-2xl font-bold mb-2 text-white">MUAY THAI ONLY</h3>
-                <div className="text-4xl font-black my-4 text-white">$99.99</div>
-                <p className="text-xs text-gray-400">Per Month for 6 Months</p>
-              </div>
-              <div className="bg-black p-8 border border-gray-800 text-center rounded-lg">
-                <h3 className="text-2xl font-bold mb-2 text-white">JIU JITSU ONLY</h3>
-                <div className="text-4xl font-black my-4 text-white">$99.99</div>
-                <p className="text-xs text-gray-400">Per Month for 6 Months</p>
-              </div>
-              <div className="bg-black p-8 border border-gray-800 text-center rounded-lg">
-                <h3 className="text-2xl font-bold mb-2 text-white">ALL INCLUSIVE</h3>
-                <div className="text-4xl font-black my-4 text-white">19.99</div>
-                <p className="text-xs text-gray-400">Per Month for 6 Months</p>
-              </div>
+              {pricingTiers.filter(tier => tier.type === 'KIDS').map(tier => (
+                <div key={tier.id} className="bg-black p-8 border border-gray-800 text-center rounded-lg">
+                  <h3 className="text-2xl font-bold mb-2 text-white">{tier.title}</h3>
+                  <div className="text-4xl font-black my-4 text-white">${tier.price}</div>
+                  <p className="text-xs text-gray-400">{tier.duration}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -868,6 +807,23 @@ export default function Home() {
     fetchSchedulePdfUrl();
   }, []);
 
+  const [pricingTiers, setPricingTiers] = useState([]);
+
+  useEffect(() => {
+    const fetchPricingTiers = async () => {
+      try {
+        const response = await fetch('/api/pricing');
+        if (response.ok) {
+          const data = await response.json();
+          setPricingTiers(data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch pricing tiers:', error);
+      }
+    };
+    fetchPricingTiers();
+  }, []);
+
   return (
     <>
       <MainContent
@@ -883,6 +839,7 @@ export default function Home() {
         selectedCoachDetails={selectedCoachDetails}
         handleCoachClick={handleCoachClick}
         setSelectedId={setSelectedId}
+        pricingTiers={pricingTiers}
       />
     </>
   );
