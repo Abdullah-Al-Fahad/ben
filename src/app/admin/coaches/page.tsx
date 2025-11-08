@@ -7,6 +7,17 @@ import { PlusCircle, Edit, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
+import { toast } from 'sonner';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogClose,
+} from '@/components/ui/dialog';
+
 interface Coach {
   id: string;
   name: string;
@@ -17,6 +28,8 @@ interface Coach {
 
 export default function ManageCoachesPage() {
   const [coaches, setCoaches] = useState<Coach[]>([]);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [coachToDeleteId, setCoachToDeleteId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchCoaches = async () => {
@@ -28,10 +41,29 @@ export default function ManageCoachesPage() {
   }, []);
 
   const handleDelete = async (id: string) => {
-    await fetch(`/api/coaches/${id}`, {
-      method: 'DELETE',
-    });
-    setCoaches(coaches.filter((coach) => coach.id !== id));
+    try {
+      const response = await fetch(`/api/coaches/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      setCoaches(coaches.filter((coach) => coach.id !== id));
+      toast.success('Coach deleted successfully.');
+    } catch (error: any) {
+      console.error('Failed to delete coach:', error);
+      toast.error(`Failed to delete coach: ${error.message}`);
+    } finally {
+      setIsDeleteDialogOpen(false);
+      setCoachToDeleteId(null);
+    }
+  };
+
+  const openDeleteDialog = (id: string) => {
+    setCoachToDeleteId(id);
+    setIsDeleteDialogOpen(true);
   };
 
   return (
@@ -61,7 +93,7 @@ export default function ManageCoachesPage() {
                         <Edit className="h-4 w-4" />
                       </Button>
                     </Link>
-                    <Button variant="destructive" size="icon" onClick={() => handleDelete(coach.id)}>
+                    <Button variant="destructive" size="icon" onClick={() => openDeleteDialog(coach.id)}>
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
@@ -82,6 +114,27 @@ export default function ManageCoachesPage() {
           </div>
         </CardContent>
       </Card>
+
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm Deletion</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete this coach? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
+                Cancel
+              </Button>
+            </DialogClose>
+            <Button variant="destructive" onClick={() => coachToDeleteId && handleDelete(coachToDeleteId)}>
+              Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

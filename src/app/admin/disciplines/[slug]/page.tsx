@@ -53,7 +53,7 @@ export default function AdminDisciplineFormPage({ params }: { params: { slug: st
     name: "lenses",
   });
 
-  useEffect(() => {.
+  useEffect(() => {
     if (isEdit) {
       const fetchDiscipline = async () => {
         try {

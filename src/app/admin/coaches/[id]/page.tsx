@@ -8,6 +8,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 
+import { toast } from 'sonner';
+
 interface Coach {
   id: string;
   name: string;
@@ -28,9 +30,17 @@ export default function EditCoachPage() {
   useEffect(() => {
     if (id) {
       const fetchCoach = async () => {
-        const res = await fetch(`/api/coaches/${id}`);
-        const data = await res.json();
-        setCoach(data);
+        try {
+          const res = await fetch(`/api/coaches/${id}`);
+          if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+          }
+          const data = await res.json();
+          setCoach(data);
+        } catch (error: any) {
+          console.error('Failed to fetch coach:', error);
+          toast.error(`Failed to load coach data: ${error.message}`);
+        }
       };
       fetchCoach();
     }
@@ -42,34 +52,45 @@ export default function EditCoachPage() {
 
     let updatedImageUrl = coach.imageUrl;
 
-    if (selectedFile) {
-      const formData = new FormData();
-      formData.append('file', selectedFile);
+    try {
+      if (selectedFile) {
+        const formData = new FormData();
+        formData.append('file', selectedFile);
 
-      const uploadRes = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
+        const uploadRes = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (uploadRes.ok) {
+          const { path } = await uploadRes.json();
+          updatedImageUrl = path;
+        } else {
+          console.error('Failed to upload image');
+          toast.error('Failed to upload image.');
+          return;
+        }
+      }
+
+      const response = await fetch(`/api/coaches/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ...coach, imageUrl: updatedImageUrl }),
       });
 
-      if (uploadRes.ok) {
-        const { path } = await uploadRes.json();
-        updatedImageUrl = path;
-      } else {
-        console.error('Failed to upload image');
-        // Handle error, maybe show a message to the user
-        return;
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
+
+      toast.success('Coach updated successfully.');
+      router.push('/admin/coaches');
+      router.refresh();
+    } catch (error: any) {
+      console.error('Failed to update coach:', error);
+      toast.error(`Failed to update coach: ${error.message}`);
     }
-
-    await fetch(`/api/coaches/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ ...coach, imageUrl: updatedImageUrl }),
-    });
-
-    router.push('/admin/coaches');
   };
 
   if (!coach) {
