@@ -6,7 +6,35 @@ const prisma = new PrismaClient();
 export async function GET() {
   try {
     const apparelCTA = await prisma.apparelCTA.findFirst();
-    return NextResponse.json(apparelCTA);
+    if (apparelCTA) {
+      let finalImageUrl = apparelCTA.imageUrl;
+      let finalLogoUrl = apparelCTA.logoUrl;
+
+      // Process imageUrl
+      if (finalImageUrl.startsWith('http://') || finalImageUrl.startsWith('https://')) {
+        finalImageUrl = finalImageUrl.split('?')[0];
+      } else if (finalImageUrl.startsWith('/api/images/')) {
+        finalImageUrl = finalImageUrl.split('?')[0];
+      } else {
+        finalImageUrl = `/api/images/${finalImageUrl.split('?')[0]}`;
+      }
+
+      // Process logoUrl
+      if (finalLogoUrl.startsWith('http://') || finalLogoUrl.startsWith('https://')) {
+        finalLogoUrl = finalLogoUrl.split('?')[0];
+      } else if (finalLogoUrl.startsWith('/api/images/')) {
+        finalLogoUrl = finalLogoUrl.split('?')[0];
+      } else {
+        finalLogoUrl = `/api/images/${finalLogoUrl.split('?')[0]}`;
+      }
+
+      return NextResponse.json({
+        ...apparelCTA,
+        imageUrl: finalImageUrl,
+        logoUrl: finalLogoUrl,
+      });
+    }
+    return NextResponse.json(null);
   } catch (error) {
     return new NextResponse('Internal Server Error', { status: 500 });
   }

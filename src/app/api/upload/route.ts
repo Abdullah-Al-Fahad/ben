@@ -17,10 +17,10 @@ export async function POST(req: NextRequest) {
 
     // Save the file to the public directory
     const filename = `${Date.now()}-${file.name}`;
-    const path = join(process.cwd(), 'public', filename);
+    const path = join(process.cwd(), 'uploads', filename);
     await writeFile(path, buffer);
 
-    return NextResponse.json({ success: true, path: `/${filename}` }, { status: 200 });
+    return NextResponse.json({ success: true, path: filename }, { status: 200 });
   } catch (error) {
     console.error('Error uploading file:', error);
     return NextResponse.json({ success: false, error: 'Failed to upload file' }, { status: 500 });

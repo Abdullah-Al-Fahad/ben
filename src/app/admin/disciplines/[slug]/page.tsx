@@ -80,7 +80,14 @@ export default function AdminDisciplineFormPage({ params }: { params: { slug: st
     } else {
       setLoading(false);
     }
-  }, [slug, isEdit, form]);
+
+    // Explicitly validate imageUrl if in add mode and no file is selected
+    if (!isEdit && !selectedFile) {
+      form.setError('imageUrl', { type: 'manual', message: 'Image is required for new disciplines.' });
+    } else {
+      form.clearErrors('imageUrl');
+    }
+  }, [slug, isEdit, form, selectedFile]);
 
   const onSubmit = async (values: DisciplineFormValues) => {
     try {
@@ -184,30 +191,39 @@ export default function AdminDisciplineFormPage({ params }: { params: { slug: st
               </FormItem>
             )}
           />
-          <FormItem>
-            <FormLabel>Discipline Image</FormLabel>
-            <FormControl>
-              <div>
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={(e) => setSelectedFile(e.target.files ? e.target.files[0] : null)}
-                  className="hidden"
-                />
-                <Button type="button" onClick={() => fileInputRef.current?.click()}>
-                  Choose File
-                </Button>
-                {selectedFile && <span className="ml-2">{selectedFile.name}</span>}
-                {form.watch('imageUrl') && (
-                  <div className="mt-2">
-                    <p>Current Image:</p>
-                    <img src={form.watch('imageUrl')} alt="Discipline" className="w-32 h-32 object-cover rounded-md" />
+          <FormField
+            control={form.control}
+            name="imageUrl"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Discipline Image</FormLabel>
+                <FormControl>
+                  <div>
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      onChange={(e) => {
+                        setSelectedFile(e.target.files ? e.target.files[0] : null);
+                        field.onChange(e.target.files ? e.target.files[0].name : ''); // Update react-hook-form's value
+                      }}
+                      className="hidden"
+                    />
+                    <Button type="button" onClick={() => fileInputRef.current?.click()}>
+                      Choose File
+                    </Button>
+                    {selectedFile && <span className="ml-2">{selectedFile.name}</span>}
+                    {form.watch('imageUrl') && (
+                      <div className="mt-2">
+                        <p>Current Image:</p>
+                        <img src={form.watch('imageUrl')} alt="Discipline" className="w-32 h-32 object-cover rounded-md" />
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            </FormControl>
-            <FormMessage />
-          </FormItem>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="title"

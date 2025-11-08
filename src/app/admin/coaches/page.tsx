@@ -99,6 +99,7 @@ export default function ManageCoachesPage() {
                   </div>
                 </CardHeader>
                 <CardContent>
+                  {console.log('Coach Image URL:', coach.imageUrl)}
                   <img src={coach.imageUrl} alt={coach.name} className="w-full h-48 object-cover rounded-md mb-4" />
                   <p className="text-sm text-gray-500">{coach.bio}</p>
                   <div className="flex flex-wrap gap-2 mt-4">

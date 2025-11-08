@@ -10,10 +10,23 @@ export async function GET() {
     });
 
     if (landingPage) {
+      let finalBackgroundImageUrl = landingPage.coachSectionBackgroundImage;
+
+      if (finalBackgroundImageUrl && (finalBackgroundImageUrl.startsWith('http://') || finalBackgroundImageUrl.startsWith('https://'))) {
+        // It's an external URL, use as is
+        finalBackgroundImageUrl = finalBackgroundImageUrl.split('?')[0];
+      } else if (finalBackgroundImageUrl && finalBackgroundImageUrl.startsWith('/api/images/')) {
+        // Already has the prefix, use as is
+        finalBackgroundImageUrl = finalBackgroundImageUrl.split('?')[0];
+      } else if (finalBackgroundImageUrl) {
+        // It's a local filename, prepend the API route
+        finalBackgroundImageUrl = `/api/images/${finalBackgroundImageUrl.split('?')[0]}`;
+      }
+
       return NextResponse.json({
         title: landingPage.coachSectionTitle,
         description: landingPage.coachSectionDescription,
-        backgroundImage: landingPage.coachSectionBackgroundImage,
+        backgroundImage: finalBackgroundImageUrl,
         lenses: landingPage.coachLenses,
       });
     } else {
