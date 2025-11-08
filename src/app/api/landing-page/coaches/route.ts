@@ -1,75 +1,116 @@
-import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/db';
+import { prisma } from "@/lib/db";
+import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const landingPage = await prisma.landingPage.findFirst();
-    const coachLenses = await prisma.coachLens.findMany();
-
-    return NextResponse.json({
-      title: landingPage?.coachSectionTitle || '',
-      description: landingPage?.coachSectionDescription || '',
-      backgroundImage: landingPage?.coachSectionBackgroundImage || '',
-      lenses: coachLenses,
+    const landingPage = await prisma.landingPage.findFirst({
+      include: {
+        coachLenses: true,
+      },
     });
+
+    if (landingPage) {
+      return NextResponse.json({
+        title: landingPage.coachSectionTitle,
+        description: landingPage.coachSectionDescription,
+        backgroundImage: landingPage.coachSectionBackgroundImage,
+        lenses: landingPage.coachLenses,
+      });
+    } else {
+      return NextResponse.json({
+        title: "",
+        description: "",
+        backgroundImage: "",
+        lenses: [],
+      });
+    }
   } catch (error) {
-    console.error('Error fetching coaches section data:', error);
-    return NextResponse.json({ message: 'Failed to fetch coaches section data' }, { status: 500 });
+    console.error(error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(req: Request) {
   try {
-    const { title, description, backgroundImage, lenses } = await request.json();
+    const body = await req.json();
+    const { title, description, backgroundImage, lenses } = body;
 
-    if (title !== undefined && description !== undefined) {
-      const landingPage = await prisma.landingPage.findFirst();
-      if (landingPage) {
-        await prisma.landingPage.update({
-          where: { id: landingPage.id },
-          data: { 
-            coachSectionTitle: title, 
-            coachSectionDescription: description,
-            coachSectionBackgroundImage: backgroundImage 
-          },
-        });
-      } else {
-        await prisma.landingPage.create({
-          data: { 
-            coachSectionTitle: title, 
-            coachSectionDescription: description, 
-            coachSectionBackgroundImage: backgroundImage 
-          },
-        });
-      }
+    if (!title || !description || !backgroundImage || !lenses) {
+      return NextResponse.json(
+        { error: "Missing required fields" },
+        { status: 400 }
+      );
     }
 
-    if (lenses && Array.isArray(lenses)) {
-      const existingLenses = await prisma.coachLens.findMany();
-      const newLensesTitles = new Set(lenses.map((l: { title: string; }) => l.title));
+    let landingPage = await prisma.landingPage.findFirst();
 
-      for (const existingLens of existingLenses) {
-        if (!newLensesTitles.has(existingLens.title)) {
-          await prisma.coachLens.delete({
-            where: { id: existingLens.id },
-          });
-        }
-      }
-
-      for (const lens of lenses) {
-        if (lens.title) {
-          await prisma.coachLens.upsert({
-            where: { title: lens.title },
-            update: { subtitle: lens.subtitle },
-            create: { title: lens.title, subtitle: lens.subtitle },
-          });
-        }
-      }
+    if (!landingPage) {
+      landingPage = await prisma.landingPage.create({
+        data: {
+          coachSectionTitle: title,
+          coachSectionDescription: description,
+          coachSectionBackgroundImage: backgroundImage,
+        },
+      });
+    } else {
+      await prisma.landingPage.update({
+        where: { id: landingPage.id },
+        data: {
+          coachSectionTitle: title,
+          coachSectionDescription: description,
+          coachSectionBackgroundImage: backgroundImage,
+        },
+      });
     }
 
-    return NextResponse.json({ message: 'Coaches section updated successfully' }, { status: 200 });
+    const existingLensIds = (await prisma.coachLens.findMany({
+      where: { landingPageId: landingPage.id },
+      select: { id: true },
+    })).map(lens => lens.id);
+
+    const incomingLensIds = lenses.filter((lens: any) => lens.id).map((lens: any) => lens.id);
+
+    const lensesToDelete = existingLensIds.filter(id => !incomingLensIds.includes(id));
+    const lensesToUpdate = lenses.filter((lens: any) => existingLensIds.includes(lens.id));
+    const lensesToCreate = lenses.filter((lens: any) => !lens.id);
+
+    if (lensesToDelete.length > 0) {
+      await prisma.coachLens.deleteMany({
+        where: {
+          id: { in: lensesToDelete },
+        },
+      });
+    }
+
+    for (const lens of lensesToUpdate) {
+      await prisma.coachLens.update({
+        where: { id: lens.id },
+        data: {
+          title: lens.title,
+          subtitle: lens.subtitle,
+        },
+      });
+    }
+
+    if (lensesToCreate.length > 0) {
+      await prisma.coachLens.createMany({
+        data: lensesToCreate.map((lens: any) => ({
+          title: lens.title,
+          subtitle: lens.subtitle,
+          landingPageId: landingPage!.id,
+        })),
+      });
+    }
+
+    return NextResponse.json({ message: "Coaches section updated successfully!" });
   } catch (error) {
-    console.error('Error updating coaches section:', error);
-    return NextResponse.json({ message: 'Failed to update coaches section' }, { status: 500 });
+    console.error(error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

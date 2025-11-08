@@ -28,6 +28,7 @@ export default function AdminDashboard() {
     { href: '/admin/profile', title: 'Manage Profile', description: 'Edit your profile and security settings.', icon: User },
     { href: '/admin/ourgym', title: 'Manage Our Gym', description: 'Edit the content of the Our Gym page.', icon: Component },
     { href: '/admin/apparel-cta', title: 'Manage Apparel CTA', description: 'Edit the content of the Apparel CTA section.', icon: Component },
+
   ];
 
   return (

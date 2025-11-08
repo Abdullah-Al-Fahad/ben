@@ -17,7 +17,7 @@ interface CoreValue {
   description: string;
 }
 
-const AdminCoreValuesEditPage = () => {
+const CoreValuesAdminPage = () => {
   const router = useRouter();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -155,4 +155,4 @@ const AdminCoreValuesEditPage = () => {
   );
 };
 
-export default AdminCoreValuesEditPage;
+export default CoreValuesAdminPage;

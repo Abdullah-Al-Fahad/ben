@@ -1,16 +1,18 @@
-
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import { OurGym } from '@/lib/types';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 
 const OurGymAdminPage = () => {
   const [ourGymData, setOurGymData] = useState<OurGym | null>(null);
   const [formState, setFormState] = useState({ title: '', content: '', imageUrl: '' });
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -40,6 +42,27 @@ const OurGymAdminPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    let updatedImageUrl = formState.imageUrl;
+
+    if (selectedFile) {
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+
+      const uploadRes = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (uploadRes.ok) {
+        const { path } = await uploadRes.json();
+        updatedImageUrl = path;
+      } else {
+        console.error('Failed to upload image');
+        toast.error('Failed to upload image');
+        return;
+      }
+    }
+
     try {
       const method = ourGymData ? 'PATCH' : 'POST';
       const response = await fetch('/api/ourgym', {
@@ -47,17 +70,17 @@ const OurGymAdminPage = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(ourGymData ? { id: ourGymData.id, ...formState } : formState),
+        body: JSON.stringify(ourGymData ? { id: ourGymData.id, ...formState, imageUrl: updatedImageUrl } : { ...formState, imageUrl: updatedImageUrl }),
       });
 
       if (!response.ok) {
         throw new Error('Failed to update Our Gym data');
       }
 
-      alert('Our Gym data updated successfully!');
+      toast.success('Our Gym data updated successfully!');
     } catch (error) {
       console.error('Error updating Our Gym data:', error);
-      alert('Failed to update Our Gym data.');
+      toast.error('Failed to update Our Gym data.');
     }
   };
 
@@ -89,13 +112,24 @@ const OurGymAdminPage = () => {
           />
         </div>
         <div>
-          <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700">Image URL</label>
-          <Input
-            id="imageUrl"
-            name="imageUrl"
-            value={formState.imageUrl}
-            onChange={handleInputChange}
+          <label htmlFor="image" className="block text-sm font-medium text-gray-700">Image</label>
+          <input
+            id="image"
+            type="file"
+            ref={fileInputRef}
+            onChange={(e) => setSelectedFile(e.target.files ? e.target.files[0] : null)}
+            className="hidden"
           />
+          <Button type="button" onClick={() => fileInputRef.current?.click()}>
+            Choose File
+          </Button>
+          {selectedFile && <span className="ml-2">{selectedFile.name}</span>}
+          {formState.imageUrl && (
+            <div className="mt-2">
+              <p>Current Image:</p>
+              <img src={formState.imageUrl} alt="Our Gym" className="w-full max-w-md" />
+            </div>
+          )}
         </div>
         <Button type="submit">Save Changes</Button>
       </form>

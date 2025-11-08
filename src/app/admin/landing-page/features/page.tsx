@@ -27,7 +27,7 @@ const iconOptions = [
   // Add more icons as needed
 ];
 
-const AdminFeaturesEditPage = () => {
+const FeaturesAdminPage = () => {
   const router = useRouter();
   const [disciplines, setDisciplines] = useState<Discipline[]>([]);
   const [gymFeatures, setGymFeatures] = useState<GymFeature[]>([]);
@@ -241,4 +241,4 @@ const AdminFeaturesEditPage = () => {
   );
 };
 
-export default AdminFeaturesEditPage;
+export default FeaturesAdminPage;

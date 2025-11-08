@@ -1,11 +1,19 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { toast } from 'sonner';
 
 export default function ApparelCTAAdmin() {
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset, watch, setValue } = useForm();
   const [loading, setLoading] = useState(true);
+  const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
+  const [selectedLogoFile, setSelectedLogoFile] = useState<File | null>(null);
+  const imageFileInputRef = useRef<HTMLInputElement>(null);
+  const logoFileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetch('/api/apparel-cta')
@@ -17,13 +25,49 @@ export default function ApparelCTAAdmin() {
   }, [reset]);
 
   const onSubmit = async (data) => {
+    let updatedImageUrl = data.imageUrl;
+    let updatedLogoUrl = data.logoUrl;
+
+    if (selectedImageFile) {
+      const formData = new FormData();
+      formData.append('file', selectedImageFile);
+      const uploadRes = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      if (uploadRes.ok) {
+        const { path } = await uploadRes.json();
+        updatedImageUrl = path;
+      } else {
+        toast.error('Failed to upload image');
+        return;
+      }
+    }
+
+    if (selectedLogoFile) {
+      const formData = new FormData();
+      formData.append('file', selectedLogoFile);
+      const uploadRes = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      if (uploadRes.ok) {
+        const { path } = await uploadRes.json();
+        updatedLogoUrl = path;
+      } else {
+        toast.error('Failed to upload logo');
+        return;
+      }
+    }
+
     await fetch('/api/apparel-cta', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify({ ...data, imageUrl: updatedImageUrl, logoUrl: updatedLogoUrl }),
     });
+    toast.success('Apparel CTA updated successfully!');
   };
 
   if (loading) {
@@ -31,32 +75,64 @@ export default function ApparelCTAAdmin() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 p-4">
       <div>
-        <label htmlFor="imageUrl">Image URL</label>
-        <input id="imageUrl" {...register('imageUrl')} className="w-full p-2 border" />
+        <label htmlFor="image">Image</label>
+        <input
+          id="image"
+          type="file"
+          ref={imageFileInputRef}
+          onChange={(e) => setSelectedImageFile(e.target.files ? e.target.files[0] : null)}
+          className="hidden"
+        />
+        <Button type="button" onClick={() => imageFileInputRef.current?.click()}>
+          Choose File
+        </Button>
+        {selectedImageFile && <span className="ml-2">{selectedImageFile.name}</span>}
+        {watch('imageUrl') && (
+          <div className="mt-2">
+            <p>Current Image:</p>
+            <img src={watch('imageUrl')} alt="Apparel" className="w-32 h-32 object-cover rounded-md" />
+          </div>
+        )}
       </div>
       <div>
-        <label htmlFor="logoUrl">Logo URL</label>
-        <input id="logoUrl" {...register('logoUrl')} className="w-full p-2 border" />
+        <label htmlFor="logo">Logo</label>
+        <input
+          id="logo"
+          type="file"
+          ref={logoFileInputRef}
+          onChange={(e) => setSelectedLogoFile(e.target.files ? e.target.files[0] : null)}
+          className="hidden"
+        />
+        <Button type="button" onClick={() => logoFileInputRef.current?.click()}>
+          Choose File
+        </Button>
+        {selectedLogoFile && <span className="ml-2">{selectedLogoFile.name}</span>}
+        {watch('logoUrl') && (
+          <div className="mt-2">
+            <p>Current Logo:</p>
+            <img src={watch('logoUrl')} alt="Logo" className="w-32 h-32 object-cover rounded-md" />
+          </div>
+        )}
       </div>
       <div>
         <label htmlFor="title">Title</label>
-        <input id="title" {...register('title')} className="w-full p-2 border" />
+        <Input id="title" {...register('title')} />
       </div>
       <div>
         <label htmlFor="description">Description</label>
-        <textarea id="description" {...register('description')} className="w-full p-2 border" />
+        <Textarea id="description" {...register('description')} />
       </div>
       <div>
         <label htmlFor="buttonText">Button Text</label>
-        <input id="buttonText" {...register('buttonText')} className="w-full p-2 border" />
+        <Input id="buttonText" {...register('buttonText')} />
       </div>
       <div>
         <label htmlFor="buttonUrl">Button URL</label>
-        <input id="buttonUrl" {...register('buttonUrl')} className="w-full p-2 border" />
+        <Input id="buttonUrl" {...register('buttonUrl')} />
       </div>
-      <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded">Save</button>
+      <Button type="submit">Save</Button>
     </form>
   );
 }

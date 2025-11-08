@@ -9,6 +9,8 @@ export async function GET() {
   return NextResponse.json(secondHero);
 }
 
+
+
 export async function PUT(request: Request) {
   const data = await request.json();
   console.log('data', data);

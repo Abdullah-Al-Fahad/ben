@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -20,7 +20,7 @@ const lensSchema = z.object({
 const formSchema = z.object({
   name: z.string().min(1, { message: 'Name is required.' }),
   slug: z.string().min(1, { message: 'Slug is required.' }),
-  imageUrl: z.string().url({ message: 'Must be a valid URL.' }),
+  imageUrl: z.string().min(1, { message: 'Image is required.' }),
   title: z.string().min(1, { message: 'Title is required.' }),
   description: z.string().min(1, { message: 'Description is required.' }),
   lenses: z.array(lensSchema),
@@ -33,6 +33,8 @@ export default function AdminDisciplineFormPage({ params }: { params: { slug: st
   const { slug } = params;
   const isEdit = slug !== 'add';
   const [loading, setLoading] = useState(true);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<DisciplineFormValues>({
     resolver: zodResolver(formSchema),
@@ -51,7 +53,7 @@ export default function AdminDisciplineFormPage({ params }: { params: { slug: st
     name: "lenses",
   });
 
-  useEffect(() => {
+  useEffect(() => {.
     if (isEdit) {
       const fetchDiscipline = async () => {
         try {
@@ -82,6 +84,27 @@ export default function AdminDisciplineFormPage({ params }: { params: { slug: st
 
   const onSubmit = async (values: DisciplineFormValues) => {
     try {
+      let updatedImageUrl = values.imageUrl;
+
+      if (selectedFile) {
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+
+        const uploadRes = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (uploadRes.ok) {
+          const { path } = await uploadRes.json();
+          updatedImageUrl = path;
+        } else {
+          console.error('Failed to upload image');
+          toast.error('Failed to upload image');
+          return;
+        }
+      }
+
       const method = isEdit ? 'PUT' : 'POST';
       const url = isEdit ? `/api/disciplines/${slug}` : '/api/disciplines';
 
@@ -90,7 +113,7 @@ export default function AdminDisciplineFormPage({ params }: { params: { slug: st
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(values),
+        body: JSON.stringify({ ...values, imageUrl: updatedImageUrl }),
       });
 
       if (!response.ok) {
@@ -161,19 +184,30 @@ export default function AdminDisciplineFormPage({ params }: { params: { slug: st
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="imageUrl"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Image URL</FormLabel>
-                <FormControl>
-                  <Input placeholder="https://example.com/image.jpg" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <FormItem>
+            <FormLabel>Discipline Image</FormLabel>
+            <FormControl>
+              <div>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={(e) => setSelectedFile(e.target.files ? e.target.files[0] : null)}
+                  className="hidden"
+                />
+                <Button type="button" onClick={() => fileInputRef.current?.click()}>
+                  Choose File
+                </Button>
+                {selectedFile && <span className="ml-2">{selectedFile.name}</span>}
+                {form.watch('imageUrl') && (
+                  <div className="mt-2">
+                    <p>Current Image:</p>
+                    <img src={form.watch('imageUrl')} alt="Discipline" className="w-32 h-32 object-cover rounded-md" />
+                  </div>
+                )}
+              </div>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
           <FormField
             control={form.control}
             name="title"
