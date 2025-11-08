@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
 
 export default function ApparelCTAAdmin() {
@@ -75,7 +76,13 @@ export default function ApparelCTAAdmin() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 p-4">
+    <div className="container mx-auto py-10 px-4 sm:px-6 lg:px-8">
+      <Card>
+        <CardHeader>
+          <CardTitle>Manage Apparel CTA</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 p-4">
       <div>
         <label htmlFor="image">Image</label>
         <input
@@ -85,10 +92,12 @@ export default function ApparelCTAAdmin() {
           onChange={(e) => setSelectedImageFile(e.target.files ? e.target.files[0] : null)}
           className="hidden"
         />
-        <Button type="button" onClick={() => imageFileInputRef.current?.click()}>
-          Choose File
-        </Button>
-        {selectedImageFile && <span className="ml-2">{selectedImageFile.name}</span>}
+        <div className="flex items-center space-x-2 mt-1">
+          <Button type="button" onClick={() => imageFileInputRef.current?.click()}>
+            Choose File
+          </Button>
+          {selectedImageFile && <span className="ml-2">{selectedImageFile.name}</span>}
+        </div>
         {watch('imageUrl') && (
           <div className="mt-2">
             <p>Current Image:</p>
@@ -105,10 +114,12 @@ export default function ApparelCTAAdmin() {
           onChange={(e) => setSelectedLogoFile(e.target.files ? e.target.files[0] : null)}
           className="hidden"
         />
-        <Button type="button" onClick={() => logoFileInputRef.current?.click()}>
-          Choose File
-        </Button>
-        {selectedLogoFile && <span className="ml-2">{selectedLogoFile.name}</span>}
+        <div className="flex items-center space-x-2 mt-1">
+          <Button type="button" onClick={() => logoFileInputRef.current?.click()}>
+            Choose File
+          </Button>
+          {selectedLogoFile && <span className="ml-2">{selectedLogoFile.name}</span>}
+        </div>
         {watch('logoUrl') && (
           <div className="mt-2">
             <p>Current Logo:</p>
@@ -134,5 +145,8 @@ export default function ApparelCTAAdmin() {
       </div>
       <Button type="submit">Save</Button>
     </form>
+        </CardContent>
+      </Card>
+    </div>
   );
 }

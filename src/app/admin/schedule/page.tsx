@@ -6,6 +6,16 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { PlusCircle, Edit, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogClose,
+} from '@/components/ui/dialog';
 
 interface Schedule {
   id: string;
@@ -19,6 +29,8 @@ interface Schedule {
 export default function ManageSchedulePage() {
   const [schedules, setSchedules] = useState<Schedule[]>([]);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [scheduleToDeleteId, setScheduleToDeleteId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchSchedules = async () => {
@@ -30,10 +42,29 @@ export default function ManageSchedulePage() {
   }, []);
 
   const handleDelete = async (id: string) => {
-    await fetch(`/api/schedule/${id}`, {
-      method: 'DELETE',
-    });
-    setSchedules(schedules.filter((schedule) => schedule.id !== id));
+    try {
+      const response = await fetch(`/api/schedule/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      setSchedules(schedules.filter((schedule) => schedule.id !== id));
+      toast.success('Schedule event deleted successfully.');
+    } catch (error: any) {
+      console.error('Failed to delete schedule event:', error);
+      toast.error(`Failed to delete schedule event: ${error.message}`);
+    } finally {
+      setIsDeleteDialogOpen(false);
+      setScheduleToDeleteId(null);
+    }
+  };
+
+  const openDeleteDialog = (id: string) => {
+    setScheduleToDeleteId(id);
+    setIsDeleteDialogOpen(true);
   };
 
   const handleFileUpload = async (fileToUpload: File) => {
@@ -134,6 +165,27 @@ export default function ManageSchedulePage() {
           </div>
         </CardContent>
       </Card>
+
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm Deletion</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete this schedule event? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
+                Cancel
+              </Button>
+            </DialogClose>
+            <Button variant="destructive" onClick={() => scheduleToDeleteId && handleDelete(scheduleToDeleteId)}>
+              Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { PencilIcon, TrashIcon } from 'lucide-react';
 
@@ -28,14 +29,20 @@ export default async function AdminDisciplinesPage() {
 
   return (
     <div className="container mx-auto py-10">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Disciplines</h1>
         <Button asChild>
           <Link href="/admin/disciplines/add">Add New Discipline</Link>
         </Button>
       </div>
 
-      <Table>
+      <Card>
+        <CardHeader>
+          <CardTitle>All Disciplines</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="overflow-x-auto">
+            <Table className="min-w-full">
         <TableHeader>
           <TableRow>
             <TableHead>Name</TableHead>
@@ -63,7 +70,10 @@ export default async function AdminDisciplinesPage() {
             </TableRow>
           ))}
         </TableBody>
-      </Table>
+            </Table>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

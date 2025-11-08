@@ -7,6 +7,7 @@ import * as z from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
 import {
   Form,
@@ -64,9 +65,13 @@ export default function GymInfoPage() {
 
   return (
     <div className="p-8">
-      <h1 className="text-2xl font-bold mb-4">Gym Information</h1>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <Card>
+        <CardHeader>
+          <CardTitle>Gym Information</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
             control={form.control}
             name="address"
@@ -147,7 +152,9 @@ export default function GymInfoPage() {
           />
           <Button type="submit">Save Changes</Button>
         </form>
-      </Form>
+          </Form>
+        </CardContent>
+      </Card>
     </div>
   );
 }

@@ -6,6 +6,7 @@ import { OurGym } from '@/lib/types';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
 
 const OurGymAdminPage = () => {
@@ -90,8 +91,12 @@ const OurGymAdminPage = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Edit Our Gym Page</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <Card>
+        <CardHeader>
+          <CardTitle>Edit Our Gym Page</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="title" className="block text-sm font-medium text-gray-700">Title</label>
           <Input
@@ -133,6 +138,8 @@ const OurGymAdminPage = () => {
         </div>
         <Button type="submit">Save Changes</Button>
       </form>
+        </CardContent>
+      </Card>
     </div>
   );
 };

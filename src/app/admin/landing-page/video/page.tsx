@@ -19,8 +19,7 @@ export default function EditVideoSectionPage() {
       const res = await fetch('/api/landing-page/video');
       if (res.ok) {
         const data = await res.json();
-        const content = JSON.parse(data.content);
-        setVideoUrl(content.videoUrl);
+        setVideoUrl(data.videoUrl);
       }
     };
     fetchVideo();

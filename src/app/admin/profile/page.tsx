@@ -10,11 +10,12 @@ import { Camera, Pencil } from "lucide-react";
 import { motion } from 'framer-motion';
 import { useSession } from 'next-auth/react';
 import LoadingSpinner from '@/components/LoadingSpinner';
+import { toast } from 'sonner';
 
 export default function UserProfile() {
   const { data: session, status } = useSession();
   const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
@@ -34,23 +35,39 @@ export default function UserProfile() {
     setLoading(true);
     setError('');
 
-    if (newPassword && newPassword !== confirmPassword) {
-      setError("Passwords don't match");
-      setLoading(false);
-      return;
+    if (newPassword) {
+      if (!oldPassword) {
+        setError("Old password is required to change password");
+        setLoading(false);
+        return;
+      }
+      if (newPassword !== confirmPassword) {
+        setError("New passwords don't match");
+        setLoading(false);
+        return;
+      }
+    }
+
+    const body: { username: string; oldPassword?: string; newPassword?: string } = {
+      username,
+    };
+
+    if (newPassword) {
+      body.oldPassword = oldPassword;
+      body.newPassword = newPassword;
     }
 
     const res = await fetch('/api/user', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        username,
-        password: newPassword || undefined,
-      }),
+      body: JSON.stringify(body),
     });
 
     if (res.ok) {
-      // Optionally, show a success message
+      toast.success('Profile updated successfully!');
+      setOldPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
     } else {
       setError('Failed to update profile');
     }
@@ -100,6 +117,18 @@ export default function UserProfile() {
               Password and Security
             </h2>
             <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="old-password">Old Password</Label>
+                <div className="relative">
+                  <Input
+                    id="old-password"
+                    type="password"
+                    value={oldPassword}
+                    onChange={(e) => setOldPassword(e.target.value)}
+                    className="bg-white/50 dark:bg-white/10 border-gray-300 dark:border-white/20"
+                  />
+                </div>
+              </div>
               <div className="space-y-2">
                 <Label htmlFor="new-password">New Password</Label>
                 <div className="relative">

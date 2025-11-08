@@ -13,12 +13,12 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const { name, bio, image, specialties, achievements } = await req.json();
+  const { name, bio, imageUrl, specialties, achievements } = await req.json();
   const newCoach = await prisma.coach.create({
     data: {
       name,
       bio,
-      image,
+      image: imageUrl,
       specialties,
       achievements,
     },

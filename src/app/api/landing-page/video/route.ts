@@ -4,15 +4,11 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const videoSection = await prisma.landingPageSection.findUnique({
-      where: {
-        name: "video",
-      },
-    });
-    if (videoSection) {
-      return NextResponse.json(videoSection);
+    const video = await prisma.video.findFirst(); // Assuming we want the first video for the landing page
+    if (video) {
+      return NextResponse.json({ videoUrl: video.url });
     } else {
-      return NextResponse.json({ content: "{}" }, { status: 404 });
+      return NextResponse.json({ message: "Video not found" }, { status: 404 });
     }
   } catch (error) {
     console.error(error);
@@ -30,20 +26,26 @@ export async function POST(req: Request) {
 
     if (!videoUrl) {
       return NextResponse.json(
-        { error: "Missing required fields" },
+        { error: "Missing required fields: videoUrl" },
         { status: 400 }
       );
     }
 
-    const content = JSON.stringify({ videoUrl });
+    let video;
+    const existingVideo = await prisma.video.findFirst();
 
-    const updatedSection = await prisma.landingPageSection.upsert({
-      where: { name: "video" },
-      update: { content },
-      create: { name: "video", content },
-    });
+    if (existingVideo) {
+      video = await prisma.video.update({
+        where: { id: existingVideo.id },
+        data: { url: videoUrl },
+      });
+    } else {
+      video = await prisma.video.create({
+        data: { url: videoUrl },
+      });
+    }
 
-    return NextResponse.json(updatedSection);
+    return NextResponse.json(video);
   } catch (error) {
     console.error(error);
     return NextResponse.json(

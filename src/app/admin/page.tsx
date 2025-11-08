@@ -20,14 +20,13 @@ const cardVariants = {
 export default function AdminDashboard() {
   const managementSections = [
     { href: '/admin/coaches', title: 'Manage Coaches', description: 'Add, edit, or remove coaches.', icon: Users },
-    { href: '/admin/programs', title: 'Manage Programs', description: 'Define and organize training programs.', icon: Swords },
     { href: '/admin/disciplines', title: 'Manage Disciplines', description: 'Add, edit, or remove disciplines.', icon: Swords },
     { href: '/admin/schedule', title: 'Manage Schedule', description: 'Update class schedules and events.', icon: Calendar },
     { href: '/admin/pricing', title: 'Manage Pricing', description: 'Set and adjust membership pricing.', icon: DollarSign },
     { href: '/admin/landing-page', title: 'Landing Page', description: 'Edit all sections of the landing page.', icon: Component },
     { href: '/admin/profile', title: 'Manage Profile', description: 'Edit your profile and security settings.', icon: User },
     { href: '/admin/ourgym', title: 'Manage Our Gym', description: 'Edit the content of the Our Gym page.', icon: Component },
-    { href: '/admin/apparel-cta', title: 'Manage Apparel CTA', description: 'Edit the content of the Apparel CTA section.', icon: Component },
+    { href: '/admin/gym-info', title: 'Social and Adress', description: 'Edit Contact Info', icon: Component },
 
   ];
 

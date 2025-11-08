@@ -34,19 +34,43 @@ export async function PUT(req: NextRequest) {
   }
 
   const body = await req.json();
-  const { username, password } = body;
+  const { username, oldPassword, newPassword } = body;
 
-  let data: any = { username };
+  const userId = (session.user as any)?.id as string;
 
-  if (password) {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    data.password = hashedPassword;
-  }
-
-  const user = await prisma.user.update({
-    where: { id: (session.user as any)?.id as string },
-    data
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
   });
 
-  return NextResponse.json(user);
+  if (!user) {
+    return NextResponse.json({ error: 'User not found' }, { status: 404 });
+  }
+
+  let dataToUpdate: any = { username };
+
+  if (newPassword) {
+    if (!oldPassword) {
+      return NextResponse.json({ error: 'Old password is required to change password' }, { status: 400 });
+    }
+
+    const passwordMatch = await bcrypt.compare(oldPassword, user.password);
+    if (!passwordMatch) {
+      return NextResponse.json({ error: 'Incorrect old password' }, { status: 401 });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    dataToUpdate.password = hashedPassword;
+  }
+
+  const updatedUser = await prisma.user.update({
+    where: { id: userId },
+    data: dataToUpdate,
+    select: {
+      id: true,
+      username: true,
+      email: true,
+    }
+  });
+
+  return NextResponse.json(updatedUser);
 }
