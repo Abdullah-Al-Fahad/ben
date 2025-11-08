@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
   Users,
@@ -12,18 +12,19 @@ import {
   Component,
   Menu,
   X,
+  Info,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Toaster } from "@/components/ui/sonner";
+import { signOut } from 'next-auth/react';
+
 function AdminLayoutContent({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const router = useRouter();
   const pathname = usePathname();
-  const isLoginPage = pathname === '/admin/login';
+  const isLoginPage = pathname === '/login';
 
   const handleLogout = () => {
-    localStorage.removeItem('isAdminAuthenticated');
-    router.push('/admin/login');
+    signOut({ callbackUrl: '/login' });
   };
 
   const navItems = [
@@ -33,6 +34,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
     { href: '/admin/schedule', label: 'Schedule', icon: Calendar },
     { href: '/admin/pricing', label: 'Pricing', icon: DollarSign },
     { href: '/admin/ourgym', label: 'Our Gym', icon: Component },
+    { href: '/admin/gym-info', label: 'Gym Info', icon: Info },
    
   ];
 

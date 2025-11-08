@@ -27,13 +27,13 @@ export async function PUT(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  const { name, bio, image, specialties, achievements } = await req.json();
+  const { name, bio, imageUrl, specialties, achievements } = await req.json();
   const updatedCoach = await prisma.coach.update({
     where: { id: params.id },
     data: {
       name,
       bio: bio.join('\n'),
-      image,
+      image: imageUrl,
       specialties: specialties.join(','),
       achievements: achievements.join(','),
     },

@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,8 +8,63 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Camera, Pencil } from "lucide-react";
 import { motion } from 'framer-motion';
+import { useSession } from 'next-auth/react';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 export default function UserProfile() {
+  const { data: session, status } = useSession();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (session) {
+      fetch('/api/user')
+        .then(res => res.json())
+        .then(data => {
+          setUsername(data.username);
+        });
+    }
+  }, [session]);
+
+  const handleUpdate = async () => {
+    setLoading(true);
+    setError('');
+
+    if (newPassword && newPassword !== confirmPassword) {
+      setError("Passwords don't match");
+      setLoading(false);
+      return;
+    }
+
+    const res = await fetch('/api/user', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        username,
+        password: newPassword || undefined,
+      }),
+    });
+
+    if (res.ok) {
+      // Optionally, show a success message
+    } else {
+      setError('Failed to update profile');
+    }
+    setLoading(false);
+  };
+
+  if (status === 'loading') {
+    return <LoadingSpinner />;
+  }
+
+  if (!session) {
+    return <div>Access Denied</div>;
+  }
+
   return (
     <motion.div 
       className="container mx-auto py-10"
@@ -23,37 +79,18 @@ export default function UserProfile() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex justify-center mb-6 relative">
-            <Avatar className="h-24 w-24">
-              <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-              <AvatarFallback>BL</AvatarFallback>
-            </Avatar>
-            <div className="absolute bottom-0 right-1/2 translate-x-[40px] bg-white rounded-full p-2 border-2 border-gray-300 dark:border-gray-600 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-              <Camera className="text-gray-600 dark:text-gray-300 h-6 w-6" />
-            </div>
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+
+          <div className="grid grid-cols-1 gap-6 mb-8">
             <div className="space-y-2">
-              <Label htmlFor="name">Name</Label>
+              <Label htmlFor="username">Username</Label>
               <div className="relative">
                 <Input 
-                  id="name" 
-                  defaultValue="Bradley" 
+                  id="username" 
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   className="bg-white/50 dark:bg-white/10 border-gray-300 dark:border-white/20" 
                 />
-                <Pencil className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 cursor-pointer" />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="surname">Surname</Label>
-              <div className="relative">
-                <Input 
-                  id="surname" 
-                  defaultValue="Lawlor" 
-                  className="bg-white/50 dark:bg-white/10 border-gray-300 dark:border-white/20" 
-                />
-                <Pencil className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 cursor-pointer" />
               </div>
             </div>
           </div>
@@ -64,27 +101,15 @@ export default function UserProfile() {
             </h2>
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="current-password">Current Password</Label>
-                <div className="relative">
-                  <Input
-                    id="current-password"
-                    type="password"
-                    defaultValue="John123#$8"
-                    className="bg-white/50 dark:bg-white/10 border-gray-300 dark:border-white/20"
-                  />
-                  <Pencil className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 cursor-pointer" />
-                </div>
-              </div>
-              <div className="space-y-2">
                 <Label htmlFor="new-password">New Password</Label>
                 <div className="relative">
                   <Input
                     id="new-password"
                     type="password"
-                    defaultValue="John123#$8"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
                     className="bg-white/50 dark:bg-white/10 border-gray-300 dark:border-white/20"
                   />
-                  <Pencil className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 cursor-pointer" />
                 </div>
               </div>
               <div className="space-y-2">
@@ -93,18 +118,22 @@ export default function UserProfile() {
                   <Input
                     id="confirm-password"
                     type="password"
-                    defaultValue="John123#$8"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
                     className="bg-white/50 dark:bg-white/10 border-gray-300 dark:border-white/20"
                   />
-                  <Pencil className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 cursor-pointer" />
                 </div>
               </div>
             </div>
           </div>
-
+          {error && <p className="text-red-500 text-sm text-center font-semibold">{error}</p>}
           <div className="mt-8">
-            <Button className="w-full bg-purple-600 text-white hover:bg-purple-700 transition-all duration-300 transform hover:scale-105">
-              Update Profile
+            <Button 
+              className="w-full bg-purple-600 text-white hover:bg-purple-700 transition-all duration-300 transform hover:scale-105"
+              onClick={handleUpdate}
+              disabled={loading}
+            >
+              {loading ? <LoadingSpinner /> : 'Update Profile'}
             </Button>
           </div>
         </CardContent>

@@ -1,43 +1,48 @@
+
 'use client';
 import { usePathname } from 'next/navigation';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { FaFacebookF, FaInstagram, FaEnvelope, FaPhone, FaClock, FaMapMarkerAlt } from 'react-icons/fa';
+import { FaFacebookF, FaInstagram } from 'react-icons/fa';
 
-const footerSections = [
-  {
-    title: 'Address',
-    content: '3711 Drennan Road, Colorado Springs, CO 80916',
-    icon: <FaMapMarkerAlt />,
-  },
-  {
-    title: 'Phones',
-    content: '+1-719-465-2136',
-    icon: <FaPhone />,
-  },
-  {
-    title: 'Working Hours',
-    content: 'Monday-Friday: 11:30 - 21:30, Saturday: 09:00 - 13:00',
-    icon: <FaClock />,
-  },
-  {
-    title: 'Email',
-    content: 'info@cowarrior.com',
-    icon: <FaEnvelope />,
-  },
-];
-
-const socialLinks = [
-  { name: 'Facebook', href: '#', icon: <FaFacebookF /> },
-  { name: 'Instagram', href: '#', icon: <FaInstagram /> },
-];
+interface GymInfo {
+  address: string;
+  phone: string;
+  workingHours: string;
+  facebookUrl: string;
+  instagramUrl: string;
+}
 
 export default function Footer() {
   const pathname = usePathname();
   const isAdminPage = pathname.startsWith('/admin');
+  const [gymInfo, setGymInfo] = useState<GymInfo | null>(null);
+
+  useEffect(() => {
+    const fetchGymInfo = async () => {
+      try {
+        const response = await fetch('/api/gym-info');
+        if (!response.ok) {
+          throw new Error(`Failed to fetch gym info: ${response.status} ${response.statusText}`);
+        }
+        const data: GymInfo = await response.json();
+        setGymInfo(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchGymInfo();
+  }, []);
+
+  if (isAdminPage || !gymInfo) {
+    return null;
+  }
+
+  const [hoursPart1, hoursPart2] = gymInfo.workingHours.split(', ');
 
   return (
-    <footer className={`bg-[#0d0d0d] border-t border-gray-800 py-16 px-4 ${isAdminPage ? 'hidden' : ''}`}>
+    <footer className="bg-[#0d0d0d] border-t border-gray-800 py-16 px-4">
       <div className="container mx-auto text-center">
         {/* Logo */}
         <div className="flex justify-center mb-8">
@@ -55,22 +60,22 @@ export default function Footer() {
         <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto mb-12 text-gray-400">
           <div>
             <h4 className="font-bold text-white mb-2">WARRIOR FITNESS CENTER</h4>
-            <p>3711 Drennan Road,<br />Colorado Springs, CO 80916</p>
+            <p>{gymInfo.address.split(',').map((line, index) => <React.Fragment key={index}>{line.trim()}<br /></React.Fragment>)}</p>
           </div>
           <div>
             <h4 className="font-bold text-white mb-2">HOURS</h4>
-            <p>M-F: 11:30 - 21:30<br />SAT: 09:00 - 13:00</p>
+            <p>{hoursPart1}<br />{hoursPart2}</p>
           </div>
           <div>
             <h4 className="font-bold text-white mb-2">CALL US</h4>
-            <p>+1-719-465-2136</p>
+            <p>{gymInfo.phone}</p>
           </div>
         </div>
 
         {/* Social Icons */}
         <div className="flex justify-center space-x-6 mb-8">
-          <a href="#" aria-label="Instagram"><FaInstagram className="text-3xl text-gray-500 hover:text-red-500 transition-colors" /></a>
-          <a href="#" aria-label="Facebook"><FaFacebookF className="text-3xl text-gray-500 hover:text-red-500 transition-colors" /></a>
+          <a href={gymInfo.instagramUrl} aria-label="Instagram" target="_blank" rel="noopener noreferrer"><FaInstagram className="text-3xl text-gray-500 hover:text-red-500 transition-colors" /></a>
+          <a href={gymInfo.facebookUrl} aria-label="Facebook" target="_blank" rel="noopener noreferrer"><FaFacebookF className="text-3xl text-gray-500 hover:text-red-500 transition-colors" /></a>
         </div>
 
         {/* Footer Note */}

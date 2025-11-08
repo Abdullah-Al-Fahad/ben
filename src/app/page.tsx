@@ -320,6 +320,27 @@ const CoreValuesSection = ({ data }) => {
 };
 
 
+const ApparelCTASection = ({ data }) => {
+  if (!data) return null;
+  return (
+    <section className="py-16 sm:py-24 px-4 bg-black relative text-center" style={{ backgroundImage: `url('${data.imageUrl}')`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+      <div className="absolute inset-0 bg-black opacity-80"></div>
+      <div className="container mx-auto relative z-10 flex flex-col items-center">
+        <img src={data.logoUrl} alt="War Forged Apparel" className="w-36 sm:w-48 h-auto mb-4" />
+        <h2 className="text-3xl sm:text-4xl font-black uppercase mb-4 text-white">{data.title}</h2>
+        <p className="max-w-2xl mx-auto text-gray-300 mb-8">
+          {data.description}
+        </p>
+        <a href={data.buttonUrl} className="bg-red-600 text-white font-bold py-4 px-10 text-sm flex items-center space-x-2 hover:bg-red-700 transition-colors rounded-md">
+          <span>{data.buttonText}</span>
+          <FaArrowRight />
+        </a>
+      </div>
+    </section>
+  )
+}
+
+
 //=================================================================
 //  MAIN CONTENT COMPONENT
 //=================================================================
@@ -336,7 +357,8 @@ const MainContent = ({
   selectedCoachDetails,
   handleCoachClick,
   setSelectedId,
-  pricingTiers
+  pricingTiers,
+  apparelCTAData
 }) => {
   const [activeFilter, setActiveFilter] = useState('All');
   const [activeDay, setActiveDay] = useState('Full Week');
@@ -608,20 +630,7 @@ const MainContent = ({
       </section>
 
       {/* Apparel CTA Section */}
-      <section className="py-16 sm:py-24 px-4 bg-black relative text-center" style={{ backgroundImage: "url('https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e6b3e3f604320d81e7c52f_warcollegeproducts.png')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
-        <div className="absolute inset-0 bg-black opacity-80"></div>
-        <div className="container mx-auto relative z-10 flex flex-col items-center">
-          <img src="https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68e43e0279ad2b357d6c0f42_warforgedwhite.png" alt="War Forged Apparel" className="w-36 sm:w-48 h-auto mb-4" />
-          <h2 className="text-3xl sm:text-4xl font-black uppercase mb-4 text-white">Shop War Forged Apparel</h2>
-          <p className="max-w-2xl mx-auto text-gray-300 mb-8">
-            Based in Colorado Springs, we're a team of veterans, competitors, and fighters committed to providing exceptional, affordable gear and lifestyle clothing for athletes of all levels.
-          </p>
-          <a href="https://warforgedapparel.com/" className="bg-red-600 text-white font-bold py-4 px-10 text-sm flex items-center space-x-2 hover:bg-red-700 transition-colors rounded-md">
-            <span>SHOP NOW</span>
-            <FaArrowRight />
-          </a>
-        </div>
-      </section>
+      <ApparelCTASection data={apparelCTAData} />
       
       <AnimatePresence>
         {selectedId && selectedCoachDetails && (
@@ -824,6 +833,23 @@ export default function Home() {
     fetchPricingTiers();
   }, []);
 
+  const [apparelCTAData, setApparelCTAData] = useState(null);
+
+  useEffect(() => {
+    const fetchApparelCTAData = async () => {
+      try {
+        const response = await fetch('/api/apparel-cta');
+        if (response.ok) {
+          const data = await response.json();
+          setApparelCTAData(data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch apparel CTA data:', error);
+      }
+    };
+    fetchApparelCTAData();
+  }, []);
+
   return (
     <>
       <MainContent
@@ -840,6 +866,7 @@ export default function Home() {
         handleCoachClick={handleCoachClick}
         setSelectedId={setSelectedId}
         pricingTiers={pricingTiers}
+        apparelCTAData={apparelCTAData}
       />
     </>
   );

@@ -120,7 +120,7 @@ export default function PricingAdminPage() {
           </label>
         </div>
 
-        <h3 class="text-lg font-bold mt-4">Features</h3>
+        <h3 className="text-lg font-bold mt-4">Features</h3>
         {formData.features.map((feature, index) => (
           <div key={index} className="flex items-center gap-2 mb-2">
             <input

@@ -155,3 +155,36 @@ model SchedulePdf {
   updatedAt DateTime @updatedAt
 }
 
+model ApparelCTA {
+  id          String   @id @default(cuid())
+  imageUrl    String
+  logoUrl     String
+  title       String
+  description String
+  buttonText  String
+  buttonUrl   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model GymInfo {
+  id            String    @id @default(cuid())
+  address       String
+  phone         String
+  email         String
+  workingHours  String
+  facebookUrl   String
+  instagramUrl  String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useParams, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface Coach {
   id: string;
@@ -19,6 +19,8 @@ interface Coach {
 
 export default function EditCoachPage() {
   const [coach, setCoach] = useState<Coach | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const params = useParams();
   const router = useRouter();
   const { id } = params;
@@ -38,12 +40,33 @@ export default function EditCoachPage() {
     e.preventDefault();
     if (!coach) return;
 
+    let updatedImageUrl = coach.imageUrl;
+
+    if (selectedFile) {
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+
+      const uploadRes = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (uploadRes.ok) {
+        const { path } = await uploadRes.json();
+        updatedImageUrl = path;
+      } else {
+        console.error('Failed to upload image');
+        // Handle error, maybe show a message to the user
+        return;
+      }
+    }
+
     await fetch(`/api/coaches/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(coach),
+      body: JSON.stringify({ ...coach, imageUrl: updatedImageUrl }),
     });
 
     router.push('/admin/coaches');
@@ -67,8 +90,24 @@ export default function EditCoachPage() {
               <Input id="name" value={coach.name} onChange={(e) => setCoach({ ...coach, name: e.target.value })} />
             </div>
             <div>
-              <Label htmlFor="imageUrl">Image URL</Label>
-              <Input id="imageUrl" value={coach.imageUrl} onChange={(e) => setCoach({ ...coach, imageUrl: e.target.value })} />
+              <Label htmlFor="image">Coach Image</Label>
+              <input
+                id="image"
+                type="file"
+                ref={fileInputRef}
+                onChange={(e) => setSelectedFile(e.target.files ? e.target.files[0] : null)}
+                className="hidden" // Hide the default file input
+              />
+              <Button type="button" onClick={() => fileInputRef.current?.click()}>
+                Choose File
+              </Button>
+              {selectedFile && <span className="ml-2">{selectedFile.name}</span>}
+              {coach.imageUrl && (
+                <div className="mt-2">
+                  <p>Current Image:</p>
+                  <img src={coach.imageUrl} alt="Coach" className="w-32 h-32 object-cover rounded-md" />
+                </div>
+              )}
             </div>
             <div>
               <Label htmlFor="bio">Bio</Label>

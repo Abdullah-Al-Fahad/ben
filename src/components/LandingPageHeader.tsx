@@ -24,6 +24,13 @@ interface Discipline {
   lenses: string;
 }
 
+interface GymInfo {
+  address: string;
+  phone: string;
+  instagramUrl: string;
+  facebookUrl: string;
+}
+
 const initialNavItems: NavItem[] = [
   { name: "Our Gym", href: "/ourgym" },
   { name: "Who We Are", href: "/#who-we-are" },
@@ -34,7 +41,7 @@ const initialNavItems: NavItem[] = [
   },
   { name: "Coaches", href: "/coaches" },
   { name: "Schedule", href: "/schedule" },
-  { name: "Pricing", href: "/membership" },
+  { name: "Pricing", href: "/pricing" },
   { name: "Shop", href: "https://warforgedapparel.com/" },
 ];
 
@@ -43,6 +50,7 @@ export default function LandingPageHeader() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [navItems, setNavItems] = useState<NavItem[]>(initialNavItems);
+  const [gymInfo, setGymInfo] = useState<GymInfo | null>(null);
 
   useEffect(() => {
     const fetchDisciplines = async () => {
@@ -69,18 +77,34 @@ export default function LandingPageHeader() {
       }
     };
 
+    const fetchGymInfo = async () => {
+      try {
+        const response = await fetch('/api/gym-info');
+        if (!response.ok) {
+          throw new Error(`Failed to fetch gym info: ${response.status} ${response.statusText}`);
+        }
+        const data: GymInfo = await response.json();
+        setGymInfo(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
     fetchDisciplines();
+    fetchGymInfo();
   }, []);
 
   return (
     <div className="sticky top-0 z-50">
       {/* Top black bar */}
-      <div className="bg-black text-white flex flex-col sm:flex-row justify-center items-center py-2 px-4 sm:px-6 text-center text-xs sm:text-sm">
-        <p>
-          Warrior Fitness Center - 3711 Drennan Road, Colorado Springs, CO 80916
-        </p>
-        <p className="ml-0 sm:ml-4 mt-1 sm:mt-0">+1-719-465-2136</p>
-      </div>
+      {gymInfo && (
+        <div className="bg-black text-white flex flex-col sm:flex-row justify-center items-center py-2 px-4 sm:px-6 text-center text-xs sm:text-sm">
+          <p>
+            Warrior Fitness Center - {gymInfo.address}
+          </p>
+          <p className="ml-0 sm:ml-4 mt-1 sm:mt-0">{gymInfo.phone}</p>
+        </div>
+      )}
 
       {/* Main Header */}
       <header className="w-full bg-white relative">
@@ -149,8 +173,10 @@ export default function LandingPageHeader() {
             {/* Desktop Social Icons */}
             <div className="hidden md:flex gap-2 h-full items-stretch ml-4 lg:ml-6">
               <motion.a
-                href="#"
+                href={gymInfo?.instagramUrl || '#'}
                 aria-label="Instagram"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="bg-gray-400 flex items-center justify-center px-3"
                 whileHover={{
                   backgroundColor: "#dc2626",
@@ -161,8 +187,10 @@ export default function LandingPageHeader() {
                 <FaInstagram className="size-7 text-white mt-6" />
               </motion.a>
               <motion.a
-                href="#"
+                href={gymInfo?.facebookUrl || '#'}
                 aria-label="Facebook"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="bg-gray-400 flex items-center justify-center px-3"
                 whileHover={{
                   backgroundColor: "#dc2626",
@@ -263,15 +291,19 @@ export default function LandingPageHeader() {
             {/* Mobile Social Icons */}
             <div className="flex gap-6 pt-4">
               <a
-                href="#"
+                href={gymInfo?.instagramUrl || '#'}
                 aria-label="Instagram"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="flex items-center justify-center"
               >
                 <FaInstagram className="size-7 text-gray-600" />
               </a>
               <a
-                href="#"
+                href={gymInfo?.facebookUrl || '#'}
                 aria-label="Facebook"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="flex items-center justify-center"
               >
                 <FaFacebook className="size-7 text-gray-600" />
