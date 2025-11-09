@@ -30,9 +30,9 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
   const navItems = [
     { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
     { href: '/admin/coaches', label: 'Coaches', icon: Users },
-    { href: '/admin/programs', label: 'Programs', icon: Swords },
+    { href: '/admin/pricing', label: 'Pricing', icon: Swords },
     { href: '/admin/schedule', label: 'Schedule', icon: Calendar },
-    { href: '/admin/pricing', label: 'Pricing', icon: DollarSign },
+    { href: '/admin/disciplines', label: 'disciplines', icon: DollarSign },
     { href: '/admin/ourgym', label: 'Our Gym', icon: Component },
     { href: '/admin/gym-info', label: 'Gym Info', icon: Info },
    
