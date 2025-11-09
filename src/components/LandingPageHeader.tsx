@@ -4,7 +4,7 @@ import Link from "next/link";
 import { FaInstagram, FaFacebook, FaBars, FaTimes } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import clsx from "clsx";
 import { motion } from "framer-motion";
 
@@ -47,10 +47,20 @@ const initialNavItems: NavItem[] = [
 
 export default function LandingPageHeader() {
   const pathname = usePathname();
+  const router = useRouter();
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [navItems, setNavItems] = useState<NavItem[]>(initialNavItems);
   const [gymInfo, setGymInfo] = useState<GymInfo | null>(null);
+
+  const handleWhoWeAreClick = (e: any) => {
+    if (pathname !== '/') {
+      e.preventDefault();
+      sessionStorage.setItem('scrollTo', 'who-we-are');
+      router.push('/');
+    }
+    // If on the homepage, the default Link behavior will handle the scroll.
+  };
 
   useEffect(() => {
     const fetchDisciplines = async () => {
@@ -95,7 +105,7 @@ export default function LandingPageHeader() {
   }, []);
 
   return (
-    <div className="sticky top-0 z-50">
+    <div id="main-header" className="sticky top-0 z-50">
       {/* Top black bar */}
       {gymInfo && (
         <div className="bg-black text-white flex flex-col sm:flex-row justify-center items-center py-2 px-4 sm:px-6 text-center text-xs sm:text-sm">
@@ -141,6 +151,7 @@ export default function LandingPageHeader() {
                   >
                     <Link
                       href={item.href}
+                      onClick={item.name === 'Who We Are' ? handleWhoWeAreClick : undefined}
                       className={clsx(
                         "text-base lg:text-lg transition-colors",
                         isActive
@@ -280,7 +291,12 @@ export default function LandingPageHeader() {
                           ? "text-red-600"
                           : "text-gray-600 hover:text-red-600"
                       )}
-                      onClick={() => setIsMobileMenuOpen(false)}
+                      onClick={(e) => {
+                        if (item.name === 'Who We Are') {
+                          handleWhoWeAreClick(e);
+                        }
+                        setIsMobileMenuOpen(false);
+                      }}
                     >
                       {item.name}
                     </Link>

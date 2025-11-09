@@ -850,6 +850,24 @@ export default function Home() {
     fetchApparelCTAData();
   }, []);
 
+  useEffect(() => {
+    const scrollToId = sessionStorage.getItem('scrollTo');
+    if (scrollToId) {
+      sessionStorage.removeItem('scrollTo');
+
+      // Wait for a generous amount of time for the page to load and layout to stabilize.
+      setTimeout(() => {
+        const element = document.getElementById(scrollToId);
+        if (element) {
+          const headerOffset = 150; // Fixed offset for the sticky header
+          const elementPosition = element.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.scrollY - headerOffset;
+          window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+        }
+      }, 1200); // Wait 1.2 seconds
+    }
+  }, []);
+
   return (
     <>
       <MainContent
