@@ -1,6 +1,8 @@
 "use client";
 
+
 import React from 'react';
+import { fetchApi } from '@/lib/api';
 
 // --- INTERFACES --- //
 interface PricingFeatureProps {
@@ -109,16 +111,15 @@ const PricingPage = () => {
     const [addOnPlansData, setAddOnPlansData] = React.useState<AddOnPlan[]>([]);
     const [kidsPlansData, setKidsPlansData] = React.useState<KidsPricingPlan[]>([]);
 
+// ...
     React.useEffect(() => {
         const fetchPricing = async () => {
             try {
-                const pricingResponse = await fetch('/api/pricing');
-                const pricingData: PricingTier[] = await pricingResponse.json();
+                const pricingData: PricingTier[] = await fetchApi('pricing');
                 setAdultPlansData(pricingData.filter(p => p.type === 'ADULTS'));
                 setKidsPlansData(pricingData.filter(p => p.type === 'KIDS'));
 
-                const addonResponse = await fetch('/api/addon');
-                const addonData: AddOnPlan[] = await addonResponse.json();
+                const addonData: AddOnPlan[] = await fetchApi('addon');
                 setAddOnPlansData(addonData);
             } catch (error) {
                 console.error("Failed to fetch pricing data:", error);

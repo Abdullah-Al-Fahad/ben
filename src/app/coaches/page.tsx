@@ -1,3 +1,4 @@
+import { fetchApi } from '@/lib/api';
 import React from 'react';
 import { AnimatedCoachModal, CoachDetail } from '@/components/AnimatedCoachModal';
 import { ValueBlock } from '@/components/Landing/LandingCard';
@@ -13,18 +14,15 @@ interface Coach {
 interface CoachDetailsData { [key: string]: CoachDetail; }
 
 const CoachesPage = async () => {
-  const coachesResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/coaches`, { cache: 'no-store' });
-  const coachesData: Coach[] = await coachesResponse.json();
+  const coachesData: Coach[] = await fetchApi('coaches', { cache: 'no-store' });
 
   const allCoachDetails: CoachDetailsData = {};
   await Promise.all(coachesData.map(async (coach) => {
-    const coachDetailResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/coaches/${coach.id}`, { cache: 'no-store' });
-    const coachDetail: CoachDetail = await coachDetailResponse.json();
+    const coachDetail: CoachDetail = await fetchApi(`coaches/${coach.id}`, { cache: 'no-store' });
     allCoachDetails[coach.id] = coachDetail;
   }));
 
-  const coachesSectionResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/landing-page/coaches`, { cache: 'no-store' });
-  const coachesSectionData = await coachesSectionResponse.json();
+  const coachesSectionData = await fetchApi('landing-page/coaches', { cache: 'no-store' });
 
   return (
     <CoachesClientPage coachesData={coachesData} allCoachDetails={allCoachDetails} coachesSectionData={coachesSectionData} />

@@ -2,9 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { promises as fs } from 'fs';
 import { join } from 'path';
 
-export async function GET(req: NextRequest, { params }: { params: { filename: string } }) {
+export async function GET(req: NextRequest, { params: { filename } }: { params: { filename: string } }) {
   try {
-    const { filename } = params;
+    
     const filePath = join(process.cwd(), 'uploads', filename);
 
     // Check if file exists

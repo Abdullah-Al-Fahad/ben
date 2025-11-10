@@ -25,10 +25,10 @@ function cleanImageUrl(url: string): string {
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params: { id } }: { params: { id: string } }
 ) {
   const coach = await prisma.coach.findUnique({
-    where: { id: params.id },
+    where: { id: id },
   });
   if (!coach) {
     return NextResponse.json({ error: 'Coach not found' }, { status: 404 });
@@ -56,12 +56,12 @@ export async function GET(
 
 export async function PUT(
   req: Request,
-  { params }: { params: { id: string } }
+  { params: { id } }: { params: { id: string } }
 ) {
   const { name, bio, imageUrl, specialties, achievements } = await req.json();
   const cleanedImageUrl = cleanImageUrl(imageUrl);
   const updatedCoach = await prisma.coach.update({
-    where: { id: params.id },
+    where: { id: id },
     data: {
       name,
       bio: bio.join('\n'),
@@ -75,10 +75,10 @@ export async function PUT(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params: { id } }: { params: { id: string } }
 ) {
   await prisma.coach.delete({
-    where: { id: params.id },
+    where: { id: id },
   });
   return NextResponse.json({ message: 'Coach deleted' });
 }

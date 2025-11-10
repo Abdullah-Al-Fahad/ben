@@ -1,8 +1,8 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
+const API_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
-export async function fetchApi(endpoint: string) {
+export async function fetchApi(endpoint: string, options?: RequestInit) {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/${endpoint}/`);
+    const response = await fetch(`${API_BASE_URL}/api/${endpoint}`, options);
     if (!response.ok) {
       throw new Error(`API call failed: ${response.statusText}`);
     }
