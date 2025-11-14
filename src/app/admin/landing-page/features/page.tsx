@@ -36,6 +36,8 @@ const FeaturesAdminPage = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [deletedDisciplineIds, setDeletedDisciplineIds] = useState<string[]>([]);
+  const [deletedGymFeatureIds, setDeletedGymFeatureIds] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -75,6 +77,10 @@ const FeaturesAdminPage = () => {
   };
 
   const handleRemoveDiscipline = (index: number) => {
+    const disciplineToRemove = disciplines[index];
+    if (disciplineToRemove.id) {
+      setDeletedDisciplineIds([...deletedDisciplineIds, disciplineToRemove.id]);
+    }
     setDisciplines(disciplines.filter((_, i) => i !== index));
   };
 
@@ -89,6 +95,10 @@ const FeaturesAdminPage = () => {
   };
 
   const handleRemoveGymFeature = (index: number) => {
+    const featureToRemove = gymFeatures[index];
+    if (featureToRemove.id) {
+      setDeletedGymFeatureIds([...deletedGymFeatureIds, featureToRemove.id]);
+    }
     setGymFeatures(gymFeatures.filter((_, i) => i !== index));
   };
 
@@ -98,6 +108,24 @@ const FeaturesAdminPage = () => {
     setError(null);
 
     try {
+      // Handle deletions
+      await Promise.all([
+        ...deletedDisciplineIds.map(id =>
+          fetch('/api/landing-page/features/disciplines', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id }),
+          })
+        ),
+        ...deletedGymFeatureIds.map(id =>
+          fetch('/api/landing-page/features/gym-features', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id }),
+          })
+        ),
+      ]);
+
       // Save disciplines
       await Promise.all(disciplines.map(d =>
         fetch('/api/landing-page/features/disciplines', {
