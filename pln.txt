@@ -1,21 +1,24 @@
- ✓ Compiled /api/auth/[...nextauth] in 1162ms (512 modules)
-[next-auth][warn][NEXTAUTH_URL] 
-https://next-auth.js.org/warnings#nextauth_url
- GET /api/auth/session 200 in 2460ms
- ○ Compiling /coaches ...
- ✓ Compiled /coaches in 3.4s (1802 modules)
-Error fetching data: [TypeError: Failed to parse URL from /api/coaches] {
+Download the React DevTools for a better development experience: https://react.dev/link/react-devtools
+E:\ben\Benwestrich-Backend-Fahad\node_modules\next\dist\compiled\react-server-dom-webpack\cjs\react-server-dom-webpack-client.browser.development.js:2337  Uncaught TypeError: Failed to parse URL from /api/coaches
+    at resolveErrorDev (E:\ben\Benwestrich-Backend-Fahad\node_modules\next\dist\compiled\react-server-dom-webpack\cjs\react-server-dom-webpack-client.browser.development.js:2337:1)
+    at processFullStringRow (E:\ben\Benwestrich-Backend-Fahad\node_modules\next\dist\compiled\react-server-dom-webpack\cjs\react-server-dom-webpack-client.browser.development.js:2823:1)
+    at processFullBinaryRow (E:\ben\Benwestrich-Backend-Fahad\node_modules\next\dist\compiled\react-server-dom-webpack\cjs\react-server-dom-webpack-client.browser.development.js:2766:1)
+    at processBinaryChunk (E:\ben\Benwestrich-Backend-Fahad\node_modules\next\dist\compiled\react-server-dom-webpack\cjs\react-server-dom-webpack-client.browser.development.js:2969:1)
+    at progress (E:\ben\Benwestrich-Backend-Fahad\node_modules\next\dist\compiled\react-server-dom-webpack\cjs\react-server-dom-webpack-client.browser.development.js:3233:1)
+    Error fetching data: [TypeError: Failed to parse URL from /api/coaches] {
   [cause]: [TypeError: Invalid URL] {
     code: 'ERR_INVALID_URL',
     input: '/api/coaches'
   }
 }
  ⨯ [TypeError: Failed to parse URL from /api/coaches] {
-  digest: '2447216045',
+  digest: '2992156458',
   [cause]: [TypeError: Invalid URL] {
     code: 'ERR_INVALID_URL',
     input: '/api/coaches'
   }
 }
- GET /coaches 500 in 4503ms
-@
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ GET /coaches 500 in 450ms
+ GET /favicon.ico 200 in 34ms
+ GET /favicon.ico 200 in 34ms

@@ -1,5 +1,6 @@
 
 
+
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -12,6 +13,6 @@ export function getURL(path: string = ''): string {
     ? process.env.NEXT_PUBLIC_BASE_URL
     : process.env.VERCEL_URL
       ? `https://${process.env.VERCEL_URL}`
-      : 'http://localhost:3000';
+      : 'http://localhost:8000';
   return new URL(path, baseUrl).toString();
 }
