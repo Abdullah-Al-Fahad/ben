@@ -2,7 +2,6 @@
 
 
 import React from 'react';
-import { fetchApi } from '@/lib/api';
 
 // --- INTERFACES --- //
 interface PricingFeatureProps {
@@ -14,6 +13,7 @@ interface PricingTier {
     id: string;
     type: 'ADULTS' | 'KIDS';
     title: string;
+    description?: string;
     price: string;
     duration: string;
     highlighted?: boolean;
@@ -111,21 +111,35 @@ const PricingPage = () => {
     const [addOnPlansData, setAddOnPlansData] = React.useState<AddOnPlan[]>([]);
     const [kidsPlansData, setKidsPlansData] = React.useState<KidsPricingPlan[]>([]);
 
-// ...
     React.useEffect(() => {
         const fetchPricing = async () => {
             try {
-                const pricingData: PricingTier[] = await fetchApi('pricing');
-                setAdultPlansData(pricingData.filter(p => p.type === 'ADULTS'));
-                setKidsPlansData(pricingData.filter(p => p.type === 'KIDS'));
-
-                const addonData: AddOnPlan[] = await fetchApi('addon');
-                setAddOnPlansData(addonData);
+                const response = await fetch('/api/pricing');
+                if (response.ok) {
+                    const pricingData: PricingTier[] = await response.json();
+                    setAdultPlansData(pricingData.filter(p => p.type === 'ADULTS'));
+                    setKidsPlansData(pricingData.filter(p => p.type === 'KIDS') as any);
+                }
             } catch (error) {
                 console.error("Failed to fetch pricing data:", error);
             }
         };
         fetchPricing();
+    }, []);
+
+    React.useEffect(() => {
+        const fetchAddons = async () => {
+            try {
+                const response = await fetch('/api/addon');
+                if (response.ok) {
+                    const addonData: AddOnPlan[] = await response.json();
+                    setAddOnPlansData(addonData);
+                }
+            } catch (error) {
+                console.error("Failed to fetch addon data:", error);
+            }
+        };
+        fetchAddons();
     }, []);
     return (
         <div className="bg-[#121212] text-white">
@@ -176,7 +190,7 @@ const PricingPage = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 border-l border-b border-gray-800">
                         {kidsPlansData.map((plan, index) => (
                            <div key={index} className="bg-[#111111] hover:bg-[#242424] border border-gray-200/40">
-                                <KidsPricingCard plan={plan} />
+                                <KidsPricingCard plan={plan as any} />
                            </div>
                         ))}
                     </div>
