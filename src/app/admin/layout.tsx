@@ -43,6 +43,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
   }
 
   return (
+    // This parent div can set a base color
     <div className="flex h-screen bg-gray-50 dark:bg-gray-950 text-gray-800 dark:text-white">
       {/* Mobile Sidebar */}
       <div
@@ -118,9 +119,13 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
           </div>
           <Button onClick={handleLogout}>Logout</Button>
         </header>
-        <main className="flex-1 p-4 sm:p-6 md:p-8 overflow-y-auto bg-gray-100 dark:bg-gradient-to-br from-gray-950 to-gray-900">
+
+        {/* === THE FIX IS HERE === */}
+        {/* We are making sure the <main> content area has the correct solid background color. */}
+        <main className="flex-1 p-4 sm:p-6 md:p-8 overflow-y-auto bg-gray-100 dark:bg-gray-900">
           {children}
         </main>
+
       </div>
       <Toaster />
     </div>

@@ -135,9 +135,6 @@ const PricingPage = () => {
                <div className="flex flex-col md:flex-row justify-between md:items-center mb-8">
   <div>
     <h1 className="text-5xl lg:text-6xl font-black tracking-wider">PROGRAM PRICING</h1>
-    <p className="text-lg text-gray-300 mt-2">
-      Currently we have 48 Classes covering over 50 hours a week of instruction in class times.
-    </p>
   </div>
 
   <a
@@ -184,19 +181,6 @@ const PricingPage = () => {
                         ))}
                     </div>
                 </section>
-                
-                {/* Disclaimer */}
-                <footer className="text-center text-gray-400 mt-12 space-y-4 text-sm max-w-4xl mx-auto">
-                    <p>
-                        <strong className="text-white">Active Military / LEO / First Responder discounts are applied to the month-to-month price.</strong><br/>
-                        BJJ: $20.00 off (14%) Muay Thai: its $20.00 (14%) All-Inclusive: $30.00 off (18%) Premiere: $30.00 (19%)
-                    </p>
-                    <p>
-                        Family rates cap out at $350 monthly for all members. Immediate family only.<br/>
-                        Must be active military, LEO, first responder or on a six-month commitment plan for discount to apply.
-                    </p>
-                    <p>**Premiere Membership cannot be combined with membership discount / family rates.</p>
-                </footer>
             </div>
         </div>
     );

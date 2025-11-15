@@ -605,7 +605,7 @@ const MainContent = ({
                     </ul>
                   </div>
                   <div>
-                    <div className="text-4xl font-black text-white">{tier.price}</div>
+                    <div className="text-4xl font-black text-white">${tier.price}</div>
                     <p className="text-xs text-gray-400">{tier.duration}</p>
                   </div>
                 </div>
