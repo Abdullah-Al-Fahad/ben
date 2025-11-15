@@ -1,24 +1,14 @@
-Download the React DevTools for a better development experience: https://react.dev/link/react-devtools
-E:\ben\Benwestrich-Backend-Fahad\node_modules\next\dist\compiled\react-server-dom-webpack\cjs\react-server-dom-webpack-client.browser.development.js:2337  Uncaught TypeError: Failed to parse URL from /api/coaches
-    at resolveErrorDev (E:\ben\Benwestrich-Backend-Fahad\node_modules\next\dist\compiled\react-server-dom-webpack\cjs\react-server-dom-webpack-client.browser.development.js:2337:1)
-    at processFullStringRow (E:\ben\Benwestrich-Backend-Fahad\node_modules\next\dist\compiled\react-server-dom-webpack\cjs\react-server-dom-webpack-client.browser.development.js:2823:1)
-    at processFullBinaryRow (E:\ben\Benwestrich-Backend-Fahad\node_modules\next\dist\compiled\react-server-dom-webpack\cjs\react-server-dom-webpack-client.browser.development.js:2766:1)
-    at processBinaryChunk (E:\ben\Benwestrich-Backend-Fahad\node_modules\next\dist\compiled\react-server-dom-webpack\cjs\react-server-dom-webpack-client.browser.development.js:2969:1)
-    at progress (E:\ben\Benwestrich-Backend-Fahad\node_modules\next\dist\compiled\react-server-dom-webpack\cjs\react-server-dom-webpack-client.browser.development.js:3233:1)
-    Error fetching data: [TypeError: Failed to parse URL from /api/coaches] {
-  [cause]: [TypeError: Invalid URL] {
-    code: 'ERR_INVALID_URL',
-    input: '/api/coaches'
-  }
-}
- ⨯ [TypeError: Failed to parse URL from /api/coaches] {
-  digest: '2992156458',
-  [cause]: [TypeError: Invalid URL] {
-    code: 'ERR_INVALID_URL',
-    input: '/api/coaches'
-  }
-}
- ⚠ Fast Refresh had to perform a full reload due to a runtime error.
- GET /coaches 500 in 450ms
- GET /favicon.ico 200 in 34ms
- GET /favicon.ico 200 in 34ms
+[vps67100]$ npx prisma generate
+Environment variables loaded from ../.env
+Error: Could not find Prisma Schema that is required for this command.ined (reading 'create')
+You can either provide it with `--schema` argument,:1:2129)
+set it in your Prisma Config file (e.g., `prisma.config.ts`),927)
+set it as `prisma.schema` in your package.json,f/route.js:1:5930)
+or put it into the default location (`./prisma/schema.prisma`, or `./schema.prisma`.
+Checked following paths:
+
+schema.prisma: file not found
+prisma/schema.prisma: file not found
+
+See also https://pris.ly/d/prisma-schema-location
+[vps67100]$
