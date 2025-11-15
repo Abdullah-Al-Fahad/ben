@@ -1,14 +1,10 @@
-[vps67100]$ npx prisma generate
-Environment variables loaded from ../.env
-Error: Could not find Prisma Schema that is required for this command.ined (reading 'create')
-You can either provide it with `--schema` argument,:1:2129)
-set it in your Prisma Config file (e.g., `prisma.config.ts`),927)
-set it as `prisma.schema` in your package.json,f/route.js:1:5930)
-or put it into the default location (`./prisma/schema.prisma`, or `./schema.prisma`.
-Checked following paths:
+src\lib\api.ts (6:22) @ fetchApi
 
-schema.prisma: file not found
-prisma/schema.prisma: file not found
 
-See also https://pris.ly/d/prisma-schema-location
-[vps67100]$
+  4 |   try {
+  5 |     const url = getURL(`/api/${endpoint}`);
+> 6 |     const response = await fetch(url, options);
+    |                      ^
+  7 |     if (!response.ok) {
+  8 |       throw new Error(`API call failed: ${response.statusText}`);
+  9 |     }

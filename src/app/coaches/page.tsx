@@ -14,12 +14,32 @@ interface Coach {
 interface CoachDetailsData { [key: string]: CoachDetail; }
 
 const CoachesPage = async () => {
-  const coachesData: Coach[] = await fetchApi('coaches', { cache: 'no-store' });
+  const originalCoachesData: Coach[] = await fetchApi('coaches', { cache: 'no-store' });
+
+  const processUrl = (url: string) => {
+    if (url && url.startsWith('http')) {
+      try {
+        return new URL(url).pathname;
+      } catch (e) {
+        console.error(`Invalid URL encountered: ${url}`, e);
+        return url; // Fallback to the original URL
+      }
+    }
+    return url;
+  };
+
+  const coachesData = originalCoachesData.map(coach => ({
+    ...coach,
+    imageUrl: processUrl(coach.imageUrl),
+  }));
 
   const allCoachDetails: CoachDetailsData = {};
-  await Promise.all(coachesData.map(async (coach) => {
+  await Promise.all(originalCoachesData.map(async (coach) => {
     const coachDetail: CoachDetail = await fetchApi(`coaches/${coach.id}`, { cache: 'no-store' });
-    allCoachDetails[coach.id] = coachDetail;
+    allCoachDetails[coach.id] = {
+        ...coachDetail,
+        imageUrl: coachDetail.imageUrl ? processUrl(coachDetail.imageUrl) : coachDetail.imageUrl
+    };
   }));
 
   const coachesSectionData = await fetchApi('landing-page/coaches', { cache: 'no-store' });

@@ -8,7 +8,7 @@ http://localhost:3000/disciplines/mma
 
 http://localhost:3000/disciplines/fitness
 
-http://localhost:3000/coaches
+http://localhost:3000/admin/coaches
 
 http://localhost:3000/schedule
 
