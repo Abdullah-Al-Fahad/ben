@@ -135,6 +135,7 @@ const PricingPage = () => {
                     const addonData: AddOnPlan[] = await response.json();
                     setAddOnPlansData(addonData);
                 }
+                
             } catch (error) {
                 console.error("Failed to fetch addon data:", error);
             }
