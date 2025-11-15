@@ -358,7 +358,8 @@ const MainContent = ({
   handleCoachClick,
   setSelectedId,
   pricingTiers,
-  apparelCTAData
+  apparelCTAData,
+  pricingPdfUrl
 }) => {
   const [activeFilter, setActiveFilter] = useState('All');
   const [activeDay, setActiveDay] = useState('Full Week');
@@ -583,7 +584,7 @@ const MainContent = ({
               <h2 className="text-3xl sm:text-4xl font-black mb-2 uppercase text-white">Program Pricing</h2>
               <p className="text-gray-400">Currently we have 48 Classes covering over 50 hours a week of instruction in class times.</p>
             </div>
-            <a href={schedulePdfUrl}  target="_blank"
+            <a href={pricingPdfUrl}  target="_blank"
   rel="noopener noreferrer" className="bg-red-600 text-white font-bold py-3 px-6 sm:py-4 sm:px-8 text-sm flex items-center space-x-2 hover:bg-red-700 transition-colors rounded-md">
               <span>VIEW FULL PRICING</span>
               <FaArrowRight />
@@ -800,6 +801,7 @@ export default function Home() {
   }, []);
 
   const [schedulePdfUrl, setSchedulePdfUrl] = useState('');
+  const [pricingPdfUrl, setPricingPdfUrl] = useState('');
 
   useEffect(() => {
     const fetchSchedulePdfUrl = async () => {
@@ -814,6 +816,21 @@ export default function Home() {
       }
     };
     fetchSchedulePdfUrl();
+  }, []);
+
+  useEffect(() => {
+    const fetchPricingPdfUrl = async () => {
+      try {
+        const response = await fetch('/api/pricing-pdf');
+        if (response.ok) {
+          const data = await response.json();
+          setPricingPdfUrl(data.url);
+        }
+      } catch (error) {
+        console.error('Failed to fetch pricing PDF URL:', error);
+      }
+    };
+    fetchPricingPdfUrl();
   }, []);
 
   const [pricingTiers, setPricingTiers] = useState([]);
@@ -885,6 +902,7 @@ export default function Home() {
         setSelectedId={setSelectedId}
         pricingTiers={pricingTiers}
         apparelCTAData={apparelCTAData}
+        pricingPdfUrl={pricingPdfUrl}
       />
     </>
   );

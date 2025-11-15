@@ -158,6 +158,13 @@ model SchedulePdf {
   updatedAt DateTime @updatedAt
 }
 
+model PricingPdf {
+  id        Int      @id @default(autoincrement())
+  url       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model ApparelCTA {
   id          String   @id @default(cuid())
   imageUrl    String

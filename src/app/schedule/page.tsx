@@ -15,6 +15,7 @@ const SchedulePage = () => {
     const [scheduleData, setScheduleData] = useState([]);
     const [activeFilter, setActiveFilter] = useState('All');
     const [activeDay, setActiveDay] = useState('Full Week');
+    const [pdfUrl, setPdfUrl] = useState('');
 
     useEffect(() => {
         const fetchSchedule = async () => {
@@ -28,6 +29,29 @@ const SchedulePage = () => {
         };
         fetchSchedule();
     }, []);
+
+    useEffect(() => {
+        const fetchPdfUrl = async () => {
+            try {
+                const response = await fetch('/api/schedule-pdf');
+                const data = await response.json();
+                if (data && data.url) {
+                    setPdfUrl(data.url);
+                }
+            } catch (error) {
+                console.error("Failed to fetch PDF URL:", error);
+            }
+        };
+        fetchPdfUrl();
+    }, []);
+
+    const handlePrintSchedule = () => {
+        if (pdfUrl) {
+            window.open(pdfUrl, '_blank');
+        } else {
+            alert('Schedule PDF not available.');
+        }
+    };
 
     const groupedSchedule = scheduleData.reduce((acc, item) => {
         const day = item.day;
@@ -70,7 +94,10 @@ const SchedulePage = () => {
                         <h1 className="text-5xl lg:text-6xl font-black tracking-tighter">SCHEDULE THIS WEEK</h1>
                         <div className="h-1.5 bg-red-600 w-3/4 mt-1"></div>
                     </div>
-                    <button className="flex items-stretch bg-red-600  text-base hover:bg-white hover:text-red-600 transition-colors duration-300 self-start md:self-auto">
+                    <button 
+                        onClick={handlePrintSchedule}
+                        className="flex items-stretch bg-red-600  text-base hover:bg-white hover:text-red-600 transition-colors duration-300 self-start md:self-auto"
+                    >
                         <span className="pl-8 pr-6 py-5 font-bold text-xl">PRINT SCHEDULE</span>
                         <span className="flex items-center px-6" style={{borderLeft: '2px solid rgba(0,0,0,0.2)'}}>
                             <DownloadIcon />

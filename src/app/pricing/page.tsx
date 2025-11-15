@@ -110,6 +110,7 @@ const PricingPage = () => {
     const [adultPlansData, setAdultPlansData] = React.useState<PricingTier[]>([]);
     const [addOnPlansData, setAddOnPlansData] = React.useState<AddOnPlan[]>([]);
     const [kidsPlansData, setKidsPlansData] = React.useState<KidsPricingPlan[]>([]);
+    const [pricingPdfUrl, setPricingPdfUrl] = React.useState('');
 
     React.useEffect(() => {
         const fetchPricing = async () => {
@@ -142,6 +143,22 @@ const PricingPage = () => {
         };
         fetchAddons();
     }, []);
+
+    React.useEffect(() => {
+        const fetchPricingPdfUrl = async () => {
+            try {
+                const response = await fetch('/api/pricing-pdf');
+                if (response.ok) {
+                    const data = await response.json();
+                    setPricingPdfUrl(data.url);
+                }
+            } catch (error) {
+                console.error("Failed to fetch pricing PDF URL:", error);
+            }
+        };
+        fetchPricingPdfUrl();
+    }, []);
+
     return (
         <div className="bg-[#121212] text-white">
             <div className="container mx-auto max-w-8xl px-4 py-20">
@@ -153,7 +170,7 @@ const PricingPage = () => {
   </div>
 
   <a
-    href="https://cdn.prod.website-files.com/68e43e0279ad2b357d6c0ef4/68f184a3ec261e1127d49e76_Warrior%20Price%20List%20(current%20as%20of%20Feb%202024).pdf"
+    href={pricingPdfUrl}
     target="_blank"
     rel="noopener noreferrer"
     className="flex items-stretch bg-red-600 text-base hover:bg-white hover:text-red-600 transition-colors duration-300 self-start md:self-auto"

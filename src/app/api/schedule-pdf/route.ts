@@ -35,16 +35,16 @@ export async function POST(request: Request) {
         
         // Sanitize filename
         const sanitizedFilename = path.basename(file.name).replace(/[^a-zA-Z0-9._-]/g, '_');
-        const publicDir = path.join(process.cwd(), 'public');
+        const uploadsDir = path.join(process.cwd(), 'uploads');
         
-        // Ensure public directory exists
-        if (!fs.existsSync(publicDir)) {
-          fs.mkdirSync(publicDir, { recursive: true });
+        // Ensure uploads directory exists
+        if (!fs.existsSync(uploadsDir)) {
+          fs.mkdirSync(uploadsDir, { recursive: true });
         }
 
-        const filePath = path.join(publicDir, sanitizedFilename);
+        const filePath = path.join(uploadsDir, sanitizedFilename);
         await fs.promises.writeFile(filePath, buffer);
-        pdfUrl = `/${sanitizedFilename}`;
+        pdfUrl = `/uploads/${sanitizedFilename}`;
       } catch (writeError) {
         console.error('Error writing file to disk:', writeError);
         return NextResponse.json({ error: 'Failed to write file to disk' }, { status: 500 });

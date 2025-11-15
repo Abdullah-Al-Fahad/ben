@@ -8,6 +8,14 @@
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  async rewrites() {
+    return [
+      {
+        source: '/uploads/:path*',
+        destination: '/api/serve-uploads/:path*',
+      },
+    ];
+  },
   eslint: {
     ignoreDuringBuilds: true,
   },

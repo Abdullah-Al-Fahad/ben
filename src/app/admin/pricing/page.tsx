@@ -28,12 +28,37 @@ export default function PricingAdminPage() {
     type: 'ADULTS',
     highlighted: false,
   });
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   useEffect(() => {
     fetch('/api/pricing')
       .then((res) => res.json())
       .then((data) => setPricingTiers(data));
   }, []);
+
+  const handleFileUpload = async (fileToUpload: File) => {
+    const formData = new FormData();
+    formData.append('file', fileToUpload);
+
+    const response = await fetch('/api/pricing-pdf', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (response.ok) {
+      alert('Pricing PDF updated successfully!');
+    } else {
+      alert('Failed to upload pricing PDF.');
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setSelectedFile(file);
+      handleFileUpload(file);
+    }
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -103,6 +128,21 @@ export default function PricingAdminPage() {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Pricing Management</h1>
+
+      <div className="mb-8 p-4 border rounded">
+        <h2 className="text-xl font-bold mb-2">Pricing PDF Upload</h2>
+        <div className="grid grid-cols-1 gap-4">
+          <div>
+            <input id="file" name="file" type="file" accept=".pdf" onChange={handleFileChange} className="hidden" />
+            <div className="flex items-center space-x-2 mt-1">
+              <button type="button" onClick={() => document.getElementById('file')?.click()} className="bg-blue-500 text-white p-2 rounded">
+                Upload File
+              </button>
+              <span className="text-gray-500">{selectedFile ? selectedFile.name : 'No file chosen'}</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <form onSubmit={handleSubmit} className="mb-8 p-4 border rounded">
         <h2 className="text-xl font-bold mb-2">{isEditing ? 'Edit' : 'Add'} Pricing Tier</h2>
