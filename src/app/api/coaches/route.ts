@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
-import { getURL } from '@/lib/utils';
 
 function cleanImageUrl(url: string): string {
   if (!url) return url;
@@ -28,9 +27,9 @@ export async function GET() {
   const coaches = await prisma.coach.findMany();
   const formattedCoaches = coaches.map(coach => {
     let finalImageUrl = coach.image;
-    // If the image URL is not an absolute URL, construct one.
+    // If the image URL is not an absolute URL, construct a relative one.
     if (finalImageUrl && !finalImageUrl.startsWith('http')) {
-      finalImageUrl = getURL(`/api/images/${finalImageUrl}`);
+      finalImageUrl = `/api/images/${finalImageUrl}`;
     }
 
     return {

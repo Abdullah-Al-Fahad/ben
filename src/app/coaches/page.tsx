@@ -1,5 +1,6 @@
-import { fetchApi } from '@/lib/api';
-import React from 'react';
+'use client';
+
+import React, { useEffect, useState } from 'react';
 import { AnimatedCoachModal, CoachDetail } from '@/components/AnimatedCoachModal';
 import { ValueBlock } from '@/components/Landing/LandingCard';
 import CoachesClientPage from './CoachesClientPage'; // New client component
@@ -13,39 +14,57 @@ interface Coach {
 
 interface CoachDetailsData { [key: string]: CoachDetail; }
 
-const CoachesPage = async () => {
-  const originalCoachesData: Coach[] = await fetchApi('coaches', { cache: 'no-store' });
+const CoachesPage = () => {
+  const [coachesData, setCoachesData] = useState<Coach[]>([]);
+  const [allCoachDetails, setAllCoachDetails] = useState<CoachDetailsData>({});
+  const [coachesSectionData, setCoachesSectionData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const processUrl = (url: string) => {
-    if (url && url.startsWith('http')) {
+  useEffect(() => {
+    const fetchAllData = async () => {
       try {
-        return new URL(url).pathname;
-      } catch (e) {
-        console.error(`Invalid URL encountered: ${url}`, e);
-        return url; // Fallback to the original URL
+        // Fetch main coaches data
+        const coachesRes = await fetch('/api/coaches');
+        if (!coachesRes.ok) throw new Error('Failed to fetch coaches');
+        const coaches: Coach[] = await coachesRes.json();
+        setCoachesData(coaches);
+
+        // Fetch details for each coach
+        const details: CoachDetailsData = {};
+        await Promise.all(coaches.map(async (coach) => {
+          const detailRes = await fetch(`/api/coaches/${coach.id}`);
+          if (detailRes.ok) {
+            details[coach.id] = await detailRes.json();
+          }
+        }));
+        setAllCoachDetails(details);
+
+        // Fetch landing page section data
+        const sectionRes = await fetch('/api/landing-page/coaches');
+        if (sectionRes.ok) {
+          setCoachesSectionData(await sectionRes.json());
+        }
+      } catch (error) {
+        console.error("Failed to fetch coaches page data:", error);
+        // Handle error state if necessary
+      } finally {
+        setLoading(false);
       }
-    }
-    return url;
-  };
-
-  const coachesData = originalCoachesData.map(coach => ({
-    ...coach,
-    imageUrl: processUrl(coach.imageUrl),
-  }));
-
-  const allCoachDetails: CoachDetailsData = {};
-  await Promise.all(originalCoachesData.map(async (coach) => {
-    const coachDetail: CoachDetail = await fetchApi(`coaches/${coach.id}`, { cache: 'no-store' });
-    allCoachDetails[coach.id] = {
-        ...coachDetail,
-        imageUrl: coachDetail.imageUrl ? processUrl(coachDetail.imageUrl) : coachDetail.imageUrl
     };
-  }));
 
-  const coachesSectionData = await fetchApi('landing-page/coaches', { cache: 'no-store' });
+    fetchAllData();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>; // Or a proper loading spinner component
+  }
 
   return (
-    <CoachesClientPage coachesData={coachesData} allCoachDetails={allCoachDetails} coachesSectionData={coachesSectionData} />
+    <CoachesClientPage 
+      coachesData={coachesData} 
+      allCoachDetails={allCoachDetails} 
+      coachesSectionData={coachesSectionData} 
+    />
   );
 };
 
