@@ -1,1 +1,21 @@
-hostname: vps67100.dreamhostps.comProtocol / Port Number: sftp / Port 22username: benwes11password: Snarfie135!@#
+ ✓ Compiled /api/auth/[...nextauth] in 1162ms (512 modules)
+[next-auth][warn][NEXTAUTH_URL] 
+https://next-auth.js.org/warnings#nextauth_url
+ GET /api/auth/session 200 in 2460ms
+ ○ Compiling /coaches ...
+ ✓ Compiled /coaches in 3.4s (1802 modules)
+Error fetching data: [TypeError: Failed to parse URL from /api/coaches] {
+  [cause]: [TypeError: Invalid URL] {
+    code: 'ERR_INVALID_URL',
+    input: '/api/coaches'
+  }
+}
+ ⨯ [TypeError: Failed to parse URL from /api/coaches] {
+  digest: '2447216045',
+  [cause]: [TypeError: Invalid URL] {
+    code: 'ERR_INVALID_URL',
+    input: '/api/coaches'
+  }
+}
+ GET /coaches 500 in 4503ms
+@

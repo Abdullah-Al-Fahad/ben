@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
+import { getURL } from '@/lib/utils';
 
 function cleanImageUrl(url: string): string {
   if (!url) return url;
@@ -25,14 +26,11 @@ function cleanImageUrl(url: string): string {
 
 export async function GET() {
   const coaches = await prisma.coach.findMany();
-      const formattedCoaches = coaches.map(coach => {
-      console.log('Raw coach.image from DB:', coach.image);
-      let finalImageUrl = coach.image;
-    if (finalImageUrl.startsWith('http://') || finalImageUrl.startsWith('https://')) {
-      // It's an external URL, use as is
-    } else {
-      // It's a local filename, prepend the API route
-      finalImageUrl = `/api/images/${finalImageUrl}`;
+  const formattedCoaches = coaches.map(coach => {
+    let finalImageUrl = coach.image;
+    // If the image URL is not an absolute URL, construct one.
+    if (finalImageUrl && !finalImageUrl.startsWith('http')) {
+      finalImageUrl = getURL(`/api/images/${finalImageUrl}`);
     }
 
     return {

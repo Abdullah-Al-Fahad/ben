@@ -1,3 +1,4 @@
+import { getURL } from '@/lib/utils';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -15,7 +16,7 @@ interface Discipline {
 }
 
 export default async function AdminDisciplinesPage() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/disciplines`, { cache: 'no-store' });
+  const res = await fetch(getURL('/api/disciplines'), { cache: 'no-store' });
   const disciplines = await res.json();
 
   if (!Array.isArray(disciplines)) {
