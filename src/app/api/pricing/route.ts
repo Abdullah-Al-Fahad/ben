@@ -3,6 +3,12 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+};
+
 export async function GET() {
   try {
     const pricingTiers = await prisma.pricingTier.findMany();
@@ -21,10 +27,10 @@ export async function GET() {
         features,
       };
     });
-    return NextResponse.json(parsedTiers);
+    return NextResponse.json(parsedTiers, { headers: corsHeaders });
   } catch (error) {
     console.error('Error fetching pricing tiers:', error);
-    return NextResponse.json({ error: 'Failed to fetch pricing tiers', details: error.message }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to fetch pricing tiers', details: error.message }, { status: 500, headers: corsHeaders });
   }
 }
 
@@ -43,8 +49,12 @@ export async function POST(request: Request) {
         features: JSON.stringify(data.features),
       },
     });
-    return NextResponse.json(newPricingTier, { status: 201 });
+    return NextResponse.json(newPricingTier, { status: 201, headers: corsHeaders });
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to create pricing tier' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to create pricing tier' }, { status: 500, headers: corsHeaders });
   }
+}
+
+export async function OPTIONS() {
+  return NextResponse.json({}, { headers: corsHeaders });
 }
