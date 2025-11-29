@@ -16,6 +16,7 @@ const SchedulePage = () => {
     const [activeFilter, setActiveFilter] = useState('All');
     const [activeDay, setActiveDay] = useState('Full Week');
     const [pdfUrl, setPdfUrl] = useState('');
+    const [topFilters, setTopFilters] = useState(['All']);
 
     useEffect(() => {
         const fetchSchedule = async () => {
@@ -23,6 +24,10 @@ const SchedulePage = () => {
                 const response = await fetch('/api/schedule');
                 const data = await response.json();
                 setScheduleData(data);
+
+                const ageGroups = [...new Set(data.map(item => item.classType.ageGroup))];
+                const categories = [...new Set(data.map(item => item.classType.category))];
+                setTopFilters(['All', ...ageGroups, ...categories]);
             } catch (error) {
                 console.error("Failed to fetch schedule:", error);
             }
@@ -66,12 +71,15 @@ const SchedulePage = () => {
 
     const days = [
         'Full Week',
-        ...Object.keys(groupedSchedule).map(day => {
+        ...Object.keys(groupedSchedule).sort((a, b) => {
+            const dayOrder = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            return dayOrder.indexOf(a) - dayOrder.indexOf(b);
+        }).map(day => {
             const date = new Date();
             const dayIndex = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(day.slice(0, 3));
             date.setDate(date.getDate() - date.getDay() + dayIndex + 1);
             const formattedDate = format(date, 'MMM d');
-            return `${day}, ${formattedDate}`;
+            return `${day}`;
         })
     ];
 
@@ -84,8 +92,6 @@ const SchedulePage = () => {
         }
     }, [scheduleData]);
 
-    const topFilters = ['All', 'Kids', 'Adult', 'BJJ', 'Muay Thai'];
-
     return (
         <div className="bg-[#121212] text-white min-h-screen  py-16">
             <div className="container mx-auto px-4 lg:px-8 max-w-7xl">
@@ -94,7 +100,7 @@ const SchedulePage = () => {
                         <h1 className="text-5xl lg:text-6xl font-black tracking-tighter">SCHEDULE THIS WEEK</h1>
                         <div className="h-1.5 bg-red-600 w-3/4 mt-1"></div>
                     </div>
-                    <button 
+                    <button
                         onClick={handlePrintSchedule}
                         className="flex items-stretch bg-red-600  text-base hover:bg-white hover:text-red-600 transition-colors duration-300 self-start md:self-auto"
                     >
@@ -130,7 +136,7 @@ const SchedulePage = () => {
 
                 <div className="bg-[#222222]">
                     {(activeDay === 'Full Week' ? Object.values(groupedSchedule).flat() : groupedSchedule[activeDay.split(',')[0]] || [])
-                        .filter(item => activeFilter === 'All' || item.type === activeFilter)
+                        .filter(item => activeFilter === 'All' || item.classType.ageGroup === activeFilter || item.classType.category === activeFilter)
                         .map((item, index) => (
                         <div key={index} className="flex items-center justify-between p-4 border-b border-[#333333]">
                            <div className="flex items-center gap-x-4 sm:gap-x-6">
@@ -143,13 +149,13 @@ const SchedulePage = () => {
                                     </div>
                                 </div>
                                 <div>
-                                    <h3 className="text-lg sm:text-xl font-bold">{item.program}</h3>
+                                    <h3 className="text-lg sm:text-xl font-bold">{item.classType.name}</h3>
                                     <p className="text-gray-400 text-sm">{item.level}</p>
                                 </div>
                            </div>
                             <div className="flex-shrink-0 ml-4">
                                 <span className={`px-3 py-2 text-xs font-semibold rounded-md bg-[#6a617a]`}>
-                                    {item.type}
+                                    {item.classType.category}
                                 </span>
                             </div>
                         </div>

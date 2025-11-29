@@ -1,15 +1,19 @@
-http://localhost:3000/
-
-http://localhost:3000/disciplines/mua-thai
-
-http://localhost:3000/disciplines/jutsu
-
-http://localhost:3000/disciplines/mma
-
-http://localhost:3000/disciplines/fitness
-
-http://localhost:3000/admin/coaches
-
-http://localhost:3000/schedule
-
-http://localhost:3000/membership
+ GET /api/auth/session 200 in 65ms
+ POST /api/upload 200 in 63ms
+data {
+  title: 'Join our world class MMA training programs for all levels - From Beginners to Pros.',
+  subtitle: 'We are a family, and we are a team.',
+  description: 'Our gym has had both a local and a national presence since its founding in 2011, however its roots go much deeper. Our Team has been training and competing across the world in multiple combat sports to bring you the best instruction available. We are athletes, hobbyists, competitors, students and professionals. We strive to learn and grow while pushing others around us to do the same. We are people who always are working to improve ourselves and our community.',
+  imageUrl: '1764304742106-1762638966281-68e95350c431166c54c51460_warrior_01.jpg'
+}
+secondHero null
+ PUT /api/landing-page/second-hero 404 in 355ms
+ ✓ Compiled in 1066ms (1055 modules)
+ GET /schedule 200 in 404ms
+ ✓ Compiled in 652ms (1055 modules)
+ GET /admin/landing-page/second-hero 200 in 337ms
+ GET /schedule 200 in 129ms
+ GET /admin/landing-page/second-hero 200 in 116ms
+ GET /favicon.ico 200 in 34ms
+ GET /favicon.ico 200 in 28ms
+{"error":"Second hero not found"}

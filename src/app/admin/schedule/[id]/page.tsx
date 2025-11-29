@@ -1,5 +1,3 @@
-
-
 'use client';
 import { parse, format } from 'date-fns';
 import { Button } from '@/components/ui/button';
@@ -8,21 +6,27 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useRouter, useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { CalendarIcon } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export default function EditSchedulePage() {
   const router = useRouter();
   const params = useParams();
   const { id } = params;
 
-  const [day, setDay] = useState<Date | undefined>(undefined);
+  const [day, setDay] = useState('');
   const [time, setTime] = useState('');
-  const [program, setProgram] = useState('');
   const [level, setLevel] = useState('');
-  const [type, setType] = useState('');
+  const [classTypeId, setClassTypeId] = useState('');
+  const [classTypes, setClassTypes] = useState([]);
+
+  useEffect(() => {
+    const fetchClassTypes = async () => {
+      const res = await fetch('/api/class-types');
+      const data = await res.json();
+      setClassTypes(data);
+    };
+    fetchClassTypes();
+  }, []);
 
   useEffect(() => {
     if (id) {
@@ -32,17 +36,12 @@ export default function EditSchedulePage() {
           throw new Error('Failed to fetch schedule');
         }
         const data = await res.json();
-        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-        const dayIndex = days.indexOf(data.day);
-        const today = new Date();
-        const resultDate = new Date(today.setDate(today.getDate() - today.getDay() + dayIndex));
-        setDay(resultDate);
+        setDay(data.day);
         const parsedTime = parse(data.time, 'hh:mm a', new Date());
         const time24 = format(parsedTime, 'HH:mm');
         setTime(time24);
-        setProgram(data.program);
         setLevel(data.level);
-        setType(data.type);
+        setClassTypeId(data.classTypeId);
       };
       fetchSchedule();
     }
@@ -58,7 +57,7 @@ export default function EditSchedulePage() {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ day: day ? format(day, 'EEEE') : '', time: time12, program, level, type }),
+      body: JSON.stringify({ day, time: time12, level, classTypeId }),
     });
     router.push('/admin/schedule');
   };
@@ -74,44 +73,43 @@ export default function EditSchedulePage() {
             <div className="grid grid-cols-1 gap-6">
               <div>
                 <Label htmlFor="day">Day</Label>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant={"outline"}
-                      className={cn(
-                        "w-full justify-start text-left font-normal",
-                        !day && "text-muted-foreground"
-                      )}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {day ? format(day, "PPP") : <span>Pick a day</span>}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={day}
-                      onSelect={setDay}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
+                <Select onValueChange={setDay} value={day}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a day" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Monday">Monday</SelectItem>
+                    <SelectItem value="Tuesday">Tuesday</SelectItem>
+                    <SelectItem value="Wednesday">Wednesday</SelectItem>
+                    <SelectItem value="Thursday">Thursday</SelectItem>
+                    <SelectItem value="Friday">Friday</SelectItem>
+                    <SelectItem value="Saturday">Saturday</SelectItem>
+                    <SelectItem value="Sunday">Sunday</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div>
                 <Label htmlFor="time">Time</Label>
                 <Input id="time" type="time" value={time} onChange={(e) => setTime(e.target.value)} />
               </div>
               <div>
-                <Label htmlFor="program">Program</Label>
-                <Input id="program" value={program} onChange={(e) => setProgram(e.target.value)} />
+                <Label htmlFor="classType">Class Type</Label>
+                <Select onValueChange={setClassTypeId} value={classTypeId}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a class type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {classTypes.map((classType: any) => (
+                      <SelectItem key={classType.id} value={classType.id}>
+                        {classType.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div>
                 <Label htmlFor="level">Level</Label>
                 <Input id="level" value={level} onChange={(e) => setLevel(e.target.value)} />
-              </div>
-              <div>
-                <Label htmlFor="type">Type</Label>
-                <Input id="type" value={type} onChange={(e) => setType(e.target.value)} />
               </div>
               <Button type="submit">Update Event</Button>
             </div>

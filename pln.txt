@@ -1,10 +1,4 @@
-src\lib\api.ts (6:22) @ fetchApi
-
-
-  4 |   try {
-  5 |     const url = getURL(`/api/${endpoint}`);
-> 6 |     const response = await fetch(url, options);
-    |                      ^
-  7 |     if (!response.ok) {
-  8 |       throw new Error(`API call failed: ${response.statusText}`);
-  9 |     }
+It doesn't appear you can tag something to be both "Adult" or "Kids" and still be one of the other arts like "Jiu-Jitsu" or "Muay-Thai." It would be easier if we could tag it with Kids and/or adults, and then Striking and/or Grappling . We can name it Muay Thai as the class title, but the the tag should be Striking and the label on the page should be Striking to list all Striking type classes
+benwestrich
+A class can have either Kids or adults, and can be either a Striking or a grappling class.
+If its a grappling class, we have a few types of classes, and if its a striking class there are a few options 

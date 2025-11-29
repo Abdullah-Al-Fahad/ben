@@ -21,9 +21,12 @@ interface Schedule {
   id: string;
   day: string;
   time: string;
-  program: string;
   level: string;
-  type: string;
+  classType: {
+    name: string;
+    ageGroup: string;
+    category: string;
+  };
 }
 
 export default function ManageSchedulePage() {
@@ -132,9 +135,8 @@ export default function ManageSchedulePage() {
                 <TableRow>
                   <TableHead>Day</TableHead>
                   <TableHead>Time</TableHead>
-                  <TableHead>Program</TableHead>
-                  <TableHead>Level</TableHead>
-                  <TableHead>Type</TableHead>
+                  <TableHead>Class Name</TableHead>
+                  <TableHead>Category</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -143,9 +145,8 @@ export default function ManageSchedulePage() {
                   <TableRow key={schedule.id}>
                     <TableCell>{schedule.day}</TableCell>
                     <TableCell>{schedule.time}</TableCell>
-                    <TableCell>{schedule.program}</TableCell>
-                    <TableCell>{schedule.level}</TableCell>
-                    <TableCell>{schedule.type}</TableCell>
+                    <TableCell>{schedule.classType.name}</TableCell>
+                    <TableCell>{schedule.classType.category}</TableCell>
                     <TableCell>
                       <div class="flex items-center space-x-2">
                           <Link href={`/admin/schedule/${schedule.id}`}>
@@ -153,7 +154,7 @@ export default function ManageSchedulePage() {
                                   <Edit class="h-4 w-4" />
                               </Button>
                           </Link>
-                        <Button variant="destructive" size="icon" onClick={() => handleDelete(schedule.id)}>
+                        <Button variant="destructive" size="icon" onClick={() => openDeleteDialog(schedule.id)}>
                           <Trash2 class="h-4 w-4" />
                         </Button>
                       </div>

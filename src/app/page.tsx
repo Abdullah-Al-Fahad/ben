@@ -363,6 +363,15 @@ const MainContent = ({
 }) => {
   const [activeFilter, setActiveFilter] = useState('All');
   const [activeDay, setActiveDay] = useState('Full Week');
+  const [topFilters, setTopFilters] = useState(['All']);
+
+  useEffect(() => {
+    if (scheduleData.length > 0) {
+      const ageGroups = [...new Set(scheduleData.map(item => item.classType.ageGroup))];
+      const categories = [...new Set(scheduleData.map(item => item.classType.category))];
+      setTopFilters(['All', ...ageGroups, ...categories]);
+    }
+  }, [scheduleData]);
 
   const groupedSchedule = scheduleData.reduce((acc, item) => {
     const day = item.day;
@@ -377,12 +386,15 @@ const MainContent = ({
 
   const days = [
     'Full Week',
-    ...Object.keys(groupedSchedule).map(day => {
+    ...Object.keys(groupedSchedule).sort((a, b) => {
+        const dayOrder = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        return dayOrder.indexOf(a) - dayOrder.indexOf(b);
+    }).map(day => {
       const date = new Date();
       const dayIndex = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].indexOf(day.slice(0, 3));
       date.setDate(date.getDate() - date.getDay() + dayIndex + 1);
       const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-      return `${day}, ${formattedDate}`;
+      return `${day}`;
     })
   ];
 
@@ -521,7 +533,7 @@ const MainContent = ({
 
           {/* Filter buttons */}
           <div className="flex flex-wrap gap-2 mb-8 border-b-2 border-gray-800">
-            {['All', 'Kids', 'Adult', 'BJJ', 'Muay Thai'].map(filter => (
+            {topFilters.map(filter => (
               <button
                 key={filter}
                 onClick={() => setActiveFilter(filter)}
@@ -550,7 +562,7 @@ const MainContent = ({
           <div className="bg-[#1a1a1a] p-1 rounded-lg">
             <div className="space-y-1">
               {(activeDay === 'Full Week' ? Object.values(groupedSchedule).flat() : groupedSchedule[activeDay.split(',')[0]] || [])
-                .filter(item => activeFilter === 'All' || item.type === activeFilter)
+                .filter(item => activeFilter === 'All' || item.classType.ageGroup === activeFilter || item.classType.category === activeFilter)
                 .map((item, index) => (
                 <div
                   key={index}
@@ -560,13 +572,13 @@ const MainContent = ({
                     {item.time}
                   </div>
                   <div className="col-span-full sm:col-span-6">
-                    <h4 className="font-bold text-xl text-white">{item.program}</h4>
+                    <h4 className="font-bold text-xl text-white">{item.classType.name}</h4>
                     <p className="text-gray-400 text-sm">{item.level}</p>
                   </div>
                   <div className="col-span-full sm:col-span-4 text-left sm:text-right">
                     <span
                       className={`text-xs font-bold py-2 px-3 rounded-full bg-purple-900 text-purple-300`}>
-                      {item.type}
+                      {item.classType.category}
                     </span>
                   </div>
                 </div>
