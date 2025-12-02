@@ -27,6 +27,7 @@ export default function AdminDashboard() {
     { href: '/admin/profile', title: 'Manage Profile', description: 'Edit your profile and security settings.', icon: User },
     { href: '/admin/ourgym', title: 'Manage Our Gym', description: 'Edit the content of the Our Gym page.', icon: Component },
     { href: '/admin/gym-info', title: 'Social and Adress', description: 'Edit Contact Info', icon: Component },
+     { href: '/admin/class-types', title: 'Types of classes', description: 'Edit Class types', icon: Component }
   ];
 
   return (
